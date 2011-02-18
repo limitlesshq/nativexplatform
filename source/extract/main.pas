@@ -144,7 +144,7 @@ begin
     end;
 
     // Update progress bar
-	pbProgress.Max:=Unarchiver.ArchiveInformation.UncompressedSize;
+	pbProgress.Max:=100;
 	pbProgress.Position:=0;
 
     // Loop through the archive...
@@ -159,7 +159,7 @@ begin
         else
         begin
             lblFilename.Caption := LeftStr(LastInfo.StoredName,Length(LastInfo.StoredName)-1);
-			pbProgress.Position:= Unarchiver.Progress.RunningUncompressed;
+			pbProgress.Position:= trunc(100* Unarchiver.Progress.RunningUncompressed / Unarchiver.ArchiveInformation.UncompressedSize);
         end;
         Application.ProcessMessages;
     until (Unarchiver.Progress.Status <> jpesRunning);
