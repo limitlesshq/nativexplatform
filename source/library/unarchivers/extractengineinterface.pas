@@ -294,8 +294,14 @@ const
 var
 	i : Integer;
 begin
-{$IFDEF WINDOWS}
-	// Do we have an invalid name?
+	// For some reason, I get an extra character at the end :s
+    strRelativePath:=LeftStr(strRelativePath, Length(strRelativePath) - 1);
+
+	{$IFDEF WINDOWS}
+    // Translate directory separators
+    strRelativePath := StringReplace(strRelativePath, '/', '\', [rfReplaceAll] );
+
+    // Do we have an invalid name?
     strRelativePath := Trim(strRelativePath);
     for i := 0 to 6 do
         if Pos(invalidChars[i], strRelativePath) > 0 then
@@ -305,11 +311,8 @@ begin
             Exit;
         end;
 
-	// Translate directory separators
-   strRelativePath := StringReplace(strRelativePath, '/', '\', [rfReplaceAll] );
-{$ENDIF}
-	// For some reason, I get an extra character at the end :s
-    strRelativePath:=LeftStr(strRelativePath, Length(strRelativePath) - 1);
+	{$ENDIF}
+
 	if RightStr(strRelativePath, 1) = PathDelim then
    	begin
 		strRelativePath := LeftStr(strRelativePath, Length(strRelativePath) - 1 );
@@ -543,4 +546,4 @@ begin
 		end;
 end;
 
-end.
+end.

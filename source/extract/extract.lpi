@@ -22,7 +22,7 @@
       <MinorVersionNr Value="2"/>
       <StringTable ProductVersion=""/>
     </VersionInfo>
-    <BuildModes Count="7" Active="Default">
+    <BuildModes Count="7" Active="Win32">
       <Item1 Name="Default" Default="True"/>
       <Item2 Name="Mac Intel">
         <CompilerOptions>
@@ -116,7 +116,7 @@
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <OtherUnitFiles Value="../library/unarchivers"/>
+            <OtherUnitFiles Value="../library/unarchivers;../library/win7"/>
             <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
             <LCLWidgetType Value="win32"/>
           </SearchPaths>
@@ -314,16 +314,16 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="8">
+    <Units Count="15">
       <Unit0>
         <Filename Value="extract.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="extract"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="39"/>
+        <CursorPos X="1" Y="24"/>
+        <UsageCount Value="42"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit0>
@@ -336,9 +336,9 @@
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="29"/>
-        <CursorPos X="12" Y="51"/>
-        <UsageCount Value="39"/>
+        <TopLine Value="192"/>
+        <CursorPos X="5" Y="293"/>
+        <UsageCount Value="42"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
@@ -347,23 +347,21 @@
         <Filename Value="../library/unarchivers/AkAESCTR.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="AkAESCTR"/>
-        <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="602"/>
-        <CursorPos X="78" Y="622"/>
-        <UsageCount Value="39"/>
-        <Loaded Value="True"/>
+        <TopLine Value="94"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="42"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit2>
       <Unit3>
         <Filename Value="../library/unarchivers/engineunjpa.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="engineunjpa"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="230"/>
-        <CursorPos X="30" Y="245"/>
-        <UsageCount Value="39"/>
+        <TopLine Value="228"/>
+        <CursorPos X="36" Y="245"/>
+        <UsageCount Value="42"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit3>
@@ -371,30 +369,31 @@
         <Filename Value="../library/unarchivers/engineunjps.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="engineunjps"/>
-        <UsageCount Value="39"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="42"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit4>
       <Unit5>
         <Filename Value="../library/unarchivers/engineunzip.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="engineunzip"/>
-        <EditorIndex Value="5"/>
         <WindowIndex Value="0"/>
         <TopLine Value="521"/>
         <CursorPos X="46" Y="525"/>
-        <UsageCount Value="39"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="42"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit5>
       <Unit6>
         <Filename Value="../library/unarchivers/extractengineinterface.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="extractengineinterface"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="279"/>
-        <CursorPos X="26" Y="311"/>
-        <UsageCount Value="39"/>
+        <TopLine Value="311"/>
+        <CursorPos X="5" Y="315"/>
+        <UsageCount Value="42"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit6>
@@ -406,83 +405,140 @@
         <CursorPos X="1" Y="2911"/>
         <UsageCount Value="10"/>
       </Unit7>
+      <Unit8>
+        <Filename Value="../library/win7/dwProgressBar.pas"/>
+        <UnitName Value="dwProgressBar"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="518"/>
+        <CursorPos X="30" Y="521"/>
+        <UsageCount Value="22"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="../library/win7/dwTaskbarComponents.pas"/>
+        <UnitName Value="dwTaskbarComponents"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="8"/>
+        <CursorPos X="3" Y="18"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="C:/lazarus/lcl/controls.pp"/>
+        <UnitName Value="Controls"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="2341"/>
+        <CursorPos X="13" Y="2349"/>
+        <UsageCount Value="10"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="C:/lazarus/lcl/lcltype.pp"/>
+        <UnitName Value="LCLType"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="2545"/>
+        <CursorPos X="3" Y="2555"/>
+        <UsageCount Value="10"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="C:/lazarus/lcl/comctrls.pp"/>
+        <UnitName Value="ComCtrls"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="2344"/>
+        <CursorPos X="12" Y="2359"/>
+        <UsageCount Value="10"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="C:/lazarus/lcl/forms.pp"/>
+        <UnitName Value="Forms"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1913"/>
+        <CursorPos X="36" Y="1930"/>
+        <UsageCount Value="10"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="C:/lazarus/fpc/2.4.2/source/rtl/objpas/sysutils/sysutilh.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="62"/>
+        <CursorPos X="19" Y="72"/>
+        <UsageCount Value="10"/>
+      </Unit14>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="main.pas"/>
-        <Caret Line="147" Column="21" TopLine="136"/>
+        <Caret Line="219" Column="5" TopLine="208"/>
       </Position1>
       <Position2>
         <Filename Value="main.pas"/>
-        <Caret Line="148" Column="12" TopLine="136"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position2>
       <Position3>
         <Filename Value="main.pas"/>
-        <Caret Line="153" Column="31" TopLine="136"/>
+        <Caret Line="11" Column="1" TopLine="1"/>
       </Position3>
       <Position4>
         <Filename Value="main.pas"/>
-        <Caret Line="156" Column="34" TopLine="136"/>
+        <Caret Line="39" Column="1" TopLine="22"/>
       </Position4>
       <Position5>
         <Filename Value="main.pas"/>
-        <Caret Line="157" Column="14" TopLine="137"/>
+        <Caret Line="70" Column="5" TopLine="63"/>
       </Position5>
       <Position6>
         <Filename Value="main.pas"/>
-        <Caret Line="162" Column="56" TopLine="142"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position6>
       <Position7>
         <Filename Value="main.pas"/>
-        <Caret Line="165" Column="31" TopLine="145"/>
+        <Caret Line="35" Column="11" TopLine="18"/>
       </Position7>
       <Position8>
         <Filename Value="main.pas"/>
-        <Caret Line="169" Column="27" TopLine="149"/>
+        <Caret Line="156" Column="25" TopLine="149"/>
       </Position8>
       <Position9>
         <Filename Value="main.pas"/>
-        <Caret Line="170" Column="34" TopLine="152"/>
+        <Caret Line="166" Column="1" TopLine="150"/>
       </Position9>
       <Position10>
         <Filename Value="main.pas"/>
-        <Caret Line="67" Column="53" TopLine="56"/>
+        <Caret Line="176" Column="1" TopLine="159"/>
       </Position10>
       <Position11>
         <Filename Value="main.pas"/>
-        <Caret Line="163" Column="4" TopLine="150"/>
+        <Caret Line="184" Column="1" TopLine="167"/>
       </Position11>
       <Position12>
         <Filename Value="main.pas"/>
-        <Caret Line="167" Column="36" TopLine="157"/>
+        <Caret Line="271" Column="1" TopLine="1"/>
       </Position12>
       <Position13>
-        <Filename Value="main.pas"/>
-        <Caret Line="179" Column="5" TopLine="157"/>
+        <Filename Value="../library/unarchivers/extractengineinterface.pas"/>
+        <Caret Line="320" Column="29" TopLine="305"/>
       </Position13>
       <Position14>
-        <Filename Value="main.pas"/>
-        <Caret Line="53" Column="1" TopLine="32"/>
+        <Filename Value="../library/unarchivers/extractengineinterface.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position14>
       <Position15>
-        <Filename Value="main.pas"/>
-        <Caret Line="256" Column="5" TopLine="233"/>
+        <Filename Value="../library/unarchivers/extractengineinterface.pas"/>
+        <Caret Line="138" Column="30" TopLine="118"/>
       </Position15>
       <Position16>
-        <Filename Value="main.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="../library/unarchivers/engineunjpa.pas"/>
+        <Caret Line="3" Column="43" TopLine="1"/>
       </Position16>
       <Position17>
-        <Filename Value="main.pas"/>
-        <Caret Line="53" Column="11" TopLine="33"/>
+        <Filename Value="../library/unarchivers/engineunjpa.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position17>
       <Position18>
         <Filename Value="main.pas"/>
-        <Caret Line="55" Column="13" TopLine="35"/>
+        <Caret Line="272" Column="1" TopLine="210"/>
       </Position18>
       <Position19>
         <Filename Value="main.pas"/>
-        <Caret Line="190" Column="1" TopLine="174"/>
+        <Caret Line="265" Column="1" TopLine="245"/>
       </Position19>
       <Position20>
         <Filename Value="main.pas"/>
@@ -490,43 +546,43 @@
       </Position20>
       <Position21>
         <Filename Value="main.pas"/>
-        <Caret Line="7" Column="5" TopLine="1"/>
+        <Caret Line="281" Column="24" TopLine="273"/>
       </Position21>
       <Position22>
         <Filename Value="main.pas"/>
-        <Caret Line="51" Column="15" TopLine="29"/>
+        <Caret Line="210" Column="5" TopLine="198"/>
       </Position22>
       <Position23>
         <Filename Value="main.pas"/>
-        <Caret Line="191" Column="27" TopLine="175"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position23>
       <Position24>
         <Filename Value="main.pas"/>
-        <Caret Line="13" Column="1" TopLine="13"/>
+        <Caret Line="75" Column="15" TopLine="58"/>
       </Position24>
       <Position25>
         <Filename Value="main.pas"/>
-        <Caret Line="191" Column="1" TopLine="177"/>
+        <Caret Line="86" Column="28" TopLine="67"/>
       </Position25>
       <Position26>
         <Filename Value="main.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Caret Line="100" Column="28" TopLine="81"/>
       </Position26>
       <Position27>
         <Filename Value="main.pas"/>
-        <Caret Line="50" Column="52" TopLine="31"/>
+        <Caret Line="111" Column="28" TopLine="92"/>
       </Position27>
       <Position28>
         <Filename Value="main.pas"/>
-        <Caret Line="189" Column="7" TopLine="177"/>
+        <Caret Line="127" Column="28" TopLine="108"/>
       </Position28>
       <Position29>
         <Filename Value="main.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Caret Line="153" Column="28" TopLine="134"/>
       </Position29>
       <Position30>
         <Filename Value="main.pas"/>
-        <Caret Line="7" Column="5" TopLine="1"/>
+        <Caret Line="170" Column="28" TopLine="151"/>
       </Position30>
     </JumpHistory>
   </ProjectOptions>
