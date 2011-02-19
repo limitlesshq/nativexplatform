@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  EditBtn, ComCtrls,
+  EditBtn, ComCtrls, Buttons,
   ExtractEngineInterface;
 
 type
@@ -14,6 +14,7 @@ type
   { TFormMain }
 
   TFormMain = class(TForm)
+   BitBtn1: TBitBtn;
    Button1: TButton;
    chkIgnore: TCheckBox;
    chkDryRun: TCheckBox;
@@ -27,6 +28,7 @@ type
    Label3: TLabel;
    lblFilename: TLabel;
    pbProgress: TProgressBar;
+   procedure BitBtn1Click(Sender: TObject);
    procedure Button1Click(Sender: TObject);
    procedure edArchiveNameAcceptFileName(Sender: TObject; var Value: String);
   private
@@ -45,9 +47,13 @@ var
 implementation
 
 uses
-    EngineUnJPA, EngineUnZIP, EngineUnJPS, AkAESCTR;
+    EngineUnJPA, EngineUnZIP, EngineUnJPS, AkAESCTR,
+    LCLIntf;
 
 {$R *.lfm}
+
+const
+  	strPaypalURL : string = 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=D9CFZ4H35NFWW';
 
 { TFormMain }
 
@@ -65,6 +71,7 @@ var
     ArchiveType:        TArchiveType;
     Unarchiver:         TExtractionEngine;
     LastInfo:           TLastEntityInformation;
+    PercentageDone:		Integer;
 begin
     // Check if archive exists
     if not Self.ExistsAndIsReadable() then
@@ -159,18 +166,28 @@ begin
         else
         begin
             lblFilename.Caption := LeftStr(LastInfo.StoredName,Length(LastInfo.StoredName)-1);
-			pbProgress.Position:= trunc(100* Unarchiver.Progress.RunningUncompressed / Unarchiver.ArchiveInformation.UncompressedSize);
+			PercentageDone := trunc(100* Unarchiver.Progress.RunningUncompressed / Unarchiver.ArchiveInformation.UncompressedSize);
+            if(PercentageDone < 0) then
+            	PercentageDone := 0
+            else if(PercentageDone > 100) then
+            	PercentageDone := 100;
+            pbProgress.Position := PercentageDone;
         end;
         Application.ProcessMessages;
     until (Unarchiver.Progress.Status <> jpesRunning);
-
-    (Unarchiver as TExtractionEngine).Free;
 
     if(Unarchiver.Progress.Status = jpesFinished) then
     	MessageDlg('Your archive was successfully extracted', mtInformation, [mbOK], 0);
 
     pbProgress.Position:=0;
     lblFilename.Caption:='';
+
+    (Unarchiver as TExtractionEngine).Free;
+end;
+
+procedure TFormMain.BitBtn1Click(Sender: TObject);
+begin
+    openURL(strPaypalURL);
 end;
 
 function TFormMain.ExistsAndIsReadable: Boolean;
