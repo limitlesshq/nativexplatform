@@ -269,7 +269,6 @@
           <CodeGeneration>
             <SmartLinkUnit Value="True"/>
             <SmallerCode Value="True"/>
-            <TargetProcessor Value="pentium4"/>
             <TargetCPU Value="x86_64"/>
             <TargetOS Value="linux"/>
             <Optimizations>

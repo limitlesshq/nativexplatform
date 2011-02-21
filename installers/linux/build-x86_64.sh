@@ -1,7 +1,7 @@
 #!/bin/bash
 
 pushd ../../source/extract/
-lazbuild -B --os=linux --ws=gtk2 --cpu=x86_64 extract.lpr
+lazbuild -B --os=linux --ws=gtk2 --cpu=x86_64 --bm="Linux 64" extract.lpr
 popd
 strip ../../output/extract
 cp ../../output/extract .
