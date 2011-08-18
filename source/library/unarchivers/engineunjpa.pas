@@ -117,7 +117,7 @@ var
 	PathLength		: Word;
     PathBuffer		: array[0..MAX_BUFFER_SIZE] of AnsiChar;
 	StoredPathBin	: PAnsiChar;
-	StoredPath		: WideString;
+	StoredPath		: String;
     PStoredPath		: PWideChar;
 	EntityType		: Byte;
 	CmpType			: Byte;
@@ -177,10 +177,10 @@ begin
     	BlockRead(Self.f, PathLength, SizeOf(PathLength));
 
         StoredPathBin := PathBuffer;
-        SetLength(StoredPath, PathLength+1);
-        PStoredPath := PWideChar(StoredPath);
+        for i := 0 to MAX_BUFFER_SIZE do
+            PathBuffer[i] := #0;
         BlockRead(Self.f, StoredPathBin^, PathLength);
-        Utf8ToUnicode( PStoredPath, StoredPathBin, PathLength+1 );
+        StoredPath := StoredPathBin;
 
     	BlockRead(Self.f, EntityType, SizeOf(EntityType));
     	BlockRead(Self.f, CmpType, SizeOf(CmpType));

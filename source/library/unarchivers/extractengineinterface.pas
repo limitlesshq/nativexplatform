@@ -303,7 +303,7 @@ var
 	i : Integer;
 begin
 	// For some reason, I get an extra character at the end :s
-    strRelativePath:=LeftStr(strRelativePath, Length(strRelativePath) - 1);
+    //strRelativePath:=LeftStr(strRelativePath, Length(strRelativePath) - 1);
 
 	{$IFDEF WINDOWS}
     // Translate directory separators
