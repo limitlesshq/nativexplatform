@@ -164,6 +164,14 @@ resourcestring
     JPE_ERROR_IGNORED			= 'An error occured, but it was ignored.';
     JPE_ERROR_NOEOCD            = 'The archive seems to be truncated or of an invalid format.';
 	JPE_ERROR_UNKNOWNCOMPRESSION= 'We encountered an unknown compression type. Probably this ZIP archive was not created by Akeeba Backup/JoomlaPack?';
+    JPE_ERROR_NONEXTPART		= 'Can not open next part file; make sure you have copied all the .z01/.z02/... (ZIP files) or .j01/.j02/... (JPA file) before running Akeeba eXtract Wizard';
+    JPE_ERROR_PREMATURE			= 'Your archive seems to be truncated. Please retry downloading it using FTP in Binary transfer mode.';
+    JPE_ERROR_CANTREADHEADER	= 'Can not read archive''s header';
+    JPE_ERROR_NOEOCDRECORD		= 'No End-Of-Central-Directory record found; this is not a valid ZIP archive';
+    JPE_ERROR_NOEOARECORD		= 'No End-Of-Archive record found; this is not a valid JPS archive';
+    JPE_ERROR_CDMISSINGENTRIES	= 'The central directory is missing records; your archive appears to be truncated and can''t be extracted';
+    JPE_ERROR_EOAMISSINGENTRIES	= 'The End-Of-Archive record is corrupt; your archive appears to be truncated and can''t be extracted';
+    JPE_ERROR_CANTREADFHEADER	= 'Can''t read file header information; your archive is corrupt';
 
 implementation
 
@@ -546,4 +554,4 @@ begin
 		end;
 end;
 
-end.
+end.

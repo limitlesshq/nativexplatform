@@ -69,7 +69,7 @@ begin
 	except
 		On Exception do begin
 		Self.fldProgress.Status:=jpesError;
-		Self.fldProgress.ErrorMessage:=JPE_ERROR_READERROR;
+		Self.fldProgress.ErrorMessage:=JPE_ERROR_CANTREADHEADER;
         Self.fldProgress.ErrorType:=JPERR_READERROR;
 		Exit;
 		end;
@@ -197,7 +197,7 @@ begin
     except
         On Exception do begin
         Self.fldProgress.Status:=jpesError;
-        Self.fldProgress.ErrorMessage:=JPE_ERROR_READERROR;
+        Self.fldProgress.ErrorMessage:=JPE_ERROR_CANTREADFHEADER;
         Self.fldProgress.ErrorType:=JPERR_READERROR;
         Exit;
         end;
@@ -335,7 +335,7 @@ begin
                                 if not getNextPart then
                                 begin
                                     Self.fldProgress.Status := jpesError;
-									Self.fldProgress.ErrorMessage := JPE_ERROR_READERROR;
+									Self.fldProgress.ErrorMessage := JPE_ERROR_NONEXTPART;
                                     Self.fldProgress.ErrorType:=JPERR_READERROR;
                                     Exit;
                                 end;
@@ -344,7 +344,7 @@ begin
                             begin
                                 // Nope, it's a premature end of archive
                                 Self.fldProgress.Status := jpesError;
-								Self.fldProgress.ErrorMessage := JPE_ERROR_READERROR;
+								Self.fldProgress.ErrorMessage := JPE_ERROR_PREMATURE;
                                 Self.fldProgress.ErrorType:=JPERR_READERROR;
                                 Exit;
                             end;
@@ -377,7 +377,7 @@ begin
                             On E: Exception do
                                 if not FSkipErrors then begin
                                     Self.fldProgress.Status := jpesError;
-    								Self.fldProgress.ErrorMessage := JPE_ERROR_READERROR;
+    								Self.fldProgress.ErrorMessage := JPE_ERROR_READERROR + ' DEBUG To GZip efage poutso';
                                     Self.fldProgress.ErrorType:=JPERR_READERROR;
                                     Exit;
                                 end
@@ -398,7 +398,7 @@ begin
                                 if not getNextPart then
                                 begin
                                     Self.fldProgress.Status := jpesError;
-									Self.fldProgress.ErrorMessage := JPE_ERROR_READERROR;
+									Self.fldProgress.ErrorMessage := JPE_ERROR_NONEXTPART;
                                     Self.fldProgress.ErrorType:=JPERR_READERROR;
 									Exit;
                                 end;
@@ -407,7 +407,7 @@ begin
                             begin
                                 // Nope, it's a premature end of archive
                                 Self.fldProgress.Status := jpesError;
-								Self.fldProgress.ErrorMessage := JPE_ERROR_READERROR;
+								Self.fldProgress.ErrorMessage := JPE_ERROR_PREMATURE;
                                 Self.fldProgress.ErrorType:=JPERR_READERROR;
                                 Exit;
                             end;
@@ -511,7 +511,7 @@ begin
             		On E: Exception do
                 	if not FSkipErrors then begin
                 		Self.fldProgress.Status:=jpesError;
-						Self.fldProgress.ErrorMessage:=JPE_ERROR_READERROR;
+						Self.fldProgress.ErrorMessage:=JPE_ERROR_READERROR + ' DEBUG To symlink mou mesa gamw thn poutana moy gamw';
                     	Self.fldProgress.ErrorType:=JPERR_READERROR;
                     	Exit;
                 	end
@@ -532,7 +532,7 @@ begin
 						if not getNextPart then
      					begin
 							Self.fldProgress.Status := jpesError;
-							Self.fldProgress.ErrorMessage := JPE_ERROR_READERROR;
+							Self.fldProgress.ErrorMessage := JPE_ERROR_NONEXTPART;
 							Self.fldProgress.ErrorType:=JPERR_READERROR;
 							Exit;
 						end;
@@ -541,7 +541,7 @@ begin
 					begin
 						// Nope, it's a premature end of archive
 						Self.fldProgress.Status := jpesError;
-						Self.fldProgress.ErrorMessage := JPE_ERROR_READERROR;
+						Self.fldProgress.ErrorMessage := JPE_ERROR_PREMATURE;
 						Self.fldProgress.ErrorType:=JPERR_READERROR;
 						Exit;
 					end;
@@ -551,7 +551,7 @@ begin
             if FDataWriter.mkSymLink( PChar(strLinkTarget), PChar(outPath) ) <> 0 then
                	if not FSkipErrors then begin
                		Self.fldProgress.Status:=jpesError;
-					Self.fldProgress.ErrorMessage:=JPE_ERROR_READERROR;
+					Self.fldProgress.ErrorMessage:=JPE_ERROR_READERROR + ' DEBUG Phga na grapsw to symlink kai efaga palto - Apo '+strLinkTarget+' sto '+outPath;
                    	Self.fldProgress.ErrorType:=JPERR_READERROR;
                    	Exit;
                	end
@@ -614,4 +614,4 @@ IgnoredError:
     end;
 end;
 
-end.
+end.
