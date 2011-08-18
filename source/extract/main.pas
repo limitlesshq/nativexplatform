@@ -186,8 +186,7 @@ begin
         end
         else
         begin
-            lblFilename.Caption :=
-                LeftStr(LastInfo.StoredName, Length(LastInfo.StoredName) - 1);
+            lblFilename.Caption := LastInfo.StoredName;
             PercentageDone      := trunc(100 * Unarchiver.Progress.RunningUncompressed /
                 Unarchiver.ArchiveInformation.UncompressedSize);
             if (PercentageDone < 0) then
