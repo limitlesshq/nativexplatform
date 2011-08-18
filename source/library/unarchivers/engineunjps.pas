@@ -211,7 +211,7 @@ var
 	PathLength		: Word;
     PathBuffer		: array[0..MAX_BUFFER_SIZE] of AnsiChar;
 	StoredPathBin	: PAnsiChar;
-	StoredPath		: WideString;
+	StoredPath		: String;
     PStoredPath		: PWideChar;
 	EntityType		: Byte;
 	CmpType			: Byte;
@@ -234,6 +234,8 @@ var
 
     strLinkTarget	: String;
     tempString		: AnsiString;
+
+    i				: Integer;
 begin
 	Self.fldProgress.Status := jpesRunning;
     Self.fldProgress.ErrorType := JPERR_NONE;
@@ -280,15 +282,14 @@ begin
         // Read the Entity Description Block Data
         UStream.Read(PathLength, SizeOf(PathLength));
 
-    	SetLength(tempString, PathLength);
-        UStream.Read(tempString[1], PathLength);
+    	//SetLength(tempString, PathLength);
+        //UStream.Read(tempString[1], PathLength);
 
         StoredPathBin := PathBuffer;
-        SetLength(StoredPath, Length(tempString)+1);
-        PStoredPath := PWideChar(StoredPath);
-        StoredPathBin := PAnsiChar(tempString);
-        Utf8ToUnicode( PStoredPath, StoredPathBin, Length(tempString)+1);
-        StoredPath := Trim(StoredPath);
+        for i := 0 to MAX_BUFFER_SIZE do
+            PathBuffer[i] := #0;
+        UStream.Read(StoredPathBin^, PathLength);
+        StoredPath := Trim(StoredPathBin);
 
     	UStream.Read(EntityType, SizeOf(EntityType));
     	UStream.Read(CmpType, SizeOf(CmpType));
@@ -314,7 +315,7 @@ begin
     begin
         try
         	StoredPath := Trim(StoredPath);
-            outPath := Self.getPathName(StoredPath+' ');
+            outPath := Self.getPathName(StoredPath);
         except
             On E: Exception do;
         end;
