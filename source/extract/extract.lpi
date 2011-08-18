@@ -22,7 +22,7 @@
       <MinorVersionNr Value="2"/>
       <StringTable ProductVersion=""/>
     </VersionInfo>
-    <BuildModes Count="7" Active="Linux 32">
+    <BuildModes Count="7" Active="Default">
       <Item1 Name="Default" Default="True"/>
       <Item2 Name="Mac Intel">
         <CompilerOptions>
@@ -269,6 +269,7 @@
           <CodeGeneration>
             <SmartLinkUnit Value="True"/>
             <SmallerCode Value="True"/>
+            <TargetProcessor Value="pentium4"/>
             <TargetCPU Value="x86_64"/>
             <TargetOS Value="linux"/>
             <Optimizations>
@@ -313,17 +314,16 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="15">
+    <Units Count="17">
       <Unit0>
         <Filename Value="extract.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="extract"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="8"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="42"/>
+        <UsageCount Value="51"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit0>
@@ -335,9 +335,9 @@
         <UnitName Value="main"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="271"/>
-        <CursorPos X="5" Y="293"/>
-        <UsageCount Value="42"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="51"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
@@ -346,10 +346,12 @@
         <Filename Value="../library/unarchivers/AkAESCTR.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="AkAESCTR"/>
+        <EditorIndex Value="5"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="94"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="42"/>
+        <TopLine Value="305"/>
+        <CursorPos X="1" Y="317"/>
+        <UsageCount Value="51"/>
+        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit2>
       <Unit3>
@@ -358,9 +360,9 @@
         <UnitName Value="engineunjpa"/>
         <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="228"/>
-        <CursorPos X="36" Y="245"/>
-        <UsageCount Value="42"/>
+        <TopLine Value="430"/>
+        <CursorPos X="96" Y="438"/>
+        <UsageCount Value="51"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit3>
@@ -368,20 +370,25 @@
         <Filename Value="../library/unarchivers/engineunjps.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="engineunjps"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="42"/>
+        <TopLine Value="470"/>
+        <CursorPos X="37" Y="483"/>
+        <UsageCount Value="51"/>
+        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit4>
       <Unit5>
         <Filename Value="../library/unarchivers/engineunzip.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="engineunzip"/>
+        <EditorIndex Value="7"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="521"/>
-        <CursorPos X="46" Y="525"/>
-        <UsageCount Value="42"/>
+        <TopLine Value="558"/>
+        <CursorPos X="49" Y="574"/>
+        <UsageCount Value="51"/>
+        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit5>
       <Unit6>
@@ -390,9 +397,9 @@
         <UnitName Value="extractengineinterface"/>
         <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="311"/>
-        <CursorPos X="5" Y="315"/>
-        <UsageCount Value="42"/>
+        <TopLine Value="290"/>
+        <CursorPos X="39" Y="299"/>
+        <UsageCount Value="51"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit6>
@@ -402,7 +409,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="2899"/>
         <CursorPos X="1" Y="2911"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit7>
       <Unit8>
         <Filename Value="../library/win7/dwProgressBar.pas"/>
@@ -410,7 +417,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="518"/>
         <CursorPos X="30" Y="521"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="21"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit8>
       <Unit9>
@@ -419,7 +426,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="8"/>
         <CursorPos X="3" Y="18"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit9>
       <Unit10>
@@ -428,7 +435,8 @@
         <WindowIndex Value="0"/>
         <TopLine Value="2341"/>
         <CursorPos X="13" Y="2349"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit10>
       <Unit11>
         <Filename Value="C:/lazarus/lcl/lcltype.pp"/>
@@ -436,7 +444,8 @@
         <WindowIndex Value="0"/>
         <TopLine Value="2545"/>
         <CursorPos X="3" Y="2555"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit11>
       <Unit12>
         <Filename Value="C:/lazarus/lcl/comctrls.pp"/>
@@ -444,7 +453,8 @@
         <WindowIndex Value="0"/>
         <TopLine Value="2344"/>
         <CursorPos X="12" Y="2359"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit12>
       <Unit13>
         <Filename Value="C:/lazarus/lcl/forms.pp"/>
@@ -452,136 +462,158 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1913"/>
         <CursorPos X="36" Y="1930"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit13>
       <Unit14>
         <Filename Value="C:/lazarus/fpc/2.4.2/source/rtl/objpas/sysutils/sysutilh.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="62"/>
         <CursorPos X="19" Y="72"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit14>
+      <Unit15>
+        <Filename Value="/Developer/lazarus/lcl/lclproc.pas"/>
+        <UnitName Value="LCLProc"/>
+        <EditorIndex Value="6"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1547"/>
+        <CursorPos X="1" Y="1559"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="/usr/local/share/fpcsrc/packages/paszlib/src/zstream.pp"/>
+        <UnitName Value="zstream"/>
+        <EditorIndex Value="4"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="256"/>
+        <CursorPos X="67" Y="259"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit16>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="main.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="69" Column="11" TopLine="49"/>
       </Position1>
       <Position2>
-        <Filename Value="main.pas"/>
-        <Caret Line="11" Column="1" TopLine="1"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="448" Column="42" TopLine="440"/>
       </Position2>
       <Position3>
-        <Filename Value="main.pas"/>
-        <Caret Line="39" Column="1" TopLine="22"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="446" Column="93" TopLine="440"/>
       </Position3>
       <Position4>
-        <Filename Value="main.pas"/>
-        <Caret Line="70" Column="5" TopLine="63"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="447" Column="44" TopLine="440"/>
       </Position4>
       <Position5>
-        <Filename Value="main.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="446" Column="35" TopLine="440"/>
       </Position5>
       <Position6>
-        <Filename Value="main.pas"/>
-        <Caret Line="35" Column="11" TopLine="18"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="448" Column="39" TopLine="440"/>
       </Position6>
       <Position7>
-        <Filename Value="main.pas"/>
-        <Caret Line="156" Column="25" TopLine="149"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="446" Column="38" TopLine="434"/>
       </Position7>
       <Position8>
-        <Filename Value="main.pas"/>
-        <Caret Line="166" Column="1" TopLine="150"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="228" Column="5" TopLine="216"/>
       </Position8>
       <Position9>
-        <Filename Value="main.pas"/>
-        <Caret Line="176" Column="1" TopLine="159"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="232" Column="34" TopLine="216"/>
       </Position9>
       <Position10>
-        <Filename Value="main.pas"/>
-        <Caret Line="184" Column="1" TopLine="167"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="440" Column="49" TopLine="420"/>
       </Position10>
       <Position11>
-        <Filename Value="main.pas"/>
-        <Caret Line="271" Column="1" TopLine="1"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="436" Column="48" TopLine="426"/>
       </Position11>
       <Position12>
-        <Filename Value="../library/unarchivers/extractengineinterface.pas"/>
-        <Caret Line="320" Column="29" TopLine="305"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position12>
       <Position13>
-        <Filename Value="../library/unarchivers/extractengineinterface.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="232" Column="40" TopLine="212"/>
       </Position13>
       <Position14>
-        <Filename Value="../library/unarchivers/extractengineinterface.pas"/>
-        <Caret Line="138" Column="30" TopLine="118"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="311" Column="51" TopLine="293"/>
       </Position14>
       <Position15>
-        <Filename Value="../library/unarchivers/engineunjpa.pas"/>
-        <Caret Line="3" Column="43" TopLine="1"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position15>
       <Position16>
-        <Filename Value="../library/unarchivers/engineunjpa.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="443" Column="36" TopLine="431"/>
       </Position16>
       <Position17>
-        <Filename Value="main.pas"/>
-        <Caret Line="272" Column="1" TopLine="210"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="56" Column="64" TopLine="51"/>
       </Position17>
       <Position18>
-        <Filename Value="main.pas"/>
-        <Caret Line="265" Column="1" TopLine="245"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="361" Column="30" TopLine="341"/>
       </Position18>
       <Position19>
-        <Filename Value="main.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="443" Column="1" TopLine="423"/>
       </Position19>
       <Position20>
-        <Filename Value="main.pas"/>
-        <Caret Line="281" Column="24" TopLine="273"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="442" Column="75" TopLine="430"/>
       </Position20>
       <Position21>
-        <Filename Value="main.pas"/>
-        <Caret Line="210" Column="5" TopLine="198"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="440" Column="1" TopLine="430"/>
       </Position21>
       <Position22>
-        <Filename Value="main.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="442" Column="1" TopLine="430"/>
       </Position22>
       <Position23>
-        <Filename Value="main.pas"/>
-        <Caret Line="75" Column="15" TopLine="58"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="444" Column="61" TopLine="430"/>
       </Position23>
       <Position24>
-        <Filename Value="main.pas"/>
-        <Caret Line="86" Column="28" TopLine="67"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="442" Column="1" TopLine="430"/>
       </Position24>
       <Position25>
-        <Filename Value="main.pas"/>
-        <Caret Line="100" Column="28" TopLine="81"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="443" Column="1" TopLine="430"/>
       </Position25>
       <Position26>
-        <Filename Value="main.pas"/>
-        <Caret Line="111" Column="28" TopLine="92"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="444" Column="1" TopLine="430"/>
       </Position26>
       <Position27>
-        <Filename Value="main.pas"/>
-        <Caret Line="127" Column="28" TopLine="108"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="447" Column="1" TopLine="430"/>
       </Position27>
       <Position28>
-        <Filename Value="main.pas"/>
-        <Caret Line="153" Column="28" TopLine="134"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="442" Column="1" TopLine="430"/>
       </Position28>
       <Position29>
-        <Filename Value="main.pas"/>
-        <Caret Line="170" Column="28" TopLine="151"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="443" Column="1" TopLine="430"/>
       </Position29>
       <Position30>
-        <Filename Value="extract.lpr"/>
-        <Caret Line="24" Column="1" TopLine="1"/>
+        <Filename Value="../library/unarchivers/engineunjps.pas"/>
+        <Caret Line="444" Column="88" TopLine="430"/>
       </Position30>
     </JumpHistory>
   </ProjectOptions>
@@ -602,8 +634,17 @@
     </Parsing>
     <CodeGeneration>
       <SmartLinkUnit Value="True"/>
+      <TargetProcessor Value="pentium4"/>
+      <TargetCPU Value="i386"/>
+      <TargetOS Value="darwin"/>
+      <Optimizations>
+        <OptimizationLevel Value="0"/>
+      </Optimizations>
     </CodeGeneration>
     <Linking>
+      <Debugging>
+        <GenerateDebugInfo Value="True"/>
+      </Debugging>
       <LinkSmart Value="True"/>
       <Options>
         <Win32>
@@ -619,7 +660,15 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="3">
+    <Watches Count="2">
+      <Item1>
+        <Expression Value="SizeUncmp"/>
+      </Item1>
+      <Item2>
+        <Expression Value="writtenBytes"/>
+      </Item2>
+    </Watches>
+    <Exceptions Count="4" IgnoreAll="True">
       <Item1>
         <Name Value="EAbort"/>
       </Item1>
@@ -629,6 +678,9 @@
       <Item3>
         <Name Value="EFOpenError"/>
       </Item3>
+      <Item4>
+        <Name Value="Exception"/>
+      </Item4>
     </Exceptions>
   </Debugging>
 </CONFIG>

@@ -65,7 +65,8 @@ uses
 		{$IFNDEF WINDOWS}, BaseUnix{$ENDIF} // FreePascal on Linux - use BaseUnix
 	{$ELSE}
 		zlib // Delphi on Windows - Use ZLib unit
-	{$ENDIF};
+	{$ENDIF}
+    , math;
 
 procedure TUnJPS.ReadHeader;
 var
@@ -100,7 +101,7 @@ begin
 	except
 		On Exception do begin
 		Self.fldProgress.Status:=jpesError;
-		Self.fldProgress.ErrorMessage:=JPE_ERROR_READERROR;
+		Self.fldProgress.ErrorMessage:=JPE_ERROR_CANTREADHEADER;
         Self.fldProgress.ErrorType:=JPERR_READERROR;
 		Exit;
 		end;
@@ -124,7 +125,7 @@ begin
 		on E: Exception do
         begin
 		Self.fldProgress.Status:=jpesError;
-		Self.fldProgress.ErrorMessage:=JPE_ERROR_READERROR;
+		Self.fldProgress.ErrorMessage:=JPE_ERROR_NOEOARECORD;
         Self.fldProgress.ErrorType:=JPERR_READERROR;
 		Exit;
         end;
@@ -149,7 +150,7 @@ begin
 	except
 		On Exception do begin
 		Self.fldProgress.Status:=jpesError;
-		Self.fldProgress.ErrorMessage:=JPE_ERROR_READERROR;
+		Self.fldProgress.ErrorMessage:=JPE_ERROR_EOAMISSINGENTRIES;
         Self.fldProgress.ErrorType:=JPERR_READERROR;
 		Exit;
 		end;
@@ -298,7 +299,7 @@ begin
     except
         On Exception do begin
         Self.fldProgress.Status:=jpesError;
-        Self.fldProgress.ErrorMessage:=JPE_ERROR_READERROR;
+        Self.fldProgress.ErrorMessage:=JPE_ERROR_CANTREADFHEADER;
         Self.fldProgress.ErrorType:=JPERR_READERROR;
         Exit;
         end;
@@ -313,14 +314,14 @@ begin
     begin
         try
         	StoredPath := Trim(StoredPath);
-            outPath := Self.getPathName(StoredPath);
+            outPath := Self.getPathName(StoredPath+' ');
         except
             On E: Exception do;
         end;
     end;
 
     // Catch special case: 0 bytes file
-    if( (SizeUncmp = 0) and (not FListMode) and (fldProgress.ErrorType = JPERR_NONE)) then
+    if( (SizeUncmp = 0) and (EntityType = 1) and (not FListMode) and (fldProgress.ErrorType = JPERR_NONE)) then
     begin
     	FDataWriter.StartFile(outPath, TrimRight(StoredPath));
         FDataWriter.StopFile;
@@ -393,7 +394,7 @@ begin
                             if not getNextPart then
                             begin
                                 Self.fldProgress.Status := jpesError;
-                                Self.fldProgress.ErrorMessage := JPE_ERROR_READERROR;
+                                Self.fldProgress.ErrorMessage := JPE_ERROR_NONEXTPART;
                                 Self.fldProgress.ErrorType:=JPERR_READERROR;
                                 Exit;
                             end;
@@ -402,7 +403,7 @@ begin
                         begin
                             // Nope, it's a premature end of archive
                             Self.fldProgress.Status := jpesError;
-                            Self.fldProgress.ErrorMessage := JPE_ERROR_READERROR;
+                            Self.fldProgress.ErrorMessage := JPE_ERROR_PREMATURE;
                             Self.fldProgress.ErrorType:=JPERR_READERROR;
                             Exit;
                         end;
@@ -420,7 +421,7 @@ begin
                         SetLength(tBuf, decSize);
                         UStream.Read(tBuf, decSize);
                         if( (not FListMode) and (fldProgress.ErrorType = JPERR_NONE) ) then
-                        	FDataWriter.WriteData(tBuf, UStream.Size);
+                        	FDataWriter.WriteData(tBuf, decSize);
                         UStream.free;
                         Inc(writtenBytes, decSize);
                     end;
@@ -428,21 +429,25 @@ begin
                 	1:
                    	begin
                     	// Compressed data. Uncompress and write to file.
+                        (*
                         tempHeader := getZLibHeader; // Get a standard ZLib header
                         inputStream := TMemoryStream.Create;
-                        inputStream.SetSize(UStream.Size + 2);
+                        inputStream.SetSize(decSize + 2);
                         inputStream.Write(tempHeader, 2);
-                        inputStream.CopyFrom(UStream,0);
+                        inputStream.CopyFrom(UStream, decSize);
                         inputStream.Seek(0,soFromBeginning);
 
                         UStream.Free;
                         extractingStream := TDecompressionStream.Create(inputStream);
+                        *)
+
+                        extractingStream := TDecompressionStream.Create(UStream, true);
 
                         // Make enough space
-                        SetLength(stringBuffer, 12582912);
+                        SetLength(stringBuffer, SizeUncmp);
                         try
                             repeat
-                            	thisReadSize := extractingStream.Read(stringBuffer[1], 12582912);
+                            	thisReadSize := extractingStream.Read(PChar(stringBuffer)^, min(SizeUncmp - writtenBytes, 1048756));
                                 if(thisReadSize > 0) then
                                 	Inc(writtenBytes, thisReadSize);
                                 try
@@ -474,7 +479,8 @@ begin
                         end;
 
                         extractingStream.Free;
-                        inputStream.Free;
+                        //inputStream.Free;
+                        UStream.Free;
                     end;
                 end;
             end;
@@ -531,7 +537,7 @@ begin
                             if not getNextPart then
                             begin
                                 Self.fldProgress.Status := jpesError;
-                                Self.fldProgress.ErrorMessage := JPE_ERROR_READERROR;
+                                Self.fldProgress.ErrorMessage := JPE_ERROR_NONEXTPART;
                                 Self.fldProgress.ErrorType:=JPERR_READERROR;
                                 Exit;
                             end;
@@ -540,7 +546,7 @@ begin
                         begin
                             // Nope, it's a premature end of archive
                             Self.fldProgress.Status := jpesError;
-                            Self.fldProgress.ErrorMessage := JPE_ERROR_READERROR;
+                            Self.fldProgress.ErrorMessage := JPE_ERROR_PREMATURE;
                             Self.fldProgress.ErrorType:=JPERR_READERROR;
                             Exit;
                         end;
@@ -594,4 +600,4 @@ begin
     Exit;
 end;
 
-end.
+end.
