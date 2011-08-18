@@ -12,6 +12,9 @@ uses
 
 type
 	TUnZIP = class(TExtractionEngine)
+        private
+            function	isEOCD(aBuffer: array of Byte): boolean;
+            function	isSOCD(aBuffer: array of Byte): boolean;
 		public
 			procedure	ReadHeader(); override;
 			function	ExtractNext(): TLastEntityInformation; override;
@@ -80,17 +83,26 @@ type
         Filename:               string;
     end;
 
+function TUnZIP.isEOCD(aBuffer: array of Byte): boolean;
+// Checks if the first four bytes of a buffer indicate the End of Central Directory
+begin
+    if (aBuffer[0]=$50) and (aBuffer[1]=$4b) and (aBuffer[2]=$05) and (aBuffer[3]=$06) then
+        result := true
+    else
+        result := false;
+end;
+
+function TUnZIP.isSOCD(aBuffer: array of Byte): boolean;
+// Checks if the first four bytes of a buffer indicate the Start of Central Directory
+begin
+    if (aBuffer[0]=$50) and (aBuffer[1]=$4b) and (aBuffer[2]=$01) and (aBuffer[3]=$02) then
+        result := true
+    else
+        result := false;
+end;
+
 // It has to locate the ZIP Central Directory and extract some information
 procedure TUnZIP.ReadHeader;
-    function isEOCD(aBuffer: array of Byte): boolean;
-    // Checks if the first four bytes of a buffer indicate the End of Central Directory
-    begin
-        if (aBuffer[0]=$50) and (aBuffer[1]=$4b) and (aBuffer[2]=$05) and (aBuffer[3]=$06) then
-            result := true
-        else
-            result := false;
-    end;
-
     function ReadNextHeader(): TZIPCDFileHeader;
     var
         CurOffset:  LongInt;
@@ -151,7 +163,7 @@ begin
         begin
             Seek(Self.F, localOffset);
             BlockRead(Self.f, tempBuffer, Length(tempBuffer));
-            foundEOCD := isEOCD(tempBuffer);
+            foundEOCD := Self.isEOCD(tempBuffer);
             if not foundEOCD then Dec(localOffset, 1);
             if (localOffset = 0) and (CurrentPart = 0) then
             begin
@@ -254,7 +266,7 @@ var
 
     PathBuffer		: array[0..MAX_BUFFER_SIZE] of AnsiChar;
 	StoredPathBin	: PAnsiChar;
-	StoredPath		: WideString;
+	StoredPath		: String;
     PStoredPath		: PWideChar;
 
 	bytesLeft		: LongInt;
@@ -294,7 +306,7 @@ begin
         if not isLFH(tempBuffer) then
         begin
             // This is not a local file. are we done yet?
-            if fldProgress.RunningUncompressed >= fldArchiveInformation.UncompressedSize then
+            if isSOCD(tempBuffer) or (fldProgress.RunningUncompressed >= fldArchiveInformation.UncompressedSize) then
                 // yes, we are done indeed
                 fldProgress.Status := jpesFinished
             else
@@ -319,10 +331,10 @@ begin
 
         // Read filename
         StoredPathBin := PathBuffer;
-        SetLength(StoredPath, FileHeader.FileNameLength+1);
-        PStoredPath := PWideChar(StoredPath);
+        for i := 0 to MAX_BUFFER_SIZE do
+            PathBuffer[i] := #0;
         BlockRead(Self.f, StoredPathBin^, FileHeader.FileNameLength);
-        Utf8ToUnicode( PStoredPath, StoredPathBin, FileHeader.FileNameLength+1 );
+        StoredPath := StoredPathBin;
 
         FileHeader.Filename := StoredPath;
 
