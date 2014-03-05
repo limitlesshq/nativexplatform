@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -19,14 +19,17 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <MajorVersionNr Value="3"/>
-      <MinorVersionNr Value="3"/>
-      <StringTable CompanyName="AkeebaBackup.com" ProductVersion=""/>
+      <MinorVersionNr Value="4"/>
+      <StringTable CompanyName="Akeeba Ltd" ProductVersion=""/>
     </VersionInfo>
-    <BuildModes Count="7" Active="Default">
+    <BuildModes Count="7" Active="Mac Intel">
       <Item1 Name="Default" Default="True"/>
       <Item2 Name="Mac Intel">
+        <MacroValues Count="1">
+          <Macro1 Name="LCLWidgetType" Value="carbon"/>
+        </MacroValues>
         <CompilerOptions>
-          <Version Value="9"/>
+          <Version Value="11"/>
           <Target>
             <Filename Value="../../output/extract"/>
           </Target>
@@ -42,17 +45,17 @@
           </Parsing>
           <CodeGeneration>
             <SmartLinkUnit Value="True"/>
-            <SmallerCode Value="True"/>
-            <TargetProcessor Value="pentium4"/>
             <TargetCPU Value="i386"/>
             <TargetOS Value="darwin"/>
             <Optimizations>
-              <VariablesInRegisters Value="True"/>
               <OptimizationLevel Value="3"/>
+              <VariablesInRegisters Value="True"/>
             </Optimizations>
+            <SmallerCode Value="True"/>
           </CodeGeneration>
           <Linking>
             <Debugging>
+              <GenerateDebugInfo Value="False"/>
               <UseLineInfoUnit Value="False"/>
               <StripSymbols Value="True"/>
             </Debugging>
@@ -73,7 +76,7 @@
       </Item2>
       <Item3 Name="Mac PPC">
         <CompilerOptions>
-          <Version Value="9"/>
+          <Version Value="11"/>
           <Target>
             <Filename Value="../../output/extract"/>
           </Target>
@@ -110,7 +113,7 @@
       </Item3>
       <Item4 Name="Win32">
         <CompilerOptions>
-          <Version Value="9"/>
+          <Version Value="11"/>
           <Target>
             <Filename Value="../../output/extract"/>
           </Target>
@@ -118,7 +121,6 @@
             <IncludeFiles Value="$(ProjOutDir)"/>
             <OtherUnitFiles Value="../library/unarchivers;../library/win7"/>
             <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
-            <LCLWidgetType Value="win32"/>
           </SearchPaths>
           <Parsing>
             <SyntaxOptions>
@@ -127,17 +129,18 @@
           </Parsing>
           <CodeGeneration>
             <SmartLinkUnit Value="True"/>
-            <SmallerCode Value="True"/>
             <TargetProcessor Value="pentium4"/>
             <TargetCPU Value="i386"/>
             <TargetOS Value="win32"/>
             <Optimizations>
-              <VariablesInRegisters Value="True"/>
               <OptimizationLevel Value="3"/>
+              <VariablesInRegisters Value="True"/>
             </Optimizations>
+            <SmallerCode Value="True"/>
           </CodeGeneration>
           <Linking>
             <Debugging>
+              <GenerateDebugInfo Value="False"/>
               <UseLineInfoUnit Value="False"/>
               <StripSymbols Value="True"/>
             </Debugging>
@@ -158,7 +161,7 @@
       </Item4>
       <Item5 Name="Win64">
         <CompilerOptions>
-          <Version Value="9"/>
+          <Version Value="11"/>
           <Target>
             <Filename Value="../../output/extract"/>
           </Target>
@@ -174,17 +177,18 @@
           </Parsing>
           <CodeGeneration>
             <SmartLinkUnit Value="True"/>
-            <SmallerCode Value="True"/>
             <TargetProcessor Value="pentium4"/>
             <TargetCPU Value="x86_64"/>
             <TargetOS Value="win64"/>
             <Optimizations>
-              <VariablesInRegisters Value="True"/>
               <OptimizationLevel Value="3"/>
+              <VariablesInRegisters Value="True"/>
             </Optimizations>
+            <SmallerCode Value="True"/>
           </CodeGeneration>
           <Linking>
             <Debugging>
+              <GenerateDebugInfo Value="False"/>
               <UseLineInfoUnit Value="False"/>
               <StripSymbols Value="True"/>
             </Debugging>
@@ -205,7 +209,7 @@
       </Item5>
       <Item6 Name="Linux 32">
         <CompilerOptions>
-          <Version Value="9"/>
+          <Version Value="11"/>
           <Target>
             <Filename Value="../../output/extract"/>
           </Target>
@@ -221,17 +225,18 @@
           </Parsing>
           <CodeGeneration>
             <SmartLinkUnit Value="True"/>
-            <SmallerCode Value="True"/>
             <TargetProcessor Value="pentium4"/>
             <TargetCPU Value="i386"/>
             <TargetOS Value="linux"/>
             <Optimizations>
-              <VariablesInRegisters Value="True"/>
               <OptimizationLevel Value="3"/>
+              <VariablesInRegisters Value="True"/>
             </Optimizations>
+            <SmallerCode Value="True"/>
           </CodeGeneration>
           <Linking>
             <Debugging>
+              <GenerateDebugInfo Value="False"/>
               <UseLineInfoUnit Value="False"/>
               <StripSymbols Value="True"/>
             </Debugging>
@@ -252,7 +257,7 @@
       </Item6>
       <Item7 Name="Linux 64">
         <CompilerOptions>
-          <Version Value="9"/>
+          <Version Value="11"/>
           <Target>
             <Filename Value="../../output/extract"/>
           </Target>
@@ -268,17 +273,18 @@
           </Parsing>
           <CodeGeneration>
             <SmartLinkUnit Value="True"/>
-            <SmallerCode Value="True"/>
             <TargetProcessor Value="pentium4"/>
             <TargetCPU Value="x86_64"/>
             <TargetOS Value="linux"/>
             <Optimizations>
-              <VariablesInRegisters Value="True"/>
               <OptimizationLevel Value="3"/>
+              <VariablesInRegisters Value="True"/>
             </Optimizations>
+            <SmallerCode Value="True"/>
           </CodeGeneration>
           <Linking>
             <Debugging>
+              <GenerateDebugInfo Value="False"/>
               <UseLineInfoUnit Value="False"/>
               <StripSymbols Value="True"/>
             </Debugging>
@@ -297,6 +303,9 @@
           </Other>
         </CompilerOptions>
       </Item7>
+      <SharedMatrixOptions Count="1">
+        <Item1 ID="102609859880" Modes="Mac Intel" Type="IDEMacro" MacroName="LCLWidgetType" Value="carbon"/>
+      </SharedMatrixOptions>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
@@ -314,29 +323,32 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="18">
+    <Units Count="20">
       <Unit0>
         <Filename Value="extract.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="extract"/>
+        <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="58"/>
+        <CursorPos X="28" Y="21"/>
+        <UsageCount Value="59"/>
+        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit0>
       <Unit1>
         <Filename Value="main.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="FormMain"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="main"/>
         <IsVisibleTab Value="True"/>
-        <EditorIndex Value="0"/>
+        <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="177"/>
-        <CursorPos X="56" Y="189"/>
-        <UsageCount Value="58"/>
+        <TopLine Value="16"/>
+        <CursorPos X="46" Y="20"/>
+        <UsageCount Value="59"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
@@ -348,55 +360,47 @@
         <WindowIndex Value="0"/>
         <TopLine Value="305"/>
         <CursorPos X="1" Y="317"/>
-        <UsageCount Value="58"/>
+        <UsageCount Value="59"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit2>
       <Unit3>
         <Filename Value="../library/unarchivers/engineunjpa.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="engineunjpa"/>
-        <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
         <TopLine Value="100"/>
         <CursorPos X="29" Y="120"/>
-        <UsageCount Value="58"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="59"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit3>
       <Unit4>
         <Filename Value="../library/unarchivers/engineunjps.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="engineunjps"/>
-        <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
         <TopLine Value="278"/>
         <CursorPos X="89" Y="287"/>
-        <UsageCount Value="58"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="59"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit4>
       <Unit5>
         <Filename Value="../library/unarchivers/engineunzip.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="engineunzip"/>
-        <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
         <TopLine Value="297"/>
         <CursorPos X="43" Y="312"/>
-        <UsageCount Value="58"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="59"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit5>
       <Unit6>
         <Filename Value="../library/unarchivers/extractengineinterface.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="extractengineinterface"/>
-        <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
         <TopLine Value="9"/>
         <CursorPos X="25" Y="29"/>
-        <UsageCount Value="58"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="59"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit6>
       <Unit7>
@@ -492,132 +496,58 @@
         <CursorPos X="31" Y="293"/>
         <UsageCount Value="9"/>
       </Unit17>
+      <Unit18>
+        <Filename Value="/Developer/lazarus/lcl/forms.pp"/>
+        <UnitName Value="Forms"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1336"/>
+        <CursorPos X="25" Y="1366"/>
+        <UsageCount Value="10"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="/Developer/lazarus/ide/main.pp"/>
+        <UnitName Value="Main"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="12934"/>
+        <CursorPos X="52" Y="12953"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit19>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
+    <JumpHistory Count="7" HistoryIndex="6">
       <Position1>
-        <Filename Value="../library/unarchivers/engineunzip.pas"/>
-        <Caret Line="110" Column="1" TopLine="97"/>
+        <Filename Value="extract.lpr"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position1>
       <Position2>
-        <Filename Value="../library/unarchivers/engineunzip.pas"/>
-        <Caret Line="111" Column="1" TopLine="97"/>
+        <Filename Value="extract.lpr"/>
+        <Caret Line="21" Column="35" TopLine="1"/>
       </Position2>
       <Position3>
-        <Filename Value="../library/unarchivers/engineunzip.pas"/>
-        <Caret Line="112" Column="1" TopLine="97"/>
+        <Filename Value="extract.lpr"/>
+        <Caret Line="6" Column="8" TopLine="1"/>
       </Position3>
       <Position4>
-        <Filename Value="../library/unarchivers/engineunzip.pas"/>
-        <Caret Line="109" Column="1" TopLine="97"/>
+        <Filename Value="extract.lpr"/>
+        <Caret Line="21" Column="28" TopLine="1"/>
       </Position4>
       <Position5>
-        <Filename Value="../library/unarchivers/engineunzip.pas"/>
-        <Caret Line="110" Column="1" TopLine="97"/>
+        <Filename Value="/Developer/lazarus/ide/main.pp"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position5>
       <Position6>
-        <Filename Value="../library/unarchivers/engineunzip.pas"/>
-        <Caret Line="109" Column="44" TopLine="97"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="189" Column="56" TopLine="177"/>
       </Position6>
       <Position7>
-        <Filename Value="../library/unarchivers/engineunzip.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="16" Column="5" TopLine="1"/>
       </Position7>
-      <Position8>
-        <Filename Value="../library/unarchivers/engineunzip.pas"/>
-        <Caret Line="59" Column="41" TopLine="39"/>
-      </Position8>
-      <Position9>
-        <Filename Value="../library/unarchivers/engineunzip.pas"/>
-        <Caret Line="299" Column="87" TopLine="287"/>
-      </Position9>
-      <Position10>
-        <Filename Value="../library/unarchivers/engineunzip.pas"/>
-        <Caret Line="296" Column="1" TopLine="287"/>
-      </Position10>
-      <Position11>
-        <Filename Value="../library/unarchivers/engineunzip.pas"/>
-        <Caret Line="236" Column="30" TopLine="224"/>
-      </Position11>
-      <Position12>
-        <Filename Value="../library/unarchivers/engineunzip.pas"/>
-        <Caret Line="237" Column="1" TopLine="224"/>
-      </Position12>
-      <Position13>
-        <Filename Value="../library/unarchivers/engineunzip.pas"/>
-        <Caret Line="240" Column="1" TopLine="224"/>
-      </Position13>
-      <Position14>
-        <Filename Value="../library/unarchivers/engineunzip.pas"/>
-        <Caret Line="312" Column="1" TopLine="291"/>
-      </Position14>
-      <Position15>
-        <Filename Value="../library/unarchivers/engineunzip.pas"/>
-        <Caret Line="300" Column="1" TopLine="291"/>
-      </Position15>
-      <Position16>
-        <Filename Value="../library/unarchivers/engineunzip.pas"/>
-        <Caret Line="89" Column="20" TopLine="76"/>
-      </Position16>
-      <Position17>
-        <Filename Value="../library/unarchivers/engineunzip.pas"/>
-        <Caret Line="84" Column="23" TopLine="83"/>
-      </Position17>
-      <Position18>
-        <Filename Value="../library/unarchivers/engineunzip.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position18>
-      <Position19>
-        <Filename Value="../library/unarchivers/engineunzip.pas"/>
-        <Caret Line="59" Column="19" TopLine="39"/>
-      </Position19>
-      <Position20>
-        <Filename Value="../library/unarchivers/engineunzip.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position20>
-      <Position21>
-        <Filename Value="../library/unarchivers/engineunzip.pas"/>
-        <Caret Line="16" Column="28" TopLine="1"/>
-      </Position21>
-      <Position22>
-        <Filename Value="../library/unarchivers/engineunzip.pas"/>
-        <Caret Line="85" Column="23" TopLine="65"/>
-      </Position22>
-      <Position23>
-        <Filename Value="../library/unarchivers/engineunzip.pas"/>
-        <Caret Line="156" Column="37" TopLine="140"/>
-      </Position23>
-      <Position24>
-        <Filename Value="../library/unarchivers/engineunzip.pas"/>
-        <Caret Line="300" Column="19" TopLine="280"/>
-      </Position24>
-      <Position25>
-        <Filename Value="../library/unarchivers/engineunzip.pas"/>
-        <Caret Line="17" Column="25" TopLine="1"/>
-      </Position25>
-      <Position26>
-        <Filename Value="../library/unarchivers/engineunzip.pas"/>
-        <Caret Line="97" Column="39" TopLine="79"/>
-      </Position26>
-      <Position27>
-        <Filename Value="../library/unarchivers/engineunjps.pas"/>
-        <Caret Line="214" Column="12" TopLine="204"/>
-      </Position27>
-      <Position28>
-        <Filename Value="../library/unarchivers/engineunjps.pas"/>
-        <Caret Line="215" Column="16" TopLine="204"/>
-      </Position28>
-      <Position29>
-        <Filename Value="main.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position29>
-      <Position30>
-        <Filename Value="main.pas"/>
-        <Caret Line="33" Column="23" TopLine="21"/>
-      </Position30>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="9"/>
+    <Version Value="11"/>
     <Target>
       <Filename Value="../../output/extract"/>
     </Target>
@@ -633,7 +563,6 @@
     </Parsing>
     <CodeGeneration>
       <SmartLinkUnit Value="True"/>
-      <TargetProcessor Value="pentium4"/>
       <TargetCPU Value="i386"/>
       <TargetOS Value="darwin"/>
       <Optimizations>
@@ -642,7 +571,7 @@
     </CodeGeneration>
     <Linking>
       <Debugging>
-        <GenerateDebugInfo Value="True"/>
+        <DebugInfoType Value="dsStabs"/>
       </Debugging>
       <LinkSmart Value="True"/>
       <Options>
@@ -680,4 +609,5 @@
       </Item4>
     </Exceptions>
   </Debugging>
+  <EditorMacros Count="0"/>
 </CONFIG>
