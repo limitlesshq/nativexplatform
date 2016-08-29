@@ -1,9 +1,10 @@
 unit engineunjps;
 {<
  Native Archive Extraction libraries
- Copyright (c)2008-2010 Nicholas K. Dionysopoulos
+ Copyright (c)2008-2016 Nicholas K. Dionysopoulos
+ Licensed under the GNU General Public Licence version 3, or any later version published by the Free Software Foundation
 
- JPS extraction engine
+ JPS encrypted archive extraction
 }
 
 interface
@@ -601,4 +602,4 @@ begin
     Exit;
 end;
 
-end.
+end.

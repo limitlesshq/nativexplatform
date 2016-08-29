@@ -1,15 +1,15 @@
 object FormMain: TFormMain
   Cursor = crArrow
-  Left = 369
+  Left = 344
   Height = 316
-  Top = 201
+  Top = 231
   Width = 583
   BorderStyle = bsSingle
-  Caption = 'Akeeba eXtract Wizard 3.4'
+  Caption = 'Akeeba eXtract Wizard 3.5'
   ClientHeight = 316
   ClientWidth = 583
   Position = poDefaultPosOnly
-  LCLVersion = '1.2.0.3'
+  LCLVersion = '1.6.0.4'
   object groupOptions: TGroupBox
     Left = 8
     Height = 192
@@ -69,7 +69,7 @@ object FormMain: TFormMain
       Left = 212
       Height = 18
       Top = 94
-      Width = 137
+      Width = 132
       Caption = 'Ignore most errors'
       Checked = True
       State = cbChecked
@@ -79,7 +79,7 @@ object FormMain: TFormMain
       Left = 212
       Height = 18
       Top = 118
-      Width = 282
+      Width = 270
       Caption = 'Dry run (test without extracting anything)'
       TabOrder = 4
     end
@@ -877,7 +877,7 @@ object FormMain: TFormMain
     Height = 16
     Top = 295
     Width = 225
-    Caption = 'Copyright ©2008-2014 Akeeba Ltd'
+    Caption = 'Copyright ©2008-2016 Akeeba Ltd'
     Font.Color = clGrayText
     ParentColor = False
     ParentFont = False

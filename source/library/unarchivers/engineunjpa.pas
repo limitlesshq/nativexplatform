@@ -1,9 +1,10 @@
 unit engineunjpa;
 {<
  Native Archive Extraction libraries
- Copyright (c)2008-2009 Nicholas K. Dionysopoulos
+ Copyright (c)2008-2016 Nicholas K. Dionysopoulos
+ Licensed under the GNU General Public Licence version 3, or any later version published by the Free Software Foundation
 
- JPA extraction engine
+ JPA archive extraction
 }
 
 interface
@@ -614,4 +615,4 @@ IgnoredError:
     end;
 end;
 
-end.
+end.
