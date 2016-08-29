@@ -1,4 +1,5 @@
 /output/*
 /source/build/*
-/source/extract/backup/*
+/source/*/backup/*
+/source/library/*/backup/*
 /source/extract/lib/*
