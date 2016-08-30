@@ -1,6 +1,6 @@
 #define MyAppName "Akeeba eXtract Wizard"
-#define MyAppVerName "Akeeba eXtract Wizard 3.2"
-#define MyAppVersion "3.2"
+#define MyAppVerName "Akeeba eXtract Wizard 3.5"
+#define MyAppVersion "3.5"
 #define MyAppPublisher "Akeeba Developers"
 #define MyAppURL "http://www.akeebabackup.com/"
 
@@ -25,7 +25,7 @@ SolidCompression=true
 InternalCompressLevel=ultra
 VersionInfoVersion={#MyAppVersion}
 VersionInfoCompany={#MyAppPublisher}
-VersionInfoCopyright=Copyright (c) 2008-2011 Nicholas K. Dionysopoulos / {#MyAppPublisher}
+VersionInfoCopyright=Copyright (c) 2008-2016 Nicholas K. Dionysopoulos / {#MyAppPublisher}
 ShowLanguageDialog=no
 
 [Languages]
