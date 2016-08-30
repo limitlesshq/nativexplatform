@@ -15,7 +15,8 @@ uses {$IFDEF UNIX} {$IFDEF UseCThreads}
   engineunjpa,
   engineunjps,
   engineunzip,
-  extractengineinterface { you can add units after this };
+  extractengineinterface  { you can add units after this }
+  ;
 
 {$R *.res}
 

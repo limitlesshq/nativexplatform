@@ -11,8 +11,13 @@ interface
 
 uses
     Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-    EditBtn, ComCtrls, Buttons,
-    ExtractEngineInterface;
+    EditBtn, ComCtrls, Buttons, ExtractEngineInterface
+;
+
+{$IFDEF WINDOWS}
+type
+    TTaskBarProgressState = (tbpsNone, tbpsIndeterminate, tbpsNormal, tbpsError, tbpsPaused);
+{$ENDIF}
 
 type
 
@@ -43,6 +48,10 @@ type
         function guessArchiveType: TArchiveType;
         procedure MakeDirRecursive(Dir: String);
         function Last(What, Where: String): Integer;
+        {$IFDEF WINDOWS}
+        procedure SetProgressState(const AState: TTaskBarProgressState);
+        procedure SetProgressValue(const ACurrent, AMax: UInt64);
+        {$ENDIF}
     public
         { public declarations }
     end;
@@ -53,10 +62,57 @@ var
 implementation
 
 uses
-    EngineUnJPA, EngineUnZIP, EngineUnJPS, AkAESCTR,
-    LCLIntf;
+    EngineUnJPA, EngineUnZIP, EngineUnJPS, AkAESCTR, LCLIntf
+    {$IFDEF WINDOWS}
+    ,Windows, win32int, InterfaceBase, ComObj
+    {$ENDIF}
+    ;
 
 {$R *.lfm}
+
+{$IFDEF WINDOWS}
+const
+  TASKBAR_CID: TGUID = '{56FDF344-FD6D-11d0-958A-006097C9A090}';
+
+const
+  TBPF_NOPROGRESS = 0;
+  TBPF_INDETERMINATE = 1;
+  TBPF_NORMAL = 2;
+  TBPF_ERROR = 4;
+  TBPF_PAUSED = 8;
+
+type
+  { Definition for Windows 7 ITaskBarList3 }
+  ITaskBarList3 = interface(IUnknown)
+  ['{EA1AFB91-9E28-4B86-90E9-9E9F8A5EEFAF}']
+    procedure HrInit(); stdcall;
+    procedure AddTab(hwnd: THandle); stdcall;
+    procedure DeleteTab(hwnd: THandle); stdcall;
+    procedure ActivateTab(hwnd: THandle); stdcall;
+    procedure SetActiveAlt(hwnd: THandle); stdcall;
+
+    procedure MarkFullscreenWindow(hwnd: THandle; fFullscreen: Boolean); stdcall;
+
+    procedure SetProgressValue(hwnd: THandle; ullCompleted: UInt64; ullTotal: UInt64); stdcall;
+    procedure SetProgressState(hwnd: THandle; tbpFlags: Cardinal); stdcall;
+
+    procedure RegisterTab(hwnd: THandle; hwndMDI: THandle); stdcall;
+    procedure UnregisterTab(hwndTab: THandle); stdcall;
+    procedure SetTabOrder(hwndTab: THandle; hwndInsertBefore: THandle); stdcall;
+    procedure SetTabActive(hwndTab: THandle; hwndMDI: THandle; tbatFlags: Cardinal); stdcall;
+    procedure ThumbBarAddButtons(hwnd: THandle; cButtons: Cardinal; pButtons: Pointer); stdcall;
+    procedure ThumbBarUpdateButtons(hwnd: THandle; cButtons: Cardinal; pButtons: Pointer); stdcall;
+    procedure ThumbBarSetImageList(hwnd: THandle; himl: THandle); stdcall;
+    procedure SetOverlayIcon(hwnd: THandle; hIcon: THandle; pszDescription: PChar); stdcall;
+    procedure SetThumbnailTooltip(hwnd: THandle; pszDescription: PChar); stdcall;
+    procedure SetThumbnailClip(hwnd: THandle; var prcClip: TRect); stdcall;
+  end;
+
+var
+  { Global variable storing the COM interface }
+  GlobalTaskBarInterface: ITaskBarList3;
+
+{$ENDIF}
 
 const
     strPaypalURL: String =
@@ -80,7 +136,7 @@ begin
     Button1.Enabled   := False;
     chkDryRun.Enabled := False;
     chkIgnore.Enabled := False;
-    ;
+
     // Check if archive exists
     if not Self.ExistsAndIsReadable() then
     begin
@@ -177,6 +233,10 @@ begin
     end;
 
     // Update progress bar
+    {$IFDEF WINDOWS}
+    SetProgressState(tbpsNormal);
+    SetProgressValue(0, 100);
+    {$ENDIF}
     pbProgress.Max      := 100;
     pbProgress.Position := 0;
 
@@ -186,8 +246,13 @@ begin
         if Unarchiver.Progress.Status = jpesError then
         begin
             Application.ProcessMessages;
+            SetProgressState(tbpsError);
             MessageDlg(Unarchiver.Progress.ErrorMessage, mtWarning, [mbOK], 0);
+            SetProgressState(tbpsNone);
             pbProgress.Position := 0;
+            {$IFDEF WINDOWS}
+            SetProgressValue(0, 100);
+            {$ENDIF}
         end
         else
         begin
@@ -199,14 +264,28 @@ begin
             else if (PercentageDone > 100) then
                 PercentageDone  := 100;
             pbProgress.Position := PercentageDone;
+            {$IFDEF WINDOWS}
+            SetProgressValue(PercentageDone, 100);
+            {$ENDIF}
         end;
         Application.ProcessMessages;
     until (Unarchiver.Progress.Status <> jpesRunning);
 
     if (Unarchiver.Progress.Status = jpesFinished) then
+    begin
+        pbProgress.Position := 100;
+        {$IFDEF WINDOWS}
+        SetProgressValue(100, 100);
+        {$ENDIF}
         MessageDlg('Your archive was successfully extracted', mtInformation, [mbOK], 0);
+    end;
 
     pbProgress.Position := 0;
+    {$IFDEF WINDOWS}
+    SetProgressValue(0, 100);
+    SetProgressState(tbpsNone);
+    {$ENDIF}
+
     lblFilename.Caption := '';
 
     Button1.Enabled   := True;
@@ -293,5 +372,60 @@ begin
             Break;
         end;
 end;
+
+{$IFDEF WINDOWS}
+procedure TFormMain.SetProgressState(const AState: TTaskBarProgressState);
+const
+  Flags: array[TTaskBarProgressState] of Cardinal = (0, 1, 2, 4, 8);
+begin
+  if GlobalTaskBarInterface <> nil then
+    GlobalTaskBarInterface.SetProgressState(TWin32WidgetSet(WidgetSet).AppHandle, Flags[AState]);
+end;
+
+procedure TFormMain.SetProgressValue(const ACurrent, AMax: UInt64);
+begin
+  if GlobalTaskBarInterface <> nil then
+    GlobalTaskBarInterface.SetProgressValue(TWin32WidgetSet(WidgetSet).AppHandle, ACurrent, AMax);
+end;
+
+procedure InitializeAPI();
+var
+  Unk: IInterface;
+
+begin
+  { Make sure that COM is initialized }
+  CoInitializeEx(nil, 0);
+
+  try
+    { Obtain an IUnknown }
+    Unk := CreateComObject(TASKBAR_CID);
+
+    if Unk = nil then
+      Exit;
+
+    { Cast to the required interface }
+    GlobalTaskBarInterface := Unk as ITaskBarList3;
+
+    { Initialize }
+    GlobalTaskBarInterface.HrInit();
+  except
+    GlobalTaskBarInterface := nil;
+  end;
+end;
+{$ENDIF}
+
+initialization
+
+  {$IFDEF WINDOWS}
+  { Initialize the Windows 7 taskbar API }
+  InitializeAPI();
+  {$ENDIF}
+
+finalization
+
+  {$IFDEF WINDOWS}
+  { Force interface release }
+  GlobalTaskBarInterface := nil;
+  {$ENDIF}
 
 end.
