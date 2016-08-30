@@ -329,7 +329,7 @@ var
     PrevDir: String;
     Ind: Integer;
 begin
-{$IFDEF WIN32}
+{$IFDEF WINDOWS}
     // Fix paths not begining with a drive letter or UNC path
     if Copy(Dir, 2, 1) <> ':' then
         if (Copy(Dir, 3, 1) <> '\') and not (Copy(Dir, 1, 2) = '\\') then
