@@ -16,21 +16,21 @@ object FormMain: TFormMain
     Top = 8
     Width = 568
     Caption = 'Extraction Options'
-    ClientHeight = 170
-    ClientWidth = 560
+    ClientHeight = 172
+    ClientWidth = 564
     TabOrder = 0
     object Label1: TLabel
       Left = 4
-      Height = 16
+      Height = 15
       Top = 11
-      Width = 70
+      Width = 59
       Caption = '&Archive file'
       FocusControl = edArchiveName
       ParentColor = False
     end
     object edArchiveName: TFileNameEdit
       Left = 212
-      Height = 22
+      Height = 23
       Top = 6
       Width = 320
       OnAcceptFileName = edArchiveNameAcceptFileName
@@ -46,16 +46,16 @@ object FormMain: TFormMain
     end
     object Label2: TLabel
       Left = 4
-      Height = 16
+      Height = 15
       Top = 38
-      Width = 102
+      Width = 83
       Caption = 'Extract to &folder'
       FocusControl = edFolderName
       ParentColor = False
     end
     object edFolderName: TDirectoryEdit
       Left = 212
-      Height = 22
+      Height = 23
       Top = 33
       Width = 320
       DialogTitle = 'Select the folder to extract the archive to'
@@ -67,9 +67,9 @@ object FormMain: TFormMain
     end
     object chkIgnore: TCheckBox
       Left = 212
-      Height = 18
+      Height = 19
       Top = 94
-      Width = 132
+      Width = 117
       Caption = 'Ignore most errors'
       Checked = True
       State = cbChecked
@@ -77,9 +77,9 @@ object FormMain: TFormMain
     end
     object chkDryRun: TCheckBox
       Left = 212
-      Height = 18
+      Height = 19
       Top = 118
-      Width = 270
+      Width = 238
       Caption = 'Dry run (test without extracting anything)'
       TabOrder = 4
     end
@@ -94,16 +94,16 @@ object FormMain: TFormMain
     end
     object Label3: TLabel
       Left = 4
-      Height = 16
+      Height = 15
       Top = 67
-      Width = 159
+      Width = 134
       Caption = '&Password for JPS archives'
       FocusControl = edFolderName
       ParentColor = False
     end
     object edPassword: TEdit
       Left = 212
-      Height = 22
+      Height = 23
       Top = 62
       Width = 163
       EchoMode = emPassword
@@ -840,7 +840,6 @@ object FormMain: TFormMain
       Layout = blGlyphTop
       OnClick = BitBtn1Click
       TabOrder = 6
-      Visible = False
     end
   end
   object groupProgress: TGroupBox
@@ -849,8 +848,8 @@ object FormMain: TFormMain
     Top = 208
     Width = 568
     Caption = 'Extraction Progress'
-    ClientHeight = 58
-    ClientWidth = 560
+    ClientHeight = 60
+    ClientWidth = 564
     TabOrder = 1
     object pbProgress: TProgressBar
       Left = 4
@@ -874,9 +873,9 @@ object FormMain: TFormMain
   end
   object Label4: TLabel
     Left = 8
-    Height = 16
+    Height = 15
     Top = 295
-    Width = 225
+    Width = 182
     Caption = 'Copyright ©2008-2016 Akeeba Ltd'
     Font.Color = clGrayText
     ParentColor = False
