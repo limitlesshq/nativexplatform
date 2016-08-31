@@ -3461,15 +3461,36 @@ end;
 
 function TAkeebaAES.AESDecryptCBC(sFrom: TStream): TMemoryStream;
 var
-  EncSize, DataLen: integer;
+  DataLen: integer;
+  ivSignature: array[0..3] of AnsiChar;
+  truncateBytes: integer;
+  iv: TAESBuffer;
 begin
+  DataLen:=0;
+
   // Get the data length
   sFrom.Seek(-4, soFromEnd);
   sFrom.Read(DataLen, 4);
 
+  // Default IV: the legacy, insecure one
+  truncateBytes := 4;
+  iv := Self.iv;
+
+  // Do I have an IV stored in the block?
+  sFrom.seek(-24, soFromEnd);
+  sFrom.Read(ivSignature, 4);
+
+  if (ivSignature = 'JPIV') then
+  begin
+    // Size (4 bytes) + IV signature (4 bytes) + IV (16 bytes)
+    truncateBytes := 24;
+    sFrom.seek(-20, soFromEnd);
+    sFrom.Read(iv, 16);
+  end;
+
   sFrom.seek(0, soFromBeginning);
   Result := TMemoryStream.Create;
-  DecryptAESStreamCBC(sFrom, sFrom.Size - 4, Self.cbckey, Self.iv, Result);
+  DecryptAESStreamCBC(sFrom, sFrom.Size - truncateBytes, Self.cbckey, iv, Result);
   Result.Seek(0, soFromBeginning);
   Result.SetSize(DataLen);
 end;

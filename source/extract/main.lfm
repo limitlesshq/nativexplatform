@@ -1,8 +1,8 @@
 object FormMain: TFormMain
   Cursor = crArrow
-  Left = 344
+  Left = 345
   Height = 316
-  Top = 231
+  Top = 232
   Width = 583
   BorderStyle = bsSingle
   Caption = 'Akeeba eXtract Wizard 3.5'
