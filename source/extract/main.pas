@@ -246,12 +246,14 @@ begin
         if Unarchiver.Progress.Status = jpesError then
         begin
             Application.ProcessMessages;
+            {$IFDEF WINDOWS}
             SetProgressState(tbpsError);
+            {$ENDIF}
             MessageDlg(Unarchiver.Progress.ErrorMessage, mtWarning, [mbOK], 0);
-            SetProgressState(tbpsNone);
             pbProgress.Position := 0;
             {$IFDEF WINDOWS}
             SetProgressValue(0, 100);
+            SetProgressState(tbpsNone);
             {$ENDIF}
         end
         else
