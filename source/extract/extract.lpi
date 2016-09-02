@@ -21,7 +21,7 @@
       <MinorVersionNr Value="5"/>
       <StringTable CompanyName="Akeeba Ltd" ProductVersion=""/>
     </VersionInfo>
-    <BuildModes Count="8" Active="Win32">
+    <BuildModes Count="8" Active="Mac Intel">
       <Item1 Name="Default" Default="True"/>
       <Item2 Name="Mac Intel">
         <MacroValues Count="1">
@@ -44,6 +44,7 @@
           </Parsing>
           <CodeGeneration>
             <SmartLinkUnit Value="True"/>
+            <TargetProcessor Value="pentiumm"/>
             <TargetCPU Value="i386"/>
             <TargetOS Value="darwin"/>
             <Optimizations>
@@ -243,7 +244,6 @@
           </Parsing>
           <CodeGeneration>
             <SmartLinkUnit Value="True"/>
-            <TargetProcessor Value="pentium4"/>
             <TargetCPU Value="x86_64"/>
             <TargetOS Value="linux"/>
             <Optimizations>
@@ -329,7 +329,7 @@
       <Unit0>
         <Filename Value="extract.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="4"/>
         <CursorPos Y="14"/>
         <UsageCount Value="140"/>
         <Loaded Value="True"/>
@@ -400,7 +400,7 @@
         <UnitName Value="LCLType"/>
         <TopLine Value="2899"/>
         <CursorPos Y="2911"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit7>
       <Unit8>
@@ -414,46 +414,46 @@
         <Filename Value="../library/win7/dwTaskbarComponents.pas"/>
         <TopLine Value="8"/>
         <CursorPos X="3" Y="18"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit9>
       <Unit10>
-        <Filename Value="../../../../../../../lazarus/lcl/controls.pp"/>
+        <Filename Value="/lazarus/lcl/controls.pp"/>
         <UnitName Value="Controls"/>
         <TopLine Value="2341"/>
         <CursorPos X="13" Y="2349"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit10>
       <Unit11>
-        <Filename Value="../../../../../../../lazarus/lcl/lcltype.pp"/>
+        <Filename Value="/lazarus/lcl/lcltype.pp"/>
         <UnitName Value="LCLType"/>
         <TopLine Value="2545"/>
         <CursorPos X="3" Y="2555"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit11>
       <Unit12>
-        <Filename Value="../../../../../../../lazarus/lcl/comctrls.pp"/>
+        <Filename Value="/lazarus/lcl/comctrls.pp"/>
         <UnitName Value="ComCtrls"/>
         <TopLine Value="2344"/>
         <CursorPos X="12" Y="2359"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit12>
       <Unit13>
-        <Filename Value="../../../../../../../lazarus/lcl/forms.pp"/>
+        <Filename Value="/lazarus/lcl/forms.pp"/>
         <UnitName Value="Forms"/>
         <TopLine Value="1913"/>
         <CursorPos X="36" Y="1930"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit13>
       <Unit14>
-        <Filename Value="../../../../../../../lazarus/fpc/2.4.2/source/rtl/objpas/sysutils/sysutilh.inc"/>
+        <Filename Value="/lazarus/fpc/2.4.2/source/rtl/objpas/sysutils/sysutilh.inc"/>
         <TopLine Value="62"/>
         <CursorPos X="19" Y="72"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit14>
       <Unit15>
@@ -496,7 +496,7 @@
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit19>
       <Unit20>
-        <Filename Value="../../../../../../../lazarus/fpc/3.0.0/source/rtl/objpas/objpas.pp"/>
+        <Filename Value="/lazarus/fpc/3.0.0/source/rtl/objpas/objpas.pp"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="86"/>
         <CursorPos X="79" Y="101"/>
@@ -511,13 +511,13 @@
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit21>
       <Unit22>
-        <Filename Value="../../../../../../../lazarus/fpc/3.0.0/source/rtl/win64/windows.pp"/>
+        <Filename Value="/lazarus/fpc/3.0.0/source/rtl/win64/windows.pp"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="35"/>
         <UsageCount Value="6"/>
       </Unit22>
       <Unit23>
-        <Filename Value="../../../../../../../lazarus/components/lazutils/fileutil.pas"/>
+        <Filename Value="/lazarus/components/lazutils/fileutil.pas"/>
         <UnitName Value="FileUtil"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="58"/>
@@ -525,7 +525,7 @@
         <UsageCount Value="6"/>
       </Unit23>
       <Unit24>
-        <Filename Value="../../../../../../../lazarus/fpc/3.0.0/source/packages/winunits-base/src/activex.pp"/>
+        <Filename Value="/lazarus/fpc/3.0.0/source/packages/winunits-base/src/activex.pp"/>
         <UnitName Value="ActiveX"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="4457"/>
@@ -533,12 +533,11 @@
         <UsageCount Value="6"/>
       </Unit24>
       <Unit25>
-        <Filename Value="../../../../../../../lazarus/fpc/3.0.0/source/packages/winunits-base/src/comobj.pp"/>
-        <EditorIndex Value="4"/>
+        <Filename Value="/lazarus/fpc/3.0.0/source/packages/winunits-base/src/comobj.pp"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="1836"/>
         <CursorPos X="24" Y="1850"/>
         <UsageCount Value="25"/>
-        <Loaded Value="True"/>
       </Unit25>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
