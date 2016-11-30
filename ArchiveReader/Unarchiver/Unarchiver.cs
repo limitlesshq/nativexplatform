@@ -13,35 +13,29 @@ namespace Akeeba.Unarchiver
     /// </summary>
     abstract class Unarchiver
     {
+        #region Protected Properties
         /// <summary>
         /// The supported file extension of this unarchiver, e.g. "jpa". Must be set in the constructor or the class declaration.
         /// </summary>
         protected readonly string supportedExtension;
 
         /// <summary>
-        /// Currently open input file stream
-        /// </summary>
-        protected FileStream propInputFile = null;
-
-        /// <summary>
         /// The part number we are reading from
         /// </summary>
-        protected int? currentPartNumber = null;
+        protected int? currentPartNumber = null; 
+        #endregion
 
+        #region Public Properties
         /// <summary>
         /// Absolute path to the archive file
         /// </summary>
         private string propArchivePath = "";
 
         /// <summary>
-        /// Number of total archive parts, including the final part (.jpa, .jps or .zip extension)
-        /// </summary>
-        private int? propParts = null;
-
-        /// <summary>
         /// The absolute path to the archive file. Always assign the last part of a multipart archive (.jpa, .jps or .zip).
         /// </summary>
-        public string archivePath {
+        public string archivePath
+        {
             get
             {
                 return propArchivePath;
@@ -66,6 +60,11 @@ namespace Akeeba.Unarchiver
         }
 
         /// <summary>
+        /// Number of total archive parts, including the final part (.jpa, .jps or .zip extension)
+        /// </summary>
+        private int? propParts = null;
+
+        /// <summary>
         /// Total number of archive parts
         /// </summary>
         public int parts
@@ -84,9 +83,14 @@ namespace Akeeba.Unarchiver
                     }
                 }
 
-                return (int) propParts;
+                return (int)propParts;
             }
         }
+
+        /// <summary>
+        /// Currently open input file stream
+        /// </summary>
+        protected FileStream propInputFile = null;
 
         /// <summary>
         /// Returns the input file stream, or Nothing if we're at the EOF of the last part
@@ -95,7 +99,7 @@ namespace Akeeba.Unarchiver
         {
             get
             {
-                if (propInputFile == null )
+                if (propInputFile == null)
                 {
                     /**
                      * No currently open file. Try to open the current part number. If it's null we open the first part. If it's out of
@@ -110,7 +114,7 @@ namespace Akeeba.Unarchiver
                         throw new IndexOutOfRangeException();
                     }
 
-                    propInputFile = new FileStream(getPartFilename((int) currentPartNumber), FileMode.Open);
+                    propInputFile = new FileStream(getPartFilename((int)currentPartNumber), FileMode.Open);
                 }
                 else if (propInputFile.Position >= propInputFile.Length)
                 {
@@ -127,7 +131,9 @@ namespace Akeeba.Unarchiver
                 return propInputFile;
             }
         }
+        #endregion
 
+        #region Constructors
         /// <summary>
         /// Public constructor with an archive argument
         /// </summary>
@@ -153,9 +159,11 @@ namespace Akeeba.Unarchiver
             }
 
             // Use the System.Activator to spin up the object, passing the filePath as the constructor argument
-            return (Unarchiver) Activator.CreateInstance(classType, filePath);
+            return (Unarchiver)Activator.CreateInstance(classType, filePath);
         }
+        #endregion
 
+        #region Events
         /// <summary>
         /// Event delegate for the archiveInformation event
         /// </summary>
@@ -248,7 +256,9 @@ namespace Akeeba.Unarchiver
                 handler(this, e);
             }
         }
+        #endregion
 
+        #region Protected Methods
         /// <summary>
         /// Discovers the number of total parts in this archive set. All parts must live in the same filesystem location.
         /// </summary>
@@ -275,7 +285,7 @@ namespace Akeeba.Unarchiver
                 propParts += 1;
                 partNumber += 1;
 
-                strNewFile = Path.ChangeExtension(propArchivePath, strExtension.Substring(0,1) + string.Format("{0:00}", partNumber));
+                strNewFile = Path.ChangeExtension(propArchivePath, strExtension.Substring(0, 1) + string.Format("{0:00}", partNumber));
             } while (File.Exists(strNewFile));
         }
 
@@ -327,8 +337,10 @@ namespace Akeeba.Unarchiver
             currentPartNumber = partNumber;
 
             return inputFile;
-        }
+        } 
+        #endregion
 
+        #region Binary File Access
         /// <summary>
         /// Reads a UTF-8 encoded string off the archive
         /// </summary>
@@ -375,7 +387,7 @@ namespace Akeeba.Unarchiver
 
             return BitConverter.ToInt16(buffer, 0);
         }
-       
+
         /// <summary>
         /// Reads a signed long integer from the archive
         /// </summary>
@@ -395,7 +407,7 @@ namespace Akeeba.Unarchiver
         {
             byte[] buffer = readBytes(1);
 
-            return (buffer[0] > 127) ? (sbyte)(256 - buffer[0]) : (sbyte) buffer[0];
+            return (buffer[0] > 127) ? (sbyte)(256 - buffer[0]) : (sbyte)buffer[0];
         }
 
         /// <summary>
@@ -513,6 +525,7 @@ namespace Akeeba.Unarchiver
 
             // The position adjustment was for more bytes than what we had in the previous part. We need to seek to the remainder.
             skipBytes(len - bytesLeft);
-        }
+        } 
+        #endregion
     }
 }
