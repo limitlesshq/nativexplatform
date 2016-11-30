@@ -45,11 +45,20 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Unarchiver\AbstractUnarchiver.cs" />
-    <Compile Include="Unarchiver\InvalidExtensionException.cs" />
+    <Compile Include="Unarchiver\Unarchiver.cs" />
+    <Compile Include="Unarchiver\CustomTypes.cs" />
+    <Compile Include="Unarchiver\EventArgs\EntityEventArgs.cs" />
+    <Compile Include="Unarchiver\EventArgs\ProgressEventArgs.cs" />
+    <Compile Include="Unarchiver\EventArgs\ArchiveInformationEventArgs.cs" />
+    <Compile Include="Unarchiver\Exception\InvalidHeaderException.cs" />
+    <Compile Include="Unarchiver\Exception\InvalidArchiveException.cs" />
+    <Compile Include="Unarchiver\Exception\InvalidExtensionException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Unarchiver\Unarchiver\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

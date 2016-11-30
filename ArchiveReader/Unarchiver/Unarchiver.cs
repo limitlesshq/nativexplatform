@@ -144,7 +144,7 @@ namespace Akeeba.Unarchiver
         /// <returns></returns>
         public static Unarchiver createFor(string filePath)
         {
-            string strClassName = "Akeeba.Unarchiver." + Path.GetExtension(filePath).ToUpper();
+            string strClassName = "Akeeba.Unarchiver.Exception." + Path.GetExtension(filePath).ToUpper();
             Type classType = Type.GetType(strClassName);
 
             if (classType == null)
@@ -169,6 +169,25 @@ namespace Akeeba.Unarchiver
         public event ArchiveInformationEventHandler archiveInformationEvent;
 
         /// <summary>
+        /// Wraps the archiveInformationEvent invocation inside a protected virtual method to let derived classes override it.
+        /// This method guards against the possibility of a race condition if the last subscriber unsubscribes immediately
+        /// after the null check and before the event is raised. So please don't simplify the invocation even if Visual Studio
+        /// tells you to.
+        /// </summary>
+        /// <param name="e">Event arguments</param>
+        protected virtual void onArchiveInformationEvent(ArchiveInformationEventArgs e)
+        {
+            ArchiveInformationEventHandler handler = archiveInformationEvent;
+
+            // Event will be null if there are no subscribers
+            if (handler != null)
+            {
+                // Use the () operator to raise the event.
+                handler(this, e);
+            }
+        }
+
+        /// <summary>
         /// Event delegate for the entity event
         /// </summary>
         /// <param name="sender">Event sender</param>
@@ -181,6 +200,25 @@ namespace Akeeba.Unarchiver
         public event EntityEventHandler entityEvent;
 
         /// <summary>
+        /// Wraps the entityEvent invocation inside a protected virtual method to let derived classes override it.
+        /// This method guards against the possibility of a race condition if the last subscriber unsubscribes immediately
+        /// after the null check and before the event is raised. So please don't simplify the invocation even if Visual Studio
+        /// tells you to.
+        /// </summary>
+        /// <param name="e">Event arguments</param>
+        protected virtual void onEntityEvent(EntityEventArgs e)
+        {
+            EntityEventHandler handler = entityEvent;
+
+            // Event will be null if there are no subscribers
+            if (handler != null)
+            {
+                // Use the () operator to raise the event.
+                handler(this, e);
+            }
+        }
+
+        /// <summary>
         /// Event delegate for the progress event
         /// </summary>
         /// <param name="sender">Event sender</param>
@@ -191,6 +229,25 @@ namespace Akeeba.Unarchiver
         /// Event raised when there is archive extraction progress (after an entity is extracted, end of archive and catchable error conditions)
         /// </summary>
         public event ProgressEventHandler progressEvent;
+
+        /// <summary>
+        /// Wraps the progressEvent invocation inside a protected virtual method to let derived classes override it.
+        /// This method guards against the possibility of a race condition if the last subscriber unsubscribes immediately
+        /// after the null check and before the event is raised. So please don't simplify the invocation even if Visual Studio
+        /// tells you to.
+        /// </summary>
+        /// <param name="e">Event arguments</param>
+        protected virtual void onProgressEvent(ProgressEventArgs e)
+        {
+            ProgressEventHandler handler = progressEvent;
+
+            // Event will be null if there are no subscribers
+            if (handler != null)
+            {
+                // Use the () operator to raise the event.
+                handler(this, e);
+            }
+        }
 
         /// <summary>
         /// Discovers the number of total parts in this archive set. All parts must live in the same filesystem location.
