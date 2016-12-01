@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -45,6 +45,9 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Unarchiver\DataWriter\DirectFileWriter.cs" />
+    <Compile Include="Unarchiver\misc.cs" />
+    <Compile Include="Unarchiver\DataWriter\IDataWriter.cs" />
     <Compile Include="Unarchiver\Unarchiver.cs" />
     <Compile Include="Unarchiver\CustomTypes.cs" />
     <Compile Include="Unarchiver\EventArgs\EntityEventArgs.cs" />
@@ -53,13 +56,12 @@
     <Compile Include="Unarchiver\Exception\InvalidHeaderException.cs" />
     <Compile Include="Unarchiver\Exception\InvalidArchiveException.cs" />
     <Compile Include="Unarchiver\Exception\InvalidExtensionException.cs" />
+    <Compile Include="Unarchiver\Format\JPA.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Unarchiver\Unarchiver\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
