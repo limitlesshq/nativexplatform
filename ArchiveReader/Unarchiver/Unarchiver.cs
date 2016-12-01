@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using Akeeba.Unarchiver.EventArgs;
+using Akeeba.Unarchiver.DataWriter;
 
 namespace Akeeba.Unarchiver
 {
@@ -131,6 +132,26 @@ namespace Akeeba.Unarchiver
                 return propInputFile;
             }
         }
+
+        /// <summary>
+        /// The DataWriter used when extracting a backup archive
+        /// </summary>
+        protected IDataWriter _dataWriter;
+
+        /// <summary>
+        /// The DataWriter for extracting a backup archive
+        /// </summary>
+        public IDataWriter dataWriter
+        {
+            get
+            {
+                return _dataWriter;
+            }
+            set
+            {
+                _dataWriter = value;
+            }
+        }
         #endregion
 
         #region Constructors
@@ -150,7 +171,7 @@ namespace Akeeba.Unarchiver
         /// <returns></returns>
         public static Unarchiver createFor(string filePath)
         {
-            string strClassName = "Akeeba.Unarchiver.Exception." + Path.GetExtension(filePath).ToUpper();
+            string strClassName = "Akeeba.Unarchiver.Format." + Path.GetExtension(filePath).ToUpper();
             Type classType = Type.GetType(strClassName);
 
             if (classType == null)
@@ -525,7 +546,34 @@ namespace Akeeba.Unarchiver
 
             // The position adjustment was for more bytes than what we had in the previous part. We need to seek to the remainder.
             skipBytes(len - bytesLeft);
-        } 
+        }
+        #endregion
+
+        #region Public Methods
+        /// <summary>
+        /// Extracts a backup archive.  A DataWriter must be already assigned and configured or an exception will be raised.
+        /// </summary>
+        public abstract void extract();
+
+        /// <summary>
+        /// Extracts a backup archive using the specified data writer.
+        /// </summary>
+        /// <param name="dataWriterObject"></param>
+        public void extract(IDataWriter dataWriterObject)
+        {
+            dataWriter = dataWriterObject;
+
+            extract();
+        }
+
+        // TODO extract(string destinationPath) // Create a DirectFileWrite data writer and extract the archive
+
+        // TODO scan() // Go through the archive's contents without extracting data
+
+        // TODO test() // Test the archive by using the NullWrite data writer which doesn't create any files / folders
+
+        // TODO Write an adapter which uses the Unarchiver events and the scan() method to produce a file listing
+     
         #endregion
     }
 }
