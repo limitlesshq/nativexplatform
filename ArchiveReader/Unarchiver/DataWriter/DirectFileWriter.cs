@@ -12,6 +12,9 @@ using System.Runtime.InteropServices;
 
 namespace Akeeba.Unarchiver.DataWriter
 {
+    /// <summary>
+    /// Handles direct writing to files.
+    /// </summary>
     class DirectFileWriter: IDataWriter
     {
 #region Properties

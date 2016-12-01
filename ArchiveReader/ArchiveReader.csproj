@@ -45,8 +45,8 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Unarchiver\DataWriter\NullWriter.cs" />
     <Compile Include="Unarchiver\DataWriter\DirectFileWriter.cs" />
-    <Compile Include="Unarchiver\misc.cs" />
     <Compile Include="Unarchiver\DataWriter\IDataWriter.cs" />
     <Compile Include="Unarchiver\Unarchiver.cs" />
     <Compile Include="Unarchiver\CustomTypes.cs" />
