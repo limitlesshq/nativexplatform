@@ -23,7 +23,12 @@ namespace Akeeba.Unarchiver
         /// <summary>
         /// The part number we are reading from
         /// </summary>
-        protected int? currentPartNumber = null; 
+        protected int? currentPartNumber = null;
+
+        /// <summary>
+        /// The current extraction progress
+        /// </summary>
+        protected extractionProgress progress = new extractionProgress();
         #endregion
 
         #region Public Properties
@@ -109,6 +114,7 @@ namespace Akeeba.Unarchiver
                     if (!currentPartNumber.HasValue)
                     {
                         currentPartNumber = 1;
+                        progress.filePosition = 0;
                     }
                     else if ((currentPartNumber <= 0) || (currentPartNumber > parts))
                     {
@@ -162,6 +168,11 @@ namespace Akeeba.Unarchiver
         public Unarchiver(string filePath)
         {
             archivePath = filePath;
+
+            progress.status = extractionStatus.idle;
+            progress.filePosition = 0;
+            progress.runningCompressed = 0;
+            progress.runningUncompressed = 0;
         }
 
         /// <summary>
@@ -566,11 +577,38 @@ namespace Akeeba.Unarchiver
             extract();
         }
 
-        // TODO extract(string destinationPath) // Create a DirectFileWrite data writer and extract the archive
+        /// <summary>
+        /// Extract the backup archive to the specified filesystem path using direct file writes
+        /// </summary>
+        /// <param name="destinationPath">The path where the archive will be extracted to</param>
+        public void extract(string destinationPath)
+        {
+            IDataWriter myDataWriter = new DirectFileWriter(destinationPath);
 
-        // TODO scan() // Go through the archive's contents without extracting data
+            extract(myDataWriter);
+        }
 
-        // TODO test() // Test the archive by using the NullWrite data writer which doesn't create any files / folders
+        /// <summary>
+        /// Go through the archive's contents without extracting data. You can use the fired events to get information about the
+        /// entities contained in the archive.
+        /// </summary>
+        public void scan()
+        {
+            // Setting the data writer to null is detected by the unarchivers, forcing them to skip over the data sections.
+            _dataWriter = null;
+
+            extract();
+        }
+
+        /// <summary>
+        /// Test the archive by using the NullWrite data writer which doesn't create any files / folders
+        /// </summary>
+        public void test()
+        {
+            IDataWriter myDataWriter = new NullWriter();
+
+            extract(myDataWriter);
+        }
 
         // TODO Write an adapter which uses the Unarchiver events and the scan() method to produce a file listing
      
