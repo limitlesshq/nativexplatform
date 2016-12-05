@@ -45,5 +45,12 @@ namespace Akeeba.Unarchiver.DataWriter
         /// <param name="target">The link target</param>
         /// <param name="source">The created symlink</param>
         void makeSymlink(string target, string source);
+
+        /// <summary>
+        /// Returns the absolute filesystem path. If the data writer is not writing to local files return an empty string.
+        /// </summary>
+        /// <param name="relativeFilePath">Relative path of the file inside the archive, using forward slash as the path separator</param>
+        /// <returns></returns>
+        string getAbsoluteFilePath(string relativeFilePath);
     }
 }

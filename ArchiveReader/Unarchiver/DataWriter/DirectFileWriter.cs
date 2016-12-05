@@ -83,11 +83,7 @@ namespace Akeeba.Unarchiver.DataWriter
                 outStream.Close();
             }
 
-            StringBuilder sb = new StringBuilder(rootDirectory);
-            sb.Append(Path.DirectorySeparatorChar);
-            sb.Append(relativePathName);
-
-            outStream = new FileStream(sb.ToString(), FileMode.Create);
+            outStream = new FileStream(getAbsoluteFilePath(relativePathName), FileMode.Create);
         }
 
         /// <summary>
@@ -125,7 +121,7 @@ namespace Akeeba.Unarchiver.DataWriter
         /// <param name="buffer">The stream containing the data to write</param>
         public void writeData(Stream buffer)
         {
-            buffer.CopyTo(outStream);
+            buffer.CopyTo(outStream, 1048576);
         }
 
         #if WINDOWS
@@ -165,6 +161,20 @@ namespace Akeeba.Unarchiver.DataWriter
             // Read the output stream first and then wait.
             string output = p.StandardOutput.ReadToEnd();
 #endif
+        }
+
+        /// <summary>
+        /// Returns the absolute filesystem path. If the data writer is not writing to local files return an empty string.
+        /// </summary>
+        /// <param name="relativeFilePath">Relative path of the file inside the archive, using forward slash as the path separator</param>
+        /// <returns></returns>
+        public string getAbsoluteFilePath(string relativeFilePath)
+        {
+            StringBuilder sb = new StringBuilder(rootDirectory);
+            sb.Append(Path.DirectorySeparatorChar);
+            sb.Append(relativeFilePath);
+
+            return sb.ToString();
         }
 
         #endregion

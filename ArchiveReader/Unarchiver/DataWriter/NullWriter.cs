@@ -36,5 +36,9 @@ namespace Akeeba.Unarchiver.DataWriter
         {
         }
 
+        public string getAbsoluteFilePath(string relativeFilePath)
+        {
+            return "";
+        }
     }
 }
