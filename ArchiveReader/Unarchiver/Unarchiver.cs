@@ -97,12 +97,12 @@ namespace Akeeba.Unarchiver
         /// <summary>
         /// Currently open input file stream
         /// </summary>
-        protected FileStream propInputFile = null;
+        protected Stream propInputFile = null;
 
         /// <summary>
         /// Returns the input file stream, or Nothing if we're at the EOF of the last part
         /// </summary>
-        protected FileStream inputFile
+        protected Stream inputFile
         {
             get
             {
@@ -401,7 +401,7 @@ namespace Akeeba.Unarchiver
 
             currentPartNumber = partNumber;
 
-            return inputFile;
+            return (FileStream)inputFile;
         } 
         #endregion
 
