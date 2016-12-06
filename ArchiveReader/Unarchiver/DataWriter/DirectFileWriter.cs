@@ -15,7 +15,7 @@ namespace Akeeba.Unarchiver.DataWriter
     /// <summary>
     /// Handles direct writing to files.
     /// </summary>
-    class DirectFileWriter: IDataWriter
+    class DirectFileWriter: IDataWriter, IDisposable
     {
 #region Properties
         /// <summary>
@@ -124,13 +124,6 @@ namespace Akeeba.Unarchiver.DataWriter
             buffer.CopyTo(outStream, 1048576);
         }
 
-        #if WINDOWS
-        [DllImport("kernel32.dll")]
-        static extern bool CreateSymbolicLink(string lpSymlinkFileName, string lpTargetFileName, int dwFlags);
-
-        static int SYMLINK_FLAG_DIRECTORY = 1;
-        #endif
-
         /// <summary>
         /// Creates a symlink
         /// </summary>
@@ -140,8 +133,8 @@ namespace Akeeba.Unarchiver.DataWriter
         {
             #if WINDOWS
             // Windows: we use CreateSymbolicLink from kernel32.dll
-            int flag = Directory.Exists(target) ? SYMLINK_FLAG_DIRECTORY : 0;
-            CreateSymbolicLink(source, target, flag);
+            int flag = Directory.Exists(target) ? UnsafeNativeMethods.SYMLINK_FLAG_DIRECTORY : 0;
+            UnsafeNativeMethods.CreateSymbolicLink(source, target, flag);
             #else
             // Linux, macOS: we run the ln command directly
             Process p = new Process();
@@ -179,5 +172,57 @@ namespace Akeeba.Unarchiver.DataWriter
 
         #endregion
 
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // Dispose managed state (managed objects).
+                    if ((outStream != null) && (outStream is IDisposable))
+                    {
+                        outStream.Dispose();
+                    }
+                }
+
+                // Free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // None.
+
+                // Set large fields to null.
+                // None.
+
+                disposedValue = true;
+            }
+        }
+
+        // Override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        // ~DirectFileWriter() {
+        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+        //   Dispose(false);
+        // }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            
+            // Uncomment the following line if the finalizer is overridden above.
+            // GC.SuppressFinalize(this);
+        }
+        #endregion
+    }
+
+    internal static class UnsafeNativeMethods
+    {
+#if WINDOWS
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        static public extern bool CreateSymbolicLink(string lpSymlinkFileName, string lpTargetFileName, int dwFlags);
+
+        static public int SYMLINK_FLAG_DIRECTORY = 1;
+#endif
     }
 }

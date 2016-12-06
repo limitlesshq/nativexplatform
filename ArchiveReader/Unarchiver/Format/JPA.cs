@@ -402,12 +402,11 @@ namespace Akeeba.Unarchiver.Format
         /// <param name="token">A cancellation token, allowing the called to cancel the processing</param>
         protected void processGZipDataBlock(ulong compressedLength, CancellationToken token)
         {
-            using (Stream memStream = readIntoStream((int)compressedLength))
+            Stream memStream = readIntoStream((int)compressedLength);
+
+            using (GZipStream decompressStream = new GZipStream(memStream, CompressionMode.Decompress))
             {
-                using (GZipStream decompressStream = new GZipStream(memStream, CompressionMode.Decompress))
-                {
-                    dataWriter.writeData(decompressStream);
-                }
+                dataWriter.writeData(decompressStream);
             }
         }
 
@@ -418,12 +417,11 @@ namespace Akeeba.Unarchiver.Format
         /// <param name="token">A cancellation token, allowing the called to cancel the processing</param>
         protected void processBZip2DataBlock(ulong compressedLength, CancellationToken token)
         {
-            using (Stream memStream = readIntoStream((int)compressedLength))
+            Stream memStream = readIntoStream((int)compressedLength);
+
+            using (BZip2InputStream decompressStream = new BZip2InputStream(memStream))
             {
-                using (BZip2InputStream decompressStream = new BZip2InputStream(memStream))
-                {
-                    dataWriter.writeData(decompressStream);
-                }
+                dataWriter.writeData(decompressStream);
             }
         }
 
