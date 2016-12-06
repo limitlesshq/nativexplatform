@@ -92,7 +92,7 @@ namespace Akeeba.Unarchiver.Format
                 args = new EventArgs.ProgressEventArgs(progress);
                 onProgressEvent(args);
 
-                while (progress.filePosition < archiveHeader.totalLength)
+                while ((currentPartNumber != null) && (progress.filePosition < archiveHeader.totalLength))
                 {
                     jpaFileHeader fileHeader = readFileHeader();
 
