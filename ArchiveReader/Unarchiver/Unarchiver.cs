@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using Akeeba.Unarchiver.EventArgs;
 using Akeeba.Unarchiver.DataWriter;
+using System.Threading;
 
 namespace Akeeba.Unarchiver
 {
@@ -114,7 +115,9 @@ namespace Akeeba.Unarchiver
                     if (!currentPartNumber.HasValue)
                     {
                         currentPartNumber = 1;
-                        progress.filePosition = 0;
+                        _sizesOfPartsAlreadyRead = 0;
+                        progress.runningCompressed = 0;
+                        progress.runningUncompressed = 0;
                     }
                     else if ((currentPartNumber <= 0) || (currentPartNumber > parts))
                     {
@@ -126,6 +129,7 @@ namespace Akeeba.Unarchiver
                 else if (propInputFile.Position >= propInputFile.Length)
                 {
                     // We have reached EOF. Open the next part file if applicable.
+                    _sizesOfPartsAlreadyRead += propInputFile.Length;
                     propInputFile.Dispose();
                     currentPartNumber += 1;
 
@@ -156,6 +160,22 @@ namespace Akeeba.Unarchiver
             set
             {
                 _dataWriter = value;
+            }
+        }
+
+        /// <summary>
+        /// Total size of the part files already read and closed
+        /// </summary>
+        private long _sizesOfPartsAlreadyRead = 0;
+
+        /// <summary>
+        /// TOtal size of the part files already read (read-only)
+        /// </summary>
+        public long sizesOfPartsAlreadyRead
+        {
+            get
+            {
+                return _sizesOfPartsAlreadyRead;
             }
         }
         #endregion
@@ -356,6 +376,9 @@ namespace Akeeba.Unarchiver
             }
 
             currentPartNumber = null;
+            _sizesOfPartsAlreadyRead = 0;
+            progress.runningCompressed = 0;
+            progress.runningUncompressed = 0;
         }
 
         /// <summary>
@@ -366,6 +389,16 @@ namespace Akeeba.Unarchiver
         protected FileStream open(int partNumber = 1)
         {
             close();
+
+            // Set up _sizesOfPartsAlreadyRead;
+            _sizesOfPartsAlreadyRead = 0;
+
+            for (int i = 1; i < partNumber; i++)
+            {
+                FileInfo fi = new FileInfo(archivePath);
+                _sizesOfPartsAlreadyRead += fi.Length;
+            }
+
             currentPartNumber = partNumber;
 
             return inputFile;
@@ -564,54 +597,56 @@ namespace Akeeba.Unarchiver
         /// <summary>
         /// Extracts a backup archive.  A DataWriter must be already assigned and configured or an exception will be raised.
         /// </summary>
-        public abstract void extract();
+        /// <param name="token">A CancellationToken used by the caller to cancel the execution before it's complete.</param>
+        public abstract void extract(CancellationToken token);
 
         /// <summary>
         /// Extracts a backup archive using the specified data writer.
         /// </summary>
-        /// <param name="dataWriterObject"></param>
-        public void extract(IDataWriter dataWriterObject)
+        /// <param name="token">A CancellationToken used by the caller to cancel the execution before it's complete.</param>
+        /// <param name="dataWriterObject">An object implementing IDataWriter which will be used to handle extracted data</param>
+        public void extract(CancellationToken token, IDataWriter dataWriterObject)
         {
             dataWriter = dataWriterObject;
 
-            extract();
+            extract(token);
         }
 
         /// <summary>
         /// Extract the backup archive to the specified filesystem path using direct file writes
         /// </summary>
+        /// <param name="token">A CancellationToken used by the caller to cancel the execution before it's complete.</param>
         /// <param name="destinationPath">The path where the archive will be extracted to</param>
-        public void extract(string destinationPath)
+        public void extract(CancellationToken token, string destinationPath)
         {
             IDataWriter myDataWriter = new DirectFileWriter(destinationPath);
 
-            extract(myDataWriter);
+            extract(token, myDataWriter);
         }
 
         /// <summary>
         /// Go through the archive's contents without extracting data. You can use the fired events to get information about the
         /// entities contained in the archive.
         /// </summary>
-        public void scan()
+        /// <param name="token">A CancellationToken used by the caller to cancel the execution before it's complete.</param>
+        public void scan(CancellationToken token)
         {
             // Setting the data writer to null is detected by the unarchivers, forcing them to skip over the data sections.
             _dataWriter = null;
 
-            extract();
+            extract(token);
         }
 
         /// <summary>
         /// Test the archive by using the NullWrite data writer which doesn't create any files / folders
         /// </summary>
-        public void test()
+        /// <param name="token">A CancellationToken used by the caller to cancel the execution before it's complete.</param>
+        public void test(CancellationToken token)
         {
             IDataWriter myDataWriter = new NullWriter();
 
-            extract(myDataWriter);
+            extract(token, myDataWriter);
         }
-
-        // TODO Write an adapter which uses the Unarchiver events and the scan() method to produce a file listing
-     
         #endregion
     }
 }
