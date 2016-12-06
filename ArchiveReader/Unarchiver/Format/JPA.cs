@@ -77,6 +77,7 @@ namespace Akeeba.Unarchiver.Format
             progress.runningCompressed = 0;
             progress.runningUncompressed = 0;
             progress.status = extractionStatus.running;
+            progress.exception = null;
             ProgressEventArgs args;
 
             try
@@ -109,6 +110,7 @@ namespace Akeeba.Unarchiver.Format
                 progress.runningCompressed = 0;
                 progress.runningUncompressed = 0;
                 progress.status = extractionStatus.idle;
+                progress.exception = cancelledException;
 
                 // Invoke an event notifying susbcribers about the cancelation.
                 args = new EventArgs.ProgressEventArgs(progress);
@@ -346,7 +348,6 @@ namespace Akeeba.Unarchiver.Format
                     onProgressEvent(args);
 
                     return;
-                    break;
 
                 case jpaEntityType.symlink:
                     if (dataBlockHeader.lengthOfEntityPath > 0)
@@ -359,7 +360,6 @@ namespace Akeeba.Unarchiver.Format
                     onProgressEvent(args);
 
                     return;
-                    break;
             }
 
             // Begin writing to file
