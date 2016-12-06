@@ -181,7 +181,7 @@ namespace Akeeba.Unarchiver.Format
                     // Do we have an extra header? The next three bytes must be JP followed by 0x01 and the header type
                     byte[] headerSignature = readBytes(4);
 
-                    if ((headerSignature[0] != 0x4a) || (headerSignature[1] != 0x50) || (headerSignature[2] == 0x01))
+                    if ((headerSignature[0] != 0x4a) || (headerSignature[1] != 0x50) || (headerSignature[2] != 0x01))
                     {
                         throw new InvalidArchiveException();
                     }
