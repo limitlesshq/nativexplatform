@@ -19,7 +19,7 @@ namespace Akeeba.Unarchiver
         /// <summary>
         /// The supported file extension of this unarchiver, e.g. "jpa". Must be set in the constructor or the class declaration.
         /// </summary>
-        protected readonly string supportedExtension;
+        protected string supportedExtension;
 
         /// <summary>
         /// The part number we are reading from
@@ -57,7 +57,7 @@ namespace Akeeba.Unarchiver
 
                 string strExtension = Path.GetExtension(value);
 
-                if (strExtension.ToUpper() != supportedExtension.ToUpper())
+                if (strExtension.ToUpper().Substring(1) != supportedExtension.ToUpper())
                 {
                     throw new InvalidExtensionException();
                 }
@@ -184,11 +184,8 @@ namespace Akeeba.Unarchiver
         /// <summary>
         /// Public constructor with an archive argument
         /// </summary>
-        /// <param name="filePath"></param>
-        public Unarchiver(string filePath)
+        protected Unarchiver()
         {
-            archivePath = filePath;
-
             progress.status = extractionStatus.idle;
             progress.filePosition = 0;
             progress.runningCompressed = 0;
@@ -202,7 +199,7 @@ namespace Akeeba.Unarchiver
         /// <returns></returns>
         public static Unarchiver createFor(string filePath)
         {
-            string strClassName = "Akeeba.Unarchiver.Format." + Path.GetExtension(filePath).ToUpper();
+            string strClassName = "Akeeba.Unarchiver.Format." + Path.GetExtension(filePath).ToUpper().Substring(1);
             Type classType = Type.GetType(strClassName);
 
             if (classType == null)
