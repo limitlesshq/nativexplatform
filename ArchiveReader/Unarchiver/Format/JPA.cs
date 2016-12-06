@@ -61,8 +61,11 @@ namespace Akeeba.Unarchiver.Format
         /// Inherit the constructor from the base class
         /// </summary>
         /// <param name="filePath"></param>
-        public JPA(string filePath): base(filePath)
+        public JPA(string filePath): base()
         {
+            supportedExtension = "jpa";
+
+            archivePath = filePath;
         }
 
         /// <summary>
