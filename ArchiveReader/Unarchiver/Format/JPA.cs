@@ -214,7 +214,7 @@ namespace Akeeba.Unarchiver.Format
             // -- Get the total archive size by looping all of its parts
             info.archiveSize = 0;
 
-            for (int i = 1; i < parts; i++)
+            for (int i = 1; i <= parts; i++)
             {
                 FileInfo fi = new FileInfo(archivePath);
                 info.archiveSize += (ulong) fi.Length;
