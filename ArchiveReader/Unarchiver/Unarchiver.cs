@@ -13,7 +13,7 @@ namespace Akeeba.Unarchiver
     /// <summary>
     /// Abstract unarchiver. Handles all the basic plumbing of an archive reader ("unarchiver") class.
     /// </summary>
-    abstract class Unarchiver
+    abstract class Unarchiver: IDisposable
     {
         #region Protected Properties
         /// <summary>
@@ -646,6 +646,49 @@ namespace Akeeba.Unarchiver
             IDataWriter myDataWriter = new NullWriter();
 
             extract(token, myDataWriter);
+        }
+
+        #endregion
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    if ((propInputFile != null) && (propInputFile is IDisposable))
+                    {
+                        propInputFile.Dispose();
+                    }
+                }
+
+                // Free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // (!) Nothing to do for that
+
+                // Set large fields to null.
+                propArchivePath = null;
+                dataWriter = null;
+
+                disposedValue = true;
+            }
+        }
+
+        // Override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        // ~Unarchiver() {
+        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+        //   Dispose(false);
+        // }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // Uncomment the following line if the finalizer is overridden above.
+            // GC.SuppressFinalize(this);
         }
         #endregion
     }
