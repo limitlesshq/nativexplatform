@@ -20,7 +20,10 @@ namespace Akeeba.extractCLI
             try
             {
                 extractor = Unarchiver.Unarchiver.createFor(@"C:\Apache24\htdocs\backups\test.jpa");
+
+                // Attach event subscribers
                 extractor.progressEvent += onProgress;
+                extractor.entityEvent += onEntity;
 
                 CancellationTokenSource cts = new CancellationTokenSource();
                 var token = cts.Token;
@@ -78,6 +81,11 @@ namespace Akeeba.extractCLI
                     Console.WriteLine(Text.GetString("LBL_STATUS_IDLE"));
                     break;
             }
+        }
+
+        private static void onEntity(object sender, EntityEventArgs a)
+        {
+            Console.WriteLine(a.information.storedName);
         }
     }
 }
