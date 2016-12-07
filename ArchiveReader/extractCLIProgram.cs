@@ -1,10 +1,7 @@
 ﻿using Akeeba.Unarchiver;
 using Akeeba.Unarchiver.EventArgs;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Resources;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,76 +11,68 @@ namespace Akeeba.extractCLI
     {
         static void Main(string[] args)
         {
-            ResourceManager Text = Akeeba.extractCLI.Resources.Language.ResourceManager;
-            Unarchiver.Unarchiver extractor = null;
-
-            try
+            ResourceManager text = Resources.Language.ResourceManager;
+            
+            using (Unarchiver.Unarchiver extractor = Unarchiver.Unarchiver.CreateForFile(@"C:\Apache24\htdocs\backups\test.jpa"))
             {
-                extractor = Unarchiver.Unarchiver.CreateForFile(@"C:\Apache24\htdocs\backups\test.jpa");
+                try
+                {
+                    // Attach event subscribers
+                    extractor.ProgressEvent += OnProgressHandler;
+                    extractor.EntityEvent += onEntityHandler;
 
-                // Attach event subscribers
-                extractor.ProgressEvent += onProgress;
-                extractor.EntityEvent += onEntity;
+                    CancellationTokenSource cts = new CancellationTokenSource();
+                    var token = cts.Token;
 
-                CancellationTokenSource cts = new CancellationTokenSource();
-                var token = cts.Token;
-
-                Task t = Task.Factory.StartNew(
-                    () =>
-                    {
-                        extractor.Scan(token);
-                    }, token,
-                    TaskCreationOptions.LongRunning,
-                    TaskScheduler.Default
+                    Task t = Task.Factory.StartNew(
+                        () =>
+                        {
+                            if (extractor != null)
+                            {
+                                extractor.Scan(token);
+                            }
+                        }, token,
+                        TaskCreationOptions.LongRunning,
+                        TaskScheduler.Default
                     );
 
-                t.Wait(token);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(Text.GetString("ERR_HEADER"));
-                Console.WriteLine(e.Message);
-
-                Console.ReadLine();
-            }
-            finally
-            {
-                if ((extractor != null) && (extractor is IDisposable))
+                    t.Wait(token);
+                }
+                catch (Exception e)
                 {
-                    extractor.Dispose();
+                    Console.WriteLine(text.GetString("ERR_HEADER"));
+                    Console.WriteLine(e.Message);
                 }
             }
-
-            Console.ReadLine();
         }
 
-        private static void onProgress(object sender, ProgressEventArgs e)
+        private static void OnProgressHandler(object sender, ProgressEventArgs e)
         {
-            ResourceManager Text = Akeeba.extractCLI.Resources.Language.ResourceManager;
+            ResourceManager text = Akeeba.extractCLI.Resources.Language.ResourceManager;
 
             switch (e.Progress.Status)
             {
                 case ExtractionStatus.Error:
-                    Console.WriteLine(Text.GetString("ERR_HEADER"));
+                    Console.WriteLine(text.GetString("ERR_HEADER"));
                     Console.WriteLine(e.Progress.LastException.Message);
                     Console.WriteLine(e.Progress.LastException.StackTrace);
                     break;
 
                 case ExtractionStatus.Running:
-                    Console.WriteLine(string.Format("[File position {0,0}]", e.Progress.FilePosition));
+                    Console.WriteLine($"[File position {e.Progress.FilePosition, 0}]");
                     break;
 
                 case ExtractionStatus.Finished:
-                    Console.WriteLine(Text.GetString("LBL_STATUS_FINISHED"));
+                    Console.WriteLine(text.GetString("LBL_STATUS_FINISHED"));
                     break;
 
                 case ExtractionStatus.Idle:
-                    Console.WriteLine(Text.GetString("LBL_STATUS_IDLE"));
+                    Console.WriteLine(text.GetString("LBL_STATUS_IDLE"));
                     break;
             }
         }
 
-        private static void onEntity(object sender, EntityEventArgs a)
+        private static void onEntityHandler(object sender, EntityEventArgs a)
         {
             Console.WriteLine(a.Information.StoredName);
         }
