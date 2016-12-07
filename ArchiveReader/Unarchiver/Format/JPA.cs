@@ -103,6 +103,9 @@ namespace Akeeba.Unarchiver.Format
                     }
 
                     ProcessDataBlock(fileHeader, token);
+
+                    args = new ProgressEventArgs(Progress);
+                    OnProgressEvent(args);
                 }
             }
             catch (OperationCanceledException cancelledException)
