@@ -17,44 +17,44 @@ namespace Akeeba.Unarchiver.Format
         /// <summary>
         /// Describes the Standard Header of a JPA archive with the Extra Header Field - Spanned Archive Marker extension
         /// </summary>
-        public struct jpaArchiveHeader
+        public struct JpaArchiveHeader
         {
-            public string signature;
-            public ushort headerLength;
-            public byte majorVersion;
-            public byte minorVersion;
-            public ulong fileCount;
-            public ulong uncompressedSize;
-            public ulong compressedSize;
-            public ulong totalParts;
-            public ulong totalLength;
+            public string Signature;
+            public ushort HeaderLength;
+            public byte MajorVersion;
+            public byte MinorVersion;
+            public ulong FileCount;
+            public ulong UncompressedSize;
+            public ulong CompressedSize;
+            public ulong TotalParts;
+            public ulong TotalLength;
         }
 
         /// <summary>
         /// Type of an entity in a JPA archive
         /// </summary>
-        public enum jpaEntityType { directory, file, symlink };
+        public enum JpaEntityType { Directory, File, Symlink };
 
         /// <summary>
         /// Type of compression of an entity in a JPA archive
         /// </summary>
-        public enum jpaCompressionType { uncompressed, gzip, bzip2 };
+        public enum JpaCompressionType { Uncompressed, GZip, BZip2 };
 
         /// <summary>
         /// Describes the Entity Description Block of a JPA archive with the Timestamp Extra Field extension
         /// </summary>
-        public struct jpaFileHeader
+        public struct JpaFileHeader
         {
-            public string signature;
-            public ushort blockLength;
-            public ushort lengthOfEntityPath;
-            public string entityPath;
-            public jpaEntityType entityType;
-            public jpaCompressionType compressionType;
-            public ulong compressedSize;
-            public ulong uncompressedSize;
-            public ulong entityPermissions;
-            public long timeStamp;
+            public string Signature;
+            public ushort BlockLength;
+            public ushort LengthOfEntityPath;
+            public string EntityPath;
+            public JpaEntityType EntityType;
+            public JpaCompressionType CompressionType;
+            public ulong CompressedSize;
+            public ulong UncompressedSize;
+            public ulong EntityPermissions;
+            public long TimeStamp;
         }
 
         /// <summary>
@@ -63,38 +63,38 @@ namespace Akeeba.Unarchiver.Format
         /// <param name="filePath"></param>
         public JPA(string filePath): base()
         {
-            supportedExtension = "jpa";
+            SupportedExtension = "jpa";
 
-            archivePath = filePath;
+            ArchivePath = filePath;
         }
 
         /// <summary>
-        /// Implements the extract method which extracts a backup archive. A DataWriter must be already assigned and configured or an
+        /// Implements the Extract method which extracts a backup archive. A DataWriter must be already assigned and configured or an
         /// exception will be raised.
         /// </summary>
-        public override void extract(CancellationToken token)
+        public override void Extract(CancellationToken token)
         {
             // Initialize
-            close();
-            progress.filePosition = 0;
-            progress.runningCompressed = 0;
-            progress.runningUncompressed = 0;
-            progress.status = extractionStatus.running;
-            progress.exception = null;
+            Close();
+            Progress.FilePosition = 0;
+            Progress.RunningCompressed = 0;
+            Progress.RunningUncompressed = 0;
+            Progress.Status = ExtractionStatus.Running;
+            Progress.LastException = null;
             ProgressEventArgs args;
 
             try
             {
                 // Read the file header
-                jpaArchiveHeader archiveHeader = readArchiveHeader();
+                JpaArchiveHeader archiveHeader = ReadArchiveHeader();
 
                 // Invoke event at start of extraction
-                args = new EventArgs.ProgressEventArgs(progress);
-                onProgressEvent(args);
+                args = new ProgressEventArgs(Progress);
+                OnProgressEvent(args);
 
-                while ((currentPartNumber != null) && (progress.filePosition < archiveHeader.totalLength))
+                while ((CurrentPartNumber != null) && (Progress.FilePosition < archiveHeader.TotalLength))
                 {
-                    jpaFileHeader fileHeader = readFileHeader();
+                    JpaFileHeader fileHeader = ReadFileHeader();
 
                     // See https://www.codeproject.com/articles/742774/cancel-a-loop-in-a-task-with-cancellationtokens
                     if (token.IsCancellationRequested)
@@ -102,43 +102,43 @@ namespace Akeeba.Unarchiver.Format
                         token.ThrowIfCancellationRequested();
                     }
 
-                    processDataBlock(fileHeader, token);
+                    ProcessDataBlock(fileHeader, token);
                 }
             }
             catch (OperationCanceledException cancelledException)
             {
                 // The operation was cancelled. Set the state to Idle and reset the extraction.
-                close();
-                progress.filePosition = 0;
-                progress.runningCompressed = 0;
-                progress.runningUncompressed = 0;
-                progress.status = extractionStatus.idle;
-                progress.exception = cancelledException;
+                Close();
+                Progress.FilePosition = 0;
+                Progress.RunningCompressed = 0;
+                Progress.RunningUncompressed = 0;
+                Progress.Status = ExtractionStatus.Idle;
+                Progress.LastException = cancelledException;
 
                 // Invoke an event notifying susbcribers about the cancelation.
-                args = new EventArgs.ProgressEventArgs(progress);
-                onProgressEvent(args);
+                args = new ProgressEventArgs(Progress);
+                OnProgressEvent(args);
 
                 return;
             }
             catch (Exception errorException)
             {
                 // Any other exception. Close the option file and set the status to error.
-                close();
-                progress.status = extractionStatus.error;
-                progress.exception = errorException;
+                Close();
+                Progress.Status = ExtractionStatus.Error;
+                Progress.LastException = errorException;
 
                 // Invoke an event notifying of the error state
-                args = new EventArgs.ProgressEventArgs(progress);
-                onProgressEvent(args);
+                args = new ProgressEventArgs(Progress);
+                OnProgressEvent(args);
 
                 return;
             }
 
             // Invoke an event signaling the end of extraction
-            progress.status = extractionStatus.finished;
-            args = new EventArgs.ProgressEventArgs(progress);
-            onProgressEvent(args);
+            Progress.Status = ExtractionStatus.Finished;
+            args = new ProgressEventArgs(Progress);
+            OnProgressEvent(args);
         }
 
         /// <summary>
@@ -147,39 +147,39 @@ namespace Akeeba.Unarchiver.Format
         /// <returns>
         /// The main header of the archive
         /// </returns>
-        public jpaArchiveHeader readArchiveHeader()
+        public JpaArchiveHeader ReadArchiveHeader()
         {
-            jpaArchiveHeader archiveHeader = new jpaArchiveHeader();
+            JpaArchiveHeader archiveHeader = new JpaArchiveHeader();
 
             // Initialize parts counter
-            archiveHeader.totalParts = 1;
+            archiveHeader.TotalParts = 1;
 
             // Open the first part
-            open(1);
+            Open(1);
 
-            archiveHeader.signature = readASCIIString(3);
+            archiveHeader.Signature = ReadAsciiString(3);
 
-            if (archiveHeader.signature != "JPA")
+            if (archiveHeader.Signature != "JPA")
             {
                 throw new InvalidArchiveException();
             }
 
-            archiveHeader.headerLength = readUShort();
-            archiveHeader.majorVersion = readByte();
-            archiveHeader.minorVersion = readByte();
-            archiveHeader.fileCount = readULong();
-            archiveHeader.uncompressedSize = readULong();
-            archiveHeader.compressedSize = readULong();
+            archiveHeader.HeaderLength = ReadUShort();
+            archiveHeader.MajorVersion = ReadByte();
+            archiveHeader.MinorVersion = ReadByte();
+            archiveHeader.FileCount = ReadULong();
+            archiveHeader.UncompressedSize = ReadULong();
+            archiveHeader.CompressedSize = ReadULong();
 
-            if (archiveHeader.headerLength > 19)
+            if (archiveHeader.HeaderLength > 19)
             {
                 // We need to loop while we have remaining header bytes
-                ushort remainingBytes = (ushort)(archiveHeader.headerLength - 19);
+                ushort remainingBytes = (ushort)(archiveHeader.HeaderLength - 19);
 
                 while (remainingBytes > 0)
                 {
                     // Do we have an extra header? The next three bytes must be JP followed by 0x01 and the header type
-                    byte[] headerSignature = readBytes(4);
+                    byte[] headerSignature = ReadBytes(4);
 
                     if ((headerSignature[0] != 0x4a) || (headerSignature[1] != 0x50) || (headerSignature[2] != 0x01))
                     {
@@ -187,7 +187,7 @@ namespace Akeeba.Unarchiver.Format
                     }
 
                     // The next two bytes tell us how long this header is, without the 4 byte signature and type but WITH the header length field
-                    ushort extraHeaderLength = readUShort();
+                    ushort extraHeaderLength = ReadUShort();
 
                     // Subtract the read bytes from the remaining bytes in the header.
                     remainingBytes -= (ushort)(4 + extraHeaderLength);
@@ -197,7 +197,7 @@ namespace Akeeba.Unarchiver.Format
                     {
                         case 0x01:
                             // Spanned Archive Marker header
-                            archiveHeader.totalParts = readUShort();
+                            archiveHeader.TotalParts = ReadUShort();
 
                             break;
 
@@ -210,26 +210,26 @@ namespace Akeeba.Unarchiver.Format
 
             // Invoke the archiveInformation event. We need to do some work to get there, through...
             // -- Create a new archive information record
-            archiveInformation info = new archiveInformation();
+            ArchiveInformation info = new ArchiveInformation();
             // -- Get the total archive size by looping all of its parts
-            info.archiveSize = 0;
+            info.ArchiveSize = 0;
 
-            for (int i = 1; i <= parts; i++)
+            for (int i = 1; i <= Parts; i++)
             {
-                FileInfo fi = new FileInfo(archivePath);
-                info.archiveSize += (ulong) fi.Length;
+                FileInfo fi = new FileInfo(ArchivePath);
+                info.ArchiveSize += (ulong) fi.Length;
             }
 
-            archiveHeader.totalLength = info.archiveSize;
+            archiveHeader.TotalLength = info.ArchiveSize;
 
             // -- Incorporate bits from the file header
-            info.fileCount = archiveHeader.fileCount;
-            info.uncompressedSize = archiveHeader.uncompressedSize;
-            info.compressedSize = archiveHeader.compressedSize;
+            info.FileCount = archiveHeader.FileCount;
+            info.UncompressedSize = archiveHeader.UncompressedSize;
+            info.CompressedSize = archiveHeader.CompressedSize;
             // -- Create the event arguments object
-            ArchiveInformationEventArgs args = new EventArgs.ArchiveInformationEventArgs(info);
+            ArchiveInformationEventArgs args = new ArchiveInformationEventArgs(info);
             // -- Finally, invoke the event
-            onArchiveInformationEvent(args);
+            OnArchiveInformationEvent(args);
 
             // Lastly, return the read archive header
             return archiveHeader;
@@ -239,47 +239,47 @@ namespace Akeeba.Unarchiver.Format
         /// Reads the Entity Description Block in the current position of the JPA archive
         /// </summary>
         /// <returns>The entity description block (file header)</returns>
-        public jpaFileHeader readFileHeader()
+        public JpaFileHeader ReadFileHeader()
         {
-            jpaFileHeader fileHeader = new jpaFileHeader();
+            JpaFileHeader fileHeader = new JpaFileHeader();
 
-            fileHeader.signature = readASCIIString(3);
+            fileHeader.Signature = ReadAsciiString(3);
 
-            if (fileHeader.signature != "JPF")
+            if (fileHeader.Signature != "JPF")
             {
                 throw new InvalidArchiveException();
             }
 
-            fileHeader.blockLength = readUShort();
-            fileHeader.lengthOfEntityPath = readUShort();
-            fileHeader.entityPath = readUTF8String(fileHeader.lengthOfEntityPath);
-            fileHeader.entityType = (jpaEntityType)Enum.ToObject(typeof(jpaEntityType), readSByte());
-            fileHeader.compressionType = (jpaCompressionType)Enum.ToObject(typeof(jpaCompressionType), readSByte());
-            fileHeader.compressedSize = readULong();
-            fileHeader.uncompressedSize = readULong();
-            fileHeader.entityPermissions = readULong();
+            fileHeader.BlockLength = ReadUShort();
+            fileHeader.LengthOfEntityPath = ReadUShort();
+            fileHeader.EntityPath = ReadUtf8String(fileHeader.LengthOfEntityPath);
+            fileHeader.EntityType = (JpaEntityType)Enum.ToObject(typeof(JpaEntityType), ReadSByte());
+            fileHeader.CompressionType = (JpaCompressionType)Enum.ToObject(typeof(JpaCompressionType), ReadSByte());
+            fileHeader.CompressedSize = ReadULong();
+            fileHeader.UncompressedSize = ReadULong();
+            fileHeader.EntityPermissions = ReadULong();
 
-            ushort standardEntityBlockLength = (ushort)(21 + fileHeader.lengthOfEntityPath);
+            ushort standardEntityBlockLength = (ushort)(21 + fileHeader.LengthOfEntityPath);
 
-            if (fileHeader.blockLength > standardEntityBlockLength)
+            if (fileHeader.BlockLength > standardEntityBlockLength)
             {
                 // We need to loop while we have remaining header bytes
-                ushort remainingBytes = (ushort)(fileHeader.blockLength - standardEntityBlockLength);
+                ushort remainingBytes = (ushort)(fileHeader.BlockLength - standardEntityBlockLength);
 
                 while (remainingBytes > 0)
                 {
                     // Get the extra header signature
-                    byte[] headerSignature = readBytes(2);
+                    byte[] headerSignature = ReadBytes(2);
 
                     // The next two bytes tell us how long this header is, including the signature
-                    ushort extraHeaderLength = readUShort();
+                    ushort extraHeaderLength = ReadUShort();
 
                     remainingBytes -= extraHeaderLength;
 
                     if ((headerSignature[0] == 0x00) && (headerSignature[1] == 0x01))
                     {
                         // Timestamp extra field
-                        fileHeader.timeStamp = readLong();
+                        fileHeader.TimeStamp = ReadLong();
                     }
                     else
                     {
@@ -288,27 +288,27 @@ namespace Akeeba.Unarchiver.Format
                 }
             }
 
-            // Invoke the onEntityEvent event. We need to do some work to get there, through...
+            // Invoke the OnEntityEvent event. We need to do some work to get there, through...
             // -- Create a new archive information record
-            entityInformation info = new entityInformation();
+            EntityInformation info = new EntityInformation();
             // -- Incorporate bits from the file header
-            info.compressedSize = fileHeader.compressedSize;
-            info.uncompressedSize = fileHeader.uncompressedSize;
-            info.storedName = fileHeader.entityPath;
+            info.CompressedSize = fileHeader.CompressedSize;
+            info.UncompressedSize = fileHeader.UncompressedSize;
+            info.StoredName = fileHeader.EntityPath;
             // -- Get the absolute path of the file
-            info.absoluteName = "";
+            info.AbsoluteName = "";
 
-            if ((dataWriter != null) && (dataWriter is IDataWriter))
+            if (DataWriter != null)
             {
-                info.absoluteName = dataWriter.getAbsoluteFilePath(fileHeader.entityPath);
+                info.AbsoluteName = DataWriter.GetAbsoluteFilePath(fileHeader.EntityPath);
             }
             // -- Get some bits from the currently open archive file
-            info.partNumber = (int)currentPartNumber;
-            info.partOffset = inputFile.Position;
+            info.PartNumber = CurrentPartNumber ?? 1;
+            info.PartOffset = InputStream.Position;
             // -- Create the event arguments object
-            EntityEventArgs args = new EventArgs.EntityEventArgs(info);
+            EntityEventArgs args = new EntityEventArgs(info);
             // -- Finally, invoke the event
-            onEntityEvent(args);
+            OnEntityEvent(args);
 
             // Lastly, return the read file header
             return fileHeader;
@@ -319,83 +319,83 @@ namespace Akeeba.Unarchiver.Format
         /// </summary>
         /// <param name="dataBlockHeader">The header of the block being processed</param>
         /// <param name="token">A cancellation token, allowing the called to cancel the processing</param>
-        public void processDataBlock(jpaFileHeader dataBlockHeader, CancellationToken token)
+        public void ProcessDataBlock(JpaFileHeader dataBlockHeader, CancellationToken token)
         {
             // Update the archive's progress record
-            progress.filePosition = (ulong)(sizesOfPartsAlreadyRead + inputFile.Position);
-            progress.runningCompressed += dataBlockHeader.compressedSize;
-            progress.runningUncompressed += dataBlockHeader.compressedSize;
-            progress.status = extractionStatus.running;
+            Progress.FilePosition = (ulong)(SizesOfPartsAlreadyRead + InputStream.Position);
+            Progress.RunningCompressed += dataBlockHeader.CompressedSize;
+            Progress.RunningUncompressed += dataBlockHeader.CompressedSize;
+            Progress.Status = ExtractionStatus.Running;
 
             // Create the event arguments we'll use when invoking the event
-            ProgressEventArgs args = new EventArgs.ProgressEventArgs(progress);
+            ProgressEventArgs args = new ProgressEventArgs(Progress);
 
             // If we don't have a data writer we just need to skip over the data
-            if ((dataWriter == null) || !(dataWriter is IDataWriter))
+            if (DataWriter == null)
             {
-                if (dataBlockHeader.compressedSize > 0)
+                if (dataBlockHeader.CompressedSize > 0)
                 {
-                    skipBytes((long)dataBlockHeader.compressedSize);
+                    SkipBytes((long)dataBlockHeader.CompressedSize);
                 }
 
                 return;
             }
 
             // Is this a directory?
-            switch (dataBlockHeader.entityType)
+            switch (dataBlockHeader.EntityType)
             {
-                case jpaEntityType.directory:
-                    dataWriter.makeDirRecursive(dataWriter.getAbsoluteFilePath(dataBlockHeader.entityPath));
+                case JpaEntityType.Directory:
+                    DataWriter.MakeDirRecursive(DataWriter.GetAbsoluteFilePath(dataBlockHeader.EntityPath));
 
-                    // Invoke the onEntityEvent event
-                    onProgressEvent(args);
+                    // Invoke the OnEntityEvent event
+                    OnProgressEvent(args);
 
                     return;
 
-                case jpaEntityType.symlink:
-                    if (dataBlockHeader.lengthOfEntityPath > 0)
+                case JpaEntityType.Symlink:
+                    if (dataBlockHeader.LengthOfEntityPath > 0)
                     {
-                        string strTarget = readUTF8String(dataBlockHeader.lengthOfEntityPath);
-                        dataWriter.makeSymlink(strTarget, dataWriter.getAbsoluteFilePath(dataBlockHeader.entityPath));
+                        string strTarget = ReadUtf8String(dataBlockHeader.LengthOfEntityPath);
+                        DataWriter.MakeSymlink(strTarget, DataWriter.GetAbsoluteFilePath(dataBlockHeader.EntityPath));
                     }
 
-                    // Invoke the onEntityEvent event
-                    onProgressEvent(args);
+                    // Invoke the OnEntityEvent event
+                    OnProgressEvent(args);
 
                     return;
             }
 
             // Begin writing to file
-            dataWriter.startFile(dataBlockHeader.entityPath);
+            DataWriter.StartFile(dataBlockHeader.EntityPath);
 
             // Is this a zero length file?
-            if (dataBlockHeader.compressedSize == 0)
+            if (dataBlockHeader.CompressedSize == 0)
             {
-                dataWriter.stopFile();
+                DataWriter.StopFile();
                 return;
             }
 
-            switch (dataBlockHeader.compressionType)
+            switch (dataBlockHeader.CompressionType)
             {
-                case jpaCompressionType.uncompressed:
-                    processUncompressedDataBlock(dataBlockHeader.compressedSize, token);
+                case JpaCompressionType.Uncompressed:
+                    ProcessUncompressedDataBlock(dataBlockHeader.CompressedSize, token);
                     break;
 
-                case jpaCompressionType.gzip:
-                    processGZipDataBlock(dataBlockHeader.compressedSize, token);
+                case JpaCompressionType.GZip:
+                    ProcessGZipDataBlock(dataBlockHeader.CompressedSize, token);
                     break;
 
-                case jpaCompressionType.bzip2:
-                    processBZip2DataBlock(dataBlockHeader.compressedSize, token);
+                case JpaCompressionType.BZip2:
+                    ProcessBZip2DataBlock(dataBlockHeader.CompressedSize, token);
                     break;
 
             }
 
             // Stop writing data to the file
-            dataWriter.stopFile();
+            DataWriter.StopFile();
 
-            // Invoke the onEntityEvent event
-            onProgressEvent(args);
+            // Invoke the OnEntityEvent event
+            OnProgressEvent(args);
         }
 
         /// <summary>
@@ -403,13 +403,13 @@ namespace Akeeba.Unarchiver.Format
         /// </summary>
         /// <param name="compressedLength">Length of the data block in bytes</param>
         /// <param name="token">A cancellation token, allowing the called to cancel the processing</param>
-        protected void processGZipDataBlock(ulong compressedLength, CancellationToken token)
+        protected void ProcessGZipDataBlock(ulong compressedLength, CancellationToken token)
         {
-            Stream memStream = readIntoStream((int)compressedLength);
+            Stream memStream = ReadIntoStream((int)compressedLength);
 
             using (GZipStream decompressStream = new GZipStream(memStream, CompressionMode.Decompress))
             {
-                dataWriter.writeData(decompressStream);
+                DataWriter.WriteData(decompressStream);
             }
         }
 
@@ -418,13 +418,13 @@ namespace Akeeba.Unarchiver.Format
         /// </summary>
         /// <param name="compressedLength">Length of the data block in bytes</param>
         /// <param name="token">A cancellation token, allowing the called to cancel the processing</param>
-        protected void processBZip2DataBlock(ulong compressedLength, CancellationToken token)
+        protected void ProcessBZip2DataBlock(ulong compressedLength, CancellationToken token)
         {
-            Stream memStream = readIntoStream((int)compressedLength);
+            Stream memStream = ReadIntoStream((int)compressedLength);
 
             using (BZip2InputStream decompressStream = new BZip2InputStream(memStream))
             {
-                dataWriter.writeData(decompressStream);
+                DataWriter.WriteData(decompressStream);
             }
         }
 
@@ -433,7 +433,7 @@ namespace Akeeba.Unarchiver.Format
         /// </summary>
         /// <param name="length">Length of the data block in bytes</param>
         /// <param name="token">A cancellation token, allowing the called to cancel the processing</param>
-        protected void processUncompressedDataBlock(ulong length, CancellationToken token)
+        protected void ProcessUncompressedDataBlock(ulong length, CancellationToken token)
         {
             // Batch size for copying data (1 Mb)
             ulong batchSize = 1048576;
@@ -444,9 +444,9 @@ namespace Akeeba.Unarchiver.Format
                 ulong nextBatch = Math.Min(length, batchSize);
                 length -= nextBatch;
 
-                using (Stream readData = readIntoStream((int)batchSize))
+                using (Stream readData = ReadIntoStream((int)batchSize))
                 {
-                    dataWriter.writeData(readData);
+                    DataWriter.WriteData(readData);
                 }
 
                 if (token.IsCancellationRequested)

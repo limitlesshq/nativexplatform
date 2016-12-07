@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-/// <summary>
-/// An entry in the archive has an invalid header format
-/// </summary>
 namespace Akeeba.Unarchiver
 {
+    /// <summary>
+    /// An entry in the archive has an invalid header format
+    /// </summary>
     [Serializable]
     internal class InvalidHeaderException : Exception
     {

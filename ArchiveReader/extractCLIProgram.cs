@@ -19,11 +19,11 @@ namespace Akeeba.extractCLI
 
             try
             {
-                extractor = Unarchiver.Unarchiver.createFor(@"C:\Apache24\htdocs\backups\test.jpa");
+                extractor = Unarchiver.Unarchiver.CreateForFile(@"C:\Apache24\htdocs\backups\test.jpa");
 
                 // Attach event subscribers
-                extractor.progressEvent += onProgress;
-                extractor.entityEvent += onEntity;
+                extractor.ProgressEvent += onProgress;
+                extractor.EntityEvent += onEntity;
 
                 CancellationTokenSource cts = new CancellationTokenSource();
                 var token = cts.Token;
@@ -31,7 +31,7 @@ namespace Akeeba.extractCLI
                 Task t = Task.Factory.StartNew(
                     () =>
                     {
-                        extractor.scan(token);
+                        extractor.Scan(token);
                     }, token,
                     TaskCreationOptions.LongRunning,
                     TaskScheduler.Default
@@ -61,23 +61,23 @@ namespace Akeeba.extractCLI
         {
             ResourceManager Text = Akeeba.extractCLI.Resources.Language.ResourceManager;
 
-            switch (e.progress.status)
+            switch (e.Progress.Status)
             {
-                case extractionStatus.error:
+                case ExtractionStatus.Error:
                     Console.WriteLine(Text.GetString("ERR_HEADER"));
-                    Console.WriteLine(e.progress.exception.Message);
-                    Console.WriteLine(e.progress.exception.StackTrace);
+                    Console.WriteLine(e.Progress.LastException.Message);
+                    Console.WriteLine(e.Progress.LastException.StackTrace);
                     break;
 
-                case extractionStatus.running:
-                    Console.WriteLine(string.Format("[File position {0,0}]", e.progress.filePosition));
+                case ExtractionStatus.Running:
+                    Console.WriteLine(string.Format("[File position {0,0}]", e.Progress.FilePosition));
                     break;
 
-                case extractionStatus.finished:
+                case ExtractionStatus.Finished:
                     Console.WriteLine(Text.GetString("LBL_STATUS_FINISHED"));
                     break;
 
-                case extractionStatus.idle:
+                case ExtractionStatus.Idle:
                     Console.WriteLine(Text.GetString("LBL_STATUS_IDLE"));
                     break;
             }
@@ -85,7 +85,7 @@ namespace Akeeba.extractCLI
 
         private static void onEntity(object sender, EntityEventArgs a)
         {
-            Console.WriteLine(a.information.storedName);
+            Console.WriteLine(a.Information.StoredName);
         }
     }
 }

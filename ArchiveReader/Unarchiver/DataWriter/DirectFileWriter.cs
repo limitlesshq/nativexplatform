@@ -21,16 +21,16 @@ namespace Akeeba.Unarchiver.DataWriter
         /// <summary>
         /// Internally stores the absolute filesystem path where files will be written when extracted from the archive.
         /// </summary>
-        private string extractRoot;
+        private string _targetRoot;
 
         /// <summary>
         /// Where the archive will be extracted to
         /// </summary>
-        public string rootDirectory
+        public string RootDirectory
         {
             get
             {
-                return extractRoot;
+                return _targetRoot;
             }
 
             set
@@ -40,14 +40,14 @@ namespace Akeeba.Unarchiver.DataWriter
                     throw new DirectoryNotFoundException();
                 }
 
-                extractRoot = value;
+                _targetRoot = value;
             }
         }
 
         /// <summary>
         /// The filestream of the current file (where data will be written to)
         /// </summary>
-        private FileStream outStream;
+        private FileStream _outStream;
 #endregion
 
 #region Constructors
@@ -57,7 +57,7 @@ namespace Akeeba.Unarchiver.DataWriter
         /// <param name="extractToDirectory">The root directory where files and folders will be extracted to.</param>
         public DirectFileWriter(string extractToDirectory)
         {
-            rootDirectory = extractToDirectory;
+            RootDirectory = extractToDirectory;
         }
 #endregion
 
@@ -66,7 +66,7 @@ namespace Akeeba.Unarchiver.DataWriter
         /// Creates a new directory and all its parent directories
         /// </summary>
         /// <param name="directory">Relative path of the directory being created</param>
-        public void makeDirRecursive(string directory)
+        public void MakeDirRecursive(string directory)
         {
             Directory.CreateDirectory(directory);
         }
@@ -75,29 +75,23 @@ namespace Akeeba.Unarchiver.DataWriter
         /// Start writing a file. Creates or truncates the file and opens the file stream we're goign to use to write data.
         /// </summary>
         /// <param name="relativePathName">Relative pathname of the file</param>
-        public void startFile(string relativePathName)
+        public void StartFile(string relativePathName)
         {
             // Close any already open stream
-            if ((outStream != null) && (outStream is FileStream))
-            {
-                outStream.Close();
-            }
+            _outStream?.Close();
 
-            outStream = new FileStream(getAbsoluteFilePath(relativePathName), FileMode.Create);
+            _outStream = new FileStream(GetAbsoluteFilePath(relativePathName), FileMode.Create);
         }
 
         /// <summary>
         /// Stop writing to a file. Closes the open file stream.
         /// </summary>
-        public void stopFile()
+        public void StopFile()
         {
             // Close any already open stream
-            if ((outStream != null) && (outStream is FileStream))
-            {
-                outStream.Close();
-            }
+            _outStream?.Close();
 
-            outStream = null;
+            _outStream = null;
         }
 
         /// <summary>
@@ -105,23 +99,23 @@ namespace Akeeba.Unarchiver.DataWriter
         /// </summary>
         /// <param name="buffer">Byte buffer with the data to write</param>
         /// <param name="count">How many bytes to write. A negative number means "as much data as the buffer holds".</param>
-        public void writeData(byte[] buffer, int count = -1)
+        public void WriteData(byte[] buffer, int count = -1)
         {
             if (count < 0)
             {
                 count = buffer.Length;
             }
 
-            outStream.Write(buffer, 0, count);
+            _outStream.Write(buffer, 0, count);
         }
 
         /// <summary>
         /// Append data to the file from a stream
         /// </summary>
         /// <param name="buffer">The stream containing the data to write</param>
-        public void writeData(Stream buffer)
+        public void WriteData(Stream buffer)
         {
-            buffer.CopyTo(outStream, 1048576);
+            buffer.CopyTo(_outStream, 1048576);
         }
 
         /// <summary>
@@ -129,7 +123,7 @@ namespace Akeeba.Unarchiver.DataWriter
         /// </summary>
         /// <param name="target">Link target</param>
         /// <param name="source">The relative path of the new link being created</param>
-        public void makeSymlink(string target, string source)
+        public void MakeSymlink(string target, string source)
         {
             #if WINDOWS
             // Windows: we use CreateSymbolicLink from kernel32.dll
@@ -145,7 +139,7 @@ namespace Akeeba.Unarchiver.DataWriter
             StringBuilder sbArgs = new StringBuilder(@"-s ", 512);
             sbArgs.AppendFormat("\"{0}\"", target);
             sbArgs.Append(' ');
-            sbArgs.AppendFormat("\"{0}{1}{2}\"", rootDirectory, Path.DirectorySeparatorChar, source);
+            sbArgs.AppendFormat("\"{0}{1}{2}\"", RootDirectory, Path.DirectorySeparatorChar, source);
 
             p.StartInfo.Arguments = sbArgs.ToString();
 
@@ -161,9 +155,9 @@ namespace Akeeba.Unarchiver.DataWriter
         /// </summary>
         /// <param name="relativeFilePath">Relative path of the file inside the archive, using forward slash as the path separator</param>
         /// <returns></returns>
-        public string getAbsoluteFilePath(string relativeFilePath)
+        public string GetAbsoluteFilePath(string relativeFilePath)
         {
-            StringBuilder sb = new StringBuilder(rootDirectory);
+            StringBuilder sb = new StringBuilder(RootDirectory);
             sb.Append(Path.DirectorySeparatorChar);
             sb.Append(relativeFilePath);
 
@@ -173,19 +167,16 @@ namespace Akeeba.Unarchiver.DataWriter
         #endregion
 
         #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
+        private bool _disposedValue; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!_disposedValue)
             {
                 if (disposing)
                 {
                     // Dispose managed state (managed objects).
-                    if ((outStream != null) && (outStream is IDisposable))
-                    {
-                        outStream.Dispose();
-                    }
+                    _outStream?.Dispose();
                 }
 
                 // Free unmanaged resources (unmanaged objects) and override a finalizer below.
@@ -194,7 +185,7 @@ namespace Akeeba.Unarchiver.DataWriter
                 // Set large fields to null.
                 // None.
 
-                disposedValue = true;
+                _disposedValue = true;
             }
         }
 
@@ -216,6 +207,9 @@ namespace Akeeba.Unarchiver.DataWriter
         #endregion
     }
 
+    /// <summary>
+    /// Contains all the P/Invoke methods which may be dangerous and require a security audit in the calling code
+    /// </summary>
     internal static class UnsafeNativeMethods
     {
 #if WINDOWS

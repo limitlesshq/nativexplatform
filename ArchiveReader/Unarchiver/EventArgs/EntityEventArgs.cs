@@ -5,17 +5,11 @@
     /// </summary>
     public class EntityEventArgs : System.EventArgs
     {
-        public EntityEventArgs(entityInformation a)
+        public EntityEventArgs(EntityInformation a)
         {
-            information = a;
+            Information = a;
         }
 
-        private entityInformation _information;
-
-        public entityInformation information
-        {
-            get { return _information;  }
-            set { _information = value; }
-        }
+        public EntityInformation Information { get; set; }
     }
 }

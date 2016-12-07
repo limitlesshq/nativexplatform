@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-/// <summary>
-/// The archive has an invalid format
-/// </summary>
 namespace Akeeba.Unarchiver
 {
+    /// <summary>
+    /// The archive has an invalid format
+    /// </summary>
     [Serializable]
     internal class InvalidArchiveException : Exception
     {

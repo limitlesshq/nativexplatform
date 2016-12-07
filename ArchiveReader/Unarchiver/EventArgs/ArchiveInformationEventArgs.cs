@@ -5,17 +5,11 @@
     /// </summary>
     public class ArchiveInformationEventArgs: System.EventArgs
     {
-        public ArchiveInformationEventArgs(archiveInformation a)
+        public ArchiveInformationEventArgs(ArchiveInformation a)
         {
-            archiveInformation = a;
+            ArchiveInformation = a;
         }
 
-        private archiveInformation _archiveInformation;
-
-        public archiveInformation archiveInformation
-        {
-            get { return _archiveInformation;  }
-            set { _archiveInformation = value; }
-        }
+        public ArchiveInformation ArchiveInformation { get; set; }
     }
 }

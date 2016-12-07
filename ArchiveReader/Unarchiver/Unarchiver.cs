@@ -19,33 +19,33 @@ namespace Akeeba.Unarchiver
         /// <summary>
         /// The supported file extension of this unarchiver, e.g. "jpa". Must be set in the constructor or the class declaration.
         /// </summary>
-        protected string supportedExtension;
+        protected string SupportedExtension;
 
         /// <summary>
         /// The part number we are reading from
         /// </summary>
-        protected int? currentPartNumber = null;
+        protected int? CurrentPartNumber = null;
 
         /// <summary>
         /// The current extraction progress
         /// </summary>
-        protected extractionProgress progress = new extractionProgress();
+        protected ExtractionProgress Progress = new ExtractionProgress();
         #endregion
 
         #region Public Properties
         /// <summary>
         /// Absolute path to the archive file
         /// </summary>
-        private string propArchivePath = "";
+        private string _archivePath = "";
 
         /// <summary>
         /// The absolute path to the archive file. Always assign the last part of a multipart archive (.jpa, .jps or .zip).
         /// </summary>
-        public string archivePath
+        public string ArchivePath
         {
             get
             {
-                return propArchivePath;
+                return _archivePath;
             }
 
             set
@@ -55,123 +55,128 @@ namespace Akeeba.Unarchiver
                     throw new FileNotFoundException();
                 }
 
-                string strExtension = Path.GetExtension(value);
+                string strExtension = Path.GetExtension(value) ?? "";
 
-                if (strExtension.ToUpper().Substring(1) != supportedExtension.ToUpper())
+                if (strExtension.ToUpper().Substring(1) != SupportedExtension.ToUpper())
                 {
                     throw new InvalidExtensionException();
                 }
 
-                propArchivePath = value;
+                _archivePath = value;
             }
         }
 
         /// <summary>
         /// Number of total archive parts, including the final part (.jpa, .jps or .zip extension)
         /// </summary>
-        private int? propParts = null;
+        private int? _parts = null;
 
         /// <summary>
         /// Total number of archive parts
         /// </summary>
-        public int parts
+        public int Parts
         {
             get
             {
-                if (!propParts.HasValue)
+                if (!_parts.HasValue)
                 {
                     try
                     {
-                        discoverParts();
+                        DiscoverParts();
                     }
                     catch (Exception)
                     {
-                        propParts = 0;
+                        _parts = 0;
                     }
                 }
 
-                return (int)propParts;
+                if (!_parts.HasValue)
+                {
+                    _parts = 0;
+                }
+
+                return (int)_parts;
             }
         }
 
         /// <summary>
         /// Currently open input file stream
         /// </summary>
-        protected Stream propInputFile = null;
+        protected Stream InternalInputStream;
 
         /// <summary>
         /// Returns the input file stream, or Nothing if we're at the EOF of the last part
         /// </summary>
-        protected Stream inputFile
+        protected Stream InputStream
         {
             get
             {
-                if (propInputFile == null)
+                if (InternalInputStream == null)
                 {
                     /**
                      * No currently open file. Try to open the current part number. If it's null we open the first part. If it's out of
                      * range we throw an exception.
                      */
-                    if (!currentPartNumber.HasValue)
+                    if (!CurrentPartNumber.HasValue)
                     {
-                        currentPartNumber = 1;
+                        CurrentPartNumber = 1;
                         _sizesOfPartsAlreadyRead = 0;
-                        progress.runningCompressed = 0;
-                        progress.runningUncompressed = 0;
+                        Progress.RunningCompressed = 0;
+                        Progress.RunningUncompressed = 0;
                     }
-                    else if ((currentPartNumber <= 0) || (currentPartNumber > parts))
+                    else if ((CurrentPartNumber <= 0) || (CurrentPartNumber > Parts))
                     {
                         throw new IndexOutOfRangeException();
                     }
 
-                    propInputFile = new FileStream(getPartFilename((int)currentPartNumber), FileMode.Open);
+                    InternalInputStream = new FileStream(GetPartFilename((int)CurrentPartNumber), FileMode.Open);
                 }
-                else if (propInputFile.Position >= propInputFile.Length)
+                else if (InternalInputStream.Position >= InternalInputStream.Length)
                 {
                     // We have reached EOF. Open the next part file if applicable.
-                    _sizesOfPartsAlreadyRead += propInputFile.Length;
-                    propInputFile.Dispose();
-                    currentPartNumber += 1;
+                    _sizesOfPartsAlreadyRead += InternalInputStream.Length;
+                    InternalInputStream.Dispose();
+                    CurrentPartNumber += 1;
 
-                    if (currentPartNumber <= parts)
+                    if (CurrentPartNumber <= Parts)
                     {
-                        propInputFile = new FileStream(getPartFilename((int)currentPartNumber), FileMode.Open);
+                        InternalInputStream = new FileStream(GetPartFilename((int)CurrentPartNumber), FileMode.Open);
                     }
                 }
 
-                return propInputFile;
+                return InternalInputStream;
             }
         }
 
         /// <summary>
         /// The DataWriter used when extracting a backup archive
         /// </summary>
-        protected IDataWriter _dataWriter;
+        protected IDataWriter InternalDataWriter;
 
         /// <summary>
         /// The DataWriter for extracting a backup archive
         /// </summary>
-        public IDataWriter dataWriter
+        public IDataWriter DataWriter
         {
             get
             {
-                return _dataWriter;
+                return InternalDataWriter;
             }
             set
             {
-                _dataWriter = value;
+                InternalDataWriter = value;
             }
         }
 
         /// <summary>
         /// Total size of the part files already read and closed
         /// </summary>
-        private long _sizesOfPartsAlreadyRead = 0;
+        private long _sizesOfPartsAlreadyRead;
 
         /// <summary>
-        /// TOtal size of the part files already read (read-only)
+        /// Total size of the part files already read (read-only)
         /// </summary>
-        public long sizesOfPartsAlreadyRead
+        public long SizesOfPartsAlreadyRead
         {
             get
             {
@@ -186,10 +191,10 @@ namespace Akeeba.Unarchiver
         /// </summary>
         protected Unarchiver()
         {
-            progress.status = extractionStatus.idle;
-            progress.filePosition = 0;
-            progress.runningCompressed = 0;
-            progress.runningUncompressed = 0;
+            Progress.Status = ExtractionStatus.Idle;
+            Progress.FilePosition = 0;
+            Progress.RunningCompressed = 0;
+            Progress.RunningUncompressed = 0;
         }
 
         /// <summary>
@@ -197,9 +202,10 @@ namespace Akeeba.Unarchiver
         /// </summary>
         /// <param name="filePath">The absolute filename of the archive file you want to create an unarchiver for</param>
         /// <returns></returns>
-        public static Unarchiver createFor(string filePath)
+        public static Unarchiver CreateForFile(string filePath)
         {
-            string strClassName = "Akeeba.Unarchiver.Format." + Path.GetExtension(filePath).ToUpper().Substring(1);
+            string extension = Path.GetExtension(filePath) ?? "";
+            string strClassName = "Akeeba.Unarchiver.Format." + extension.ToUpper().Substring(1);
             Type classType = Type.GetType(strClassName);
 
             if (classType == null)
@@ -223,18 +229,18 @@ namespace Akeeba.Unarchiver
         /// <summary>
         /// Event triggered when the archive information is read
         /// </summary>
-        public event ArchiveInformationEventHandler archiveInformationEvent;
+        public event ArchiveInformationEventHandler ArchiveInformationEvent;
 
         /// <summary>
-        /// Wraps the archiveInformationEvent invocation inside a protected virtual method to let derived classes override it.
+        /// Wraps the ArchiveInformationEvent invocation inside a protected virtual method to let derived classes override it.
         /// This method guards against the possibility of a race condition if the last subscriber unsubscribes immediately
         /// after the null check and before the event is raised. So please don't simplify the invocation even if Visual Studio
         /// tells you to.
         /// </summary>
         /// <param name="e">Event arguments</param>
-        protected virtual void onArchiveInformationEvent(ArchiveInformationEventArgs e)
+        protected virtual void OnArchiveInformationEvent(ArchiveInformationEventArgs e)
         {
-            ArchiveInformationEventHandler handler = archiveInformationEvent;
+            ArchiveInformationEventHandler handler = ArchiveInformationEvent;
 
             // Event will be null if there are no subscribers
             if (handler != null)
@@ -254,18 +260,18 @@ namespace Akeeba.Unarchiver
         /// <summary>
         /// Event triggered when an entity header is read
         /// </summary>
-        public event EntityEventHandler entityEvent;
+        public event EntityEventHandler EntityEvent;
 
         /// <summary>
-        /// Wraps the entityEvent invocation inside a protected virtual method to let derived classes override it.
+        /// Wraps the EntityEvent invocation inside a protected virtual method to let derived classes override it.
         /// This method guards against the possibility of a race condition if the last subscriber unsubscribes immediately
         /// after the null check and before the event is raised. So please don't simplify the invocation even if Visual Studio
         /// tells you to.
         /// </summary>
         /// <param name="e">Event arguments</param>
-        protected virtual void onEntityEvent(EntityEventArgs e)
+        protected virtual void OnEntityEvent(EntityEventArgs e)
         {
-            EntityEventHandler handler = entityEvent;
+            EntityEventHandler handler = EntityEvent;
 
             // Event will be null if there are no subscribers
             if (handler != null)
@@ -285,18 +291,18 @@ namespace Akeeba.Unarchiver
         /// <summary>
         /// Event raised when there is archive extraction progress (after an entity is extracted, end of archive and catchable error conditions)
         /// </summary>
-        public event ProgressEventHandler progressEvent;
+        public event ProgressEventHandler ProgressEvent;
 
         /// <summary>
-        /// Wraps the progressEvent invocation inside a protected virtual method to let derived classes override it.
+        /// Wraps the ProgressEvent invocation inside a protected virtual method to let derived classes override it.
         /// This method guards against the possibility of a race condition if the last subscriber unsubscribes immediately
         /// after the null check and before the event is raised. So please don't simplify the invocation even if Visual Studio
         /// tells you to.
         /// </summary>
         /// <param name="e">Event arguments</param>
-        protected virtual void onProgressEvent(ProgressEventArgs e)
+        protected virtual void OnProgressEvent(ProgressEventArgs e)
         {
-            ProgressEventHandler handler = progressEvent;
+            ProgressEventHandler handler = ProgressEvent;
 
             // Event will be null if there are no subscribers
             if (handler != null)
@@ -311,30 +317,30 @@ namespace Akeeba.Unarchiver
         /// <summary>
         /// Discovers the number of total parts in this archive set. All parts must live in the same filesystem location.
         /// </summary>
-        protected void discoverParts()
+        protected void DiscoverParts()
         {
-            propParts = 0;
+            _parts = 0;
 
-            if (!File.Exists(propArchivePath))
+            if (!File.Exists(_archivePath))
             {
                 return;
             }
 
-            string strExtension = Path.GetExtension(propArchivePath);
-            string strNewFile = "";
+            string strExtension = Path.GetExtension(_archivePath) ?? "";
+            string strNewFile;
             int partNumber = 0;
 
             /**
-             * This loop always runs at least once, therefore propParts will be 1 in single part archives when the check in the while
-             * fails right from the first loop. In other words, it guarantees that propParts is always the count of numbered part files
+             * This loop always runs at least once, therefore _parts will be 1 in single part archives when the check in the while
+             * fails right from the first loop. In other words, it guarantees that _parts is always the count of numbered part files
              * plus one (the last .jpa, .jps, or .zip part of the archive set).
              */
             do
             {
-                propParts += 1;
+                _parts += 1;
                 partNumber += 1;
 
-                strNewFile = Path.ChangeExtension(propArchivePath, strExtension.Substring(0, 1) + string.Format("{0:00}", partNumber));
+                strNewFile = Path.ChangeExtension(_archivePath, strExtension.Substring(0, 1) + string.Format("{0:00}", partNumber));
             } while (File.Exists(strNewFile));
         }
 
@@ -343,39 +349,39 @@ namespace Akeeba.Unarchiver
         /// </summary>
         /// <param name="partNumber">The part number you want to get a filename for. Must be between 1 and the count in the parts property</param>
         /// <returns>The absolute file path to the archive part file</returns>
-        protected string getPartFilename(int partNumber)
+        protected string GetPartFilename(int partNumber)
         {
             // Range check
-            if ((partNumber <= 0) || (partNumber > parts))
+            if ((partNumber <= 0) || (partNumber > Parts))
             {
                 throw new IndexOutOfRangeException();
             }
 
             // The n-th (final) part has special handling
-            if (partNumber == parts)
+            if (partNumber == Parts)
             {
-                return propArchivePath;
+                return _archivePath;
             }
 
-            string strExtension = Path.GetExtension(propArchivePath);
+            string strExtension = Path.GetExtension(_archivePath) ?? "";
 
-            return Path.ChangeExtension(propArchivePath, strExtension.Substring(0, 1) + string.Format("{0:00}", partNumber));
+            return Path.ChangeExtension(_archivePath, strExtension.Substring(0, 1) + string.Format("{0:00}", partNumber));
         }
 
         /// <summary>
         /// Close the input stream. The next attempted read will start from position 0 of the first part.
         /// </summary>
-        protected void close()
+        protected void Close()
         {
-            if ((propInputFile != null) && (propInputFile is FileStream))
+            if ((InternalInputStream != null) && (InternalInputStream is FileStream))
             {
-                propInputFile.Dispose();
+                InternalInputStream.Dispose();
             }
 
-            currentPartNumber = null;
+            CurrentPartNumber = null;
             _sizesOfPartsAlreadyRead = 0;
-            progress.runningCompressed = 0;
-            progress.runningUncompressed = 0;
+            Progress.RunningCompressed = 0;
+            Progress.RunningUncompressed = 0;
         }
 
         /// <summary>
@@ -383,22 +389,22 @@ namespace Akeeba.Unarchiver
         /// </summary>
         /// <param name="partNumber">The part number to open, valid values 1 to parts. Omit to open the first part.</param>
         /// <returns>The FileStream for the specified part number, reset to position 0 (start of file)</returns>
-        protected FileStream open(int partNumber = 1)
+        protected FileStream Open(int partNumber = 1)
         {
-            close();
+            Close();
 
             // Set up _sizesOfPartsAlreadyRead;
             _sizesOfPartsAlreadyRead = 0;
 
             for (int i = 1; i < partNumber; i++)
             {
-                FileInfo fi = new FileInfo(archivePath);
+                FileInfo fi = new FileInfo(ArchivePath);
                 _sizesOfPartsAlreadyRead += fi.Length;
             }
 
-            currentPartNumber = partNumber;
+            CurrentPartNumber = partNumber;
 
-            return (FileStream)inputFile;
+            return (FileStream)InputStream;
         } 
         #endregion
 
@@ -408,11 +414,11 @@ namespace Akeeba.Unarchiver
         /// </summary>
         /// <param name="len">Maximum length of the string, in bytes (might be different than number of characters)</param>
         /// <returns>The string read from the file</returns>
-        protected string readUTF8String(int len)
+        protected string ReadUtf8String(int len)
         {
-            byte[] buffer = readBytes(len);
+            byte[] buffer = ReadBytes(len);
 
-            return System.Text.Encoding.UTF8.GetString(buffer);
+            return Encoding.UTF8.GetString(buffer);
         }
 
         /// <summary>
@@ -420,11 +426,11 @@ namespace Akeeba.Unarchiver
         /// </summary>
         /// <param name="len">Maximum length of the string, in bytes (same as characters, it's an 8bit encoding)</param>
         /// <returns>The string read from the file</returns>
-        protected string readASCIIString(int len)
+        protected string ReadAsciiString(int len)
         {
-            byte[] buffer = readBytes(len);
+            byte[] buffer = ReadBytes(len);
 
-            return System.Text.Encoding.ASCII.GetString(buffer);
+            return Encoding.ASCII.GetString(buffer);
         }
 
         /// <summary>
@@ -432,20 +438,20 @@ namespace Akeeba.Unarchiver
         /// </summary>
         /// <param name="len">Maximum length of the string, in bytes (might be different than number of characters)</param>
         /// <returns>The string read from the file</returns>
-        protected string readUTF32String(int len)
+        protected string ReadUtf32String(int len)
         {
-            byte[] buffer = readBytes(len);
+            byte[] buffer = ReadBytes(len);
 
-            return System.Text.Encoding.UTF32.GetString(buffer);
+            return Encoding.UTF32.GetString(buffer);
         }
 
         /// <summary>
         /// Reads a signed short integer from the archive
         /// </summary>
         /// <returns>The value read from the archive</returns>
-        protected short readShort()
+        protected short ReadShort()
         {
-            byte[] buffer = readBytes(2);
+            byte[] buffer = ReadBytes(2);
 
             return BitConverter.ToInt16(buffer, 0);
         }
@@ -454,9 +460,9 @@ namespace Akeeba.Unarchiver
         /// Reads a signed long integer from the archive
         /// </summary>
         /// <returns>The value read from the archive</returns>
-        protected long readLong()
+        protected long ReadLong()
         {
-            byte[] buffer = readBytes(4);
+            byte[] buffer = ReadBytes(4);
 
             return BitConverter.ToInt32(buffer, 0);
         }
@@ -465,9 +471,9 @@ namespace Akeeba.Unarchiver
         /// Reads a signed byte from the archive
         /// </summary>
         /// <returns>The value read from the archive</returns>
-        protected sbyte readSByte()
+        protected sbyte ReadSByte()
         {
-            byte[] buffer = readBytes(1);
+            byte[] buffer = ReadBytes(1);
 
             return (buffer[0] > 127) ? (sbyte)(256 - buffer[0]) : (sbyte)buffer[0];
         }
@@ -476,9 +482,9 @@ namespace Akeeba.Unarchiver
         /// Reads an unsigned short integer from the archive
         /// </summary>
         /// <returns>The value read from the archive</returns>
-        protected ushort readUShort()
+        protected ushort ReadUShort()
         {
-            byte[] buffer = readBytes(2);
+            byte[] buffer = ReadBytes(2);
 
             return BitConverter.ToUInt16(buffer, 0);
         }
@@ -487,9 +493,9 @@ namespace Akeeba.Unarchiver
         /// Reads an unsigned long integer from the archive
         /// </summary>
         /// <returns>The value read from the archive</returns>
-        protected ulong readULong()
+        protected ulong ReadULong()
         {
-            byte[] buffer = readBytes(4);
+            byte[] buffer = ReadBytes(4);
 
             return BitConverter.ToUInt32(buffer, 0);
         }
@@ -498,9 +504,9 @@ namespace Akeeba.Unarchiver
         /// Reads an unsigned byte from the archive
         /// </summary>
         /// <returns>The value read from the archive</returns>
-        protected byte readByte()
+        protected byte ReadByte()
         {
-            byte[] buffer = readBytes(1);
+            byte[] buffer = ReadBytes(1);
 
             return buffer[0];
         }
@@ -510,9 +516,9 @@ namespace Akeeba.Unarchiver
         /// </summary>
         /// <param name="len">Up to how many bytes of data should we read</param>
         /// <returns>The MemoryStream with the data read from the archive</returns>
-        protected MemoryStream readIntoStream(int len)
+        protected MemoryStream ReadIntoStream(int len)
         {
-            byte[] buffer = readBytes(len);
+            byte[] buffer = ReadBytes(len);
 
             return new MemoryStream(buffer);
         }
@@ -522,11 +528,11 @@ namespace Akeeba.Unarchiver
         /// </summary>
         /// <param name="len">How many bytes to read in total</param>
         /// <returns>A byte[] array with the content read from the file. May be smaller than len elements!</returns>
-        protected byte[] readBytes(int len)
+        protected byte[] ReadBytes(int len)
         {
             byte[] buffer = new byte[len];
 
-            int readLength = inputFile.Read(buffer, 0, len);
+            int readLength = InputStream.Read(buffer, 0, len);
 
             // I've read as many bytes as I wanted. I'm done.
             if (readLength == len)
@@ -535,7 +541,7 @@ namespace Akeeba.Unarchiver
             }
 
             // Have I reached the end of parts?
-            if (currentPartNumber == parts)
+            if (CurrentPartNumber == Parts)
             {
                 Array.Resize(ref buffer, readLength);
 
@@ -543,12 +549,12 @@ namespace Akeeba.Unarchiver
             }
 
             // Proceed to next part
-            close();
-            currentPartNumber++;
+            Close();
+            CurrentPartNumber++;
 
             // Read the rest of the data and return the combined result
             int remainingRead = len - readLength;
-            byte[] restOfBuffer = readBytes(remainingRead);
+            byte[] restOfBuffer = ReadBytes(remainingRead);
             Array.Copy(restOfBuffer, 0, buffer, readLength, remainingRead);
 
             return buffer;
@@ -558,23 +564,23 @@ namespace Akeeba.Unarchiver
         /// Skip forward up to len number of bytes. Works across part files automatically.
         /// </summary>
         /// <param name="len">Up to how many byte positions to skip forward.</param>
-        protected void skipBytes(long len)
+        protected void SkipBytes(long len)
         {
-            long bytesLeft = inputFile.Length - inputFile.Position;
+            long bytesLeft = InputStream.Length - InputStream.Position;
 
             // We have enough bytes left. Increase position and return.
             if (bytesLeft > len)
             {
-                inputFile.Position += len;
+                InputStream.Position += len;
 
                 return;
             }
 
             // We'll either go past EOF or directly on EOF. Close the file and advance the current part
-            close();
+            Close();
 
             // No more parts.
-            if (currentPartNumber == parts)
+            if (CurrentPartNumber == Parts)
             {
                 return;
             }
@@ -586,7 +592,7 @@ namespace Akeeba.Unarchiver
             }
 
             // The position adjustment was for more bytes than what we had in the previous part. We need to seek to the remainder.
-            skipBytes(len - bytesLeft);
+            SkipBytes(len - bytesLeft);
         }
         #endregion
 
@@ -595,18 +601,18 @@ namespace Akeeba.Unarchiver
         /// Extracts a backup archive.  A DataWriter must be already assigned and configured or an exception will be raised.
         /// </summary>
         /// <param name="token">A CancellationToken used by the caller to cancel the execution before it's complete.</param>
-        public abstract void extract(CancellationToken token);
+        public abstract void Extract(CancellationToken token);
 
         /// <summary>
         /// Extracts a backup archive using the specified data writer.
         /// </summary>
         /// <param name="token">A CancellationToken used by the caller to cancel the execution before it's complete.</param>
         /// <param name="dataWriterObject">An object implementing IDataWriter which will be used to handle extracted data</param>
-        public void extract(CancellationToken token, IDataWriter dataWriterObject)
+        public void Extract(CancellationToken token, IDataWriter dataWriterObject)
         {
-            dataWriter = dataWriterObject;
+            DataWriter = dataWriterObject;
 
-            extract(token);
+            Extract(token);
         }
 
         /// <summary>
@@ -614,11 +620,11 @@ namespace Akeeba.Unarchiver
         /// </summary>
         /// <param name="token">A CancellationToken used by the caller to cancel the execution before it's complete.</param>
         /// <param name="destinationPath">The path where the archive will be extracted to</param>
-        public void extract(CancellationToken token, string destinationPath)
+        public void Extract(CancellationToken token, string destinationPath)
         {
             IDataWriter myDataWriter = new DirectFileWriter(destinationPath);
 
-            extract(token, myDataWriter);
+            Extract(token, myDataWriter);
         }
 
         /// <summary>
@@ -626,50 +632,47 @@ namespace Akeeba.Unarchiver
         /// entities contained in the archive.
         /// </summary>
         /// <param name="token">A CancellationToken used by the caller to cancel the execution before it's complete.</param>
-        public void scan(CancellationToken token)
+        public void Scan(CancellationToken token)
         {
             // Setting the data writer to null is detected by the unarchivers, forcing them to skip over the data sections.
-            _dataWriter = null;
+            InternalDataWriter = null;
 
-            extract(token);
+            Extract(token);
         }
 
         /// <summary>
         /// Test the archive by using the NullWrite data writer which doesn't create any files / folders
         /// </summary>
         /// <param name="token">A CancellationToken used by the caller to cancel the execution before it's complete.</param>
-        public void test(CancellationToken token)
+        public void Test(CancellationToken token)
         {
             IDataWriter myDataWriter = new NullWriter();
 
-            extract(token, myDataWriter);
+            Extract(token, myDataWriter);
         }
 
         #endregion
 
         #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
+        private bool _disposedValue; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!_disposedValue)
             {
                 if (disposing)
                 {
-                    if ((propInputFile != null) && (propInputFile is IDisposable))
-                    {
-                        propInputFile.Dispose();
-                    }
+                    InternalInputStream?.Dispose();
                 }
 
                 // Free unmanaged resources (unmanaged objects) and override a finalizer below.
                 // (!) Nothing to do for that
 
                 // Set large fields to null.
-                propArchivePath = null;
-                dataWriter = null;
+                _archivePath = null;
+                DataWriter = null;
 
-                disposedValue = true;
+                _disposedValue = true;
             }
         }
 

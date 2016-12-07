@@ -5,17 +5,11 @@
     /// </summary>
     public class ProgressEventArgs : System.EventArgs
     {
-        public ProgressEventArgs(extractionProgress a)
+        public ProgressEventArgs(ExtractionProgress a)
         {
-            progress = a;
+            Progress = a;
         }
 
-        private extractionProgress _progress;
-
-        public extractionProgress progress
-        {
-            get { return _progress;  }
-            set { _progress = value; }
-        }
+        public ExtractionProgress Progress { get; set; }
     }
 }

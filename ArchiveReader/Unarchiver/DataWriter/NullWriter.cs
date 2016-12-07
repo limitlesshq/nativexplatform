@@ -12,31 +12,31 @@ namespace Akeeba.Unarchiver.DataWriter
     /// </summary>
     class NullWriter: IDataWriter
     {
-        public void makeDirRecursive(string directory)
+        public void MakeDirRecursive(string directory)
         {
         }
 
-        public void startFile(string relativePathName)
+        public void StartFile(string relativePathName)
         {
         }
 
-        public void stopFile()
+        public void StopFile()
         {
         }
 
-        public void writeData(byte[] buffer, int count = -1)
+        public void WriteData(byte[] buffer, int count = -1)
         {
         }
 
-        public void writeData(Stream buffer)
+        public void WriteData(Stream buffer)
         {
         }
 
-        public void makeSymlink(string target, string source)
+        public void MakeSymlink(string target, string source)
         {
         }
 
-        public string getAbsoluteFilePath(string relativeFilePath)
+        public string GetAbsoluteFilePath(string relativeFilePath)
         {
             return "";
         }
