@@ -350,7 +350,7 @@ namespace Akeeba.Unarchiver.Format
                 {
                     SkipBytes((long) dataBlockHeader.CompressedSize);
 
-                    Progress.FilePosition = (ulong) (SizesOfPartsAlreadyRead + InputStream.Position);
+                    Progress.FilePosition += dataBlockHeader.CompressedSize;
                 }
 
                 return;
