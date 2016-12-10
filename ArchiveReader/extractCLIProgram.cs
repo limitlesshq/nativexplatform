@@ -12,7 +12,7 @@ namespace Akeeba.extractCLI
         static void Main(string[] args)
         {
             ResourceManager text = Resources.Language.ResourceManager;
-            
+
             using (Unarchiver.Unarchiver extractor = Unarchiver.Unarchiver.CreateForFile(@"C:\Apache24\htdocs\backups\test.jpa"))
             {
                 try
@@ -29,7 +29,7 @@ namespace Akeeba.extractCLI
                         {
                             if (extractor != null)
                             {
-                                extractor.Scan(token);
+                                extractor.Test(token);
                             }
                         }, token,
                         TaskCreationOptions.LongRunning,

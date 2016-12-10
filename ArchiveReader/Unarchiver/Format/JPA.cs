@@ -12,7 +12,7 @@ using ICSharpCode.SharpZipLib.BZip2;
 
 namespace Akeeba.Unarchiver.Format
 {
-    class JPA: Unarchiver
+    class JPA : Unarchiver
     {
         /// <summary>
         /// Describes the Standard Header of a JPA archive with the Extra Header Field - Spanned Archive Marker extension
@@ -33,12 +33,22 @@ namespace Akeeba.Unarchiver.Format
         /// <summary>
         /// Type of an entity in a JPA archive
         /// </summary>
-        public enum JpaEntityType { Directory, File, Symlink };
+        public enum JpaEntityType
+        {
+            Directory,
+            File,
+            Symlink
+        };
 
         /// <summary>
         /// Type of compression of an entity in a JPA archive
         /// </summary>
-        public enum JpaCompressionType { Uncompressed, GZip, BZip2 };
+        public enum JpaCompressionType
+        {
+            Uncompressed,
+            GZip,
+            BZip2
+        };
 
         /// <summary>
         /// Describes the Entity Description Block of a JPA archive with the Timestamp Extra Field extension
@@ -61,7 +71,7 @@ namespace Akeeba.Unarchiver.Format
         /// Inherit the constructor from the base class
         /// </summary>
         /// <param name="filePath"></param>
-        public JPA(string filePath): base()
+        public JPA(string filePath) : base()
         {
             SupportedExtension = "jpa";
 
@@ -177,7 +187,7 @@ namespace Akeeba.Unarchiver.Format
             if (archiveHeader.HeaderLength > 19)
             {
                 // We need to loop while we have remaining header bytes
-                ushort remainingBytes = (ushort)(archiveHeader.HeaderLength - 19);
+                ushort remainingBytes = (ushort) (archiveHeader.HeaderLength - 19);
 
                 while (remainingBytes > 0)
                 {
@@ -193,7 +203,7 @@ namespace Akeeba.Unarchiver.Format
                     ushort extraHeaderLength = ReadUShort();
 
                     // Subtract the read bytes from the remaining bytes in the header.
-                    remainingBytes -= (ushort)(4 + extraHeaderLength);
+                    remainingBytes -= (ushort) (4 + extraHeaderLength);
 
                     // Read the extra header
                     switch (headerSignature[3])
@@ -256,18 +266,18 @@ namespace Akeeba.Unarchiver.Format
             fileHeader.BlockLength = ReadUShort();
             fileHeader.LengthOfEntityPath = ReadUShort();
             fileHeader.EntityPath = ReadUtf8String(fileHeader.LengthOfEntityPath);
-            fileHeader.EntityType = (JpaEntityType)Enum.ToObject(typeof(JpaEntityType), ReadSByte());
-            fileHeader.CompressionType = (JpaCompressionType)Enum.ToObject(typeof(JpaCompressionType), ReadSByte());
+            fileHeader.EntityType = (JpaEntityType) Enum.ToObject(typeof(JpaEntityType), ReadSByte());
+            fileHeader.CompressionType = (JpaCompressionType) Enum.ToObject(typeof(JpaCompressionType), ReadSByte());
             fileHeader.CompressedSize = ReadULong();
             fileHeader.UncompressedSize = ReadULong();
             fileHeader.EntityPermissions = ReadULong();
 
-            ushort standardEntityBlockLength = (ushort)(21 + fileHeader.LengthOfEntityPath);
+            ushort standardEntityBlockLength = (ushort) (21 + fileHeader.LengthOfEntityPath);
 
             if (fileHeader.BlockLength > standardEntityBlockLength)
             {
                 // We need to loop while we have remaining header bytes
-                ushort remainingBytes = (ushort)(fileHeader.BlockLength - standardEntityBlockLength);
+                ushort remainingBytes = (ushort) (fileHeader.BlockLength - standardEntityBlockLength);
 
                 while (remainingBytes > 0)
                 {
@@ -325,7 +335,7 @@ namespace Akeeba.Unarchiver.Format
         public void ProcessDataBlock(JpaFileHeader dataBlockHeader, CancellationToken token)
         {
             // Update the archive's progress record
-            Progress.FilePosition = (ulong)(SizesOfPartsAlreadyRead + InputStream.Position);
+            Progress.FilePosition = (ulong) (SizesOfPartsAlreadyRead + InputStream.Position);
             Progress.RunningCompressed += dataBlockHeader.CompressedSize;
             Progress.RunningUncompressed += dataBlockHeader.CompressedSize;
             Progress.Status = ExtractionStatus.Running;
@@ -338,7 +348,9 @@ namespace Akeeba.Unarchiver.Format
             {
                 if (dataBlockHeader.CompressedSize > 0)
                 {
-                    SkipBytes((long)dataBlockHeader.CompressedSize);
+                    SkipBytes((long) dataBlockHeader.CompressedSize);
+
+                    Progress.FilePosition = (ulong) (SizesOfPartsAlreadyRead + InputStream.Position);
                 }
 
                 return;
@@ -350,9 +362,6 @@ namespace Akeeba.Unarchiver.Format
                 case JpaEntityType.Directory:
                     DataWriter.MakeDirRecursive(DataWriter.GetAbsoluteFilePath(dataBlockHeader.EntityPath));
 
-                    // Invoke the OnEntityEvent event
-                    OnProgressEvent(args);
-
                     return;
 
                 case JpaEntityType.Symlink:
@@ -361,9 +370,6 @@ namespace Akeeba.Unarchiver.Format
                         string strTarget = ReadUtf8String(dataBlockHeader.LengthOfEntityPath);
                         DataWriter.MakeSymlink(strTarget, DataWriter.GetAbsoluteFilePath(dataBlockHeader.EntityPath));
                     }
-
-                    // Invoke the OnEntityEvent event
-                    OnProgressEvent(args);
 
                     return;
             }
@@ -397,8 +403,7 @@ namespace Akeeba.Unarchiver.Format
             // Stop writing data to the file
             DataWriter.StopFile();
 
-            // Invoke the OnEntityEvent event
-            OnProgressEvent(args);
+            Progress.FilePosition += dataBlockHeader.CompressedSize;
         }
 
         /// <summary>
@@ -447,7 +452,7 @@ namespace Akeeba.Unarchiver.Format
                 ulong nextBatch = Math.Min(length, batchSize);
                 length -= nextBatch;
 
-                using (Stream readData = ReadIntoStream((int)batchSize))
+                using (Stream readData = ReadIntoStream((int)nextBatch))
                 {
                     DataWriter.WriteData(readData);
                 }
