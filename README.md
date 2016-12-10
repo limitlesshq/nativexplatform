@@ -1,0 +1,1 @@
+# Akeeba Portable ToolsThis repository hosts the rewrite of our native tools (Akeeba eXtract) using .NET technologies.## Not ready for useAll code in this repository is experimental and subject to change. Use at your own risk.## LicensePlease consult [the license file](LICENSE.md) in this repository.
