@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.IO.Compression;
 using Akeeba.Unarchiver.EventArgs;
 using Akeeba.Unarchiver.DataWriter;
 using System.Threading;
+using ICSharpCode.SharpZipLib.BZip2;
 
 namespace Akeeba.Unarchiver
 {
@@ -15,6 +17,29 @@ namespace Akeeba.Unarchiver
     /// </summary>
     abstract class Unarchiver: IDisposable
     {
+        #region Data types
+        /// <summary>
+        /// Type of an entity in a JPA archive
+        /// </summary>
+        public enum TEntityType
+        {
+            Directory,
+            File,
+            Symlink
+        }
+
+        /// <summary>
+        /// Type of compression of an entity in a JPA archive
+        /// </summary>
+        public enum TCompressionType
+        {
+            Uncompressed,
+            GZip,
+            BZip2
+        }
+
+        #endregion
+
         #region Protected Properties
         /// <summary>
         /// The supported file extension of this unarchiver, e.g. "jpa". Must be set in the constructor or the class declaration.
@@ -378,6 +403,8 @@ namespace Akeeba.Unarchiver
                 InternalInputStream.Dispose();
             }
 
+            InternalInputStream = null;
+
             CurrentPartNumber = null;
             _sizesOfPartsAlreadyRead = 0;
             Progress.RunningCompressed = 0;
@@ -689,6 +716,140 @@ namespace Akeeba.Unarchiver
             Dispose(true);
             // Uncomment the following line if the finalizer is overridden above.
             // GC.SuppressFinalize(this);
+        }
+        #endregion
+
+        #region Common archive handling code
+        /// <summary>
+        /// Processes a GZip-compressed data block
+        /// </summary>
+        /// <param name="compressedLength">Length of the data block in bytes</param>
+        /// <param name="token">A cancellation token, allowing the called to cancel the processing</param>
+        protected void ProcessGZipDataBlock(ulong compressedLength, CancellationToken token)
+        {
+            Stream memStream = ReadIntoStream((int)compressedLength);
+
+            using (GZipStream decompressStream = new GZipStream(memStream, CompressionMode.Decompress))
+            {
+                DataWriter.WriteData(decompressStream);
+            }
+        }
+
+        /// <summary>
+        /// Processes a BZip2-compressed data block
+        /// </summary>
+        /// <param name="compressedLength">Length of the data block in bytes</param>
+        /// <param name="token">A cancellation token, allowing the called to cancel the processing</param>
+        protected void ProcessBZip2DataBlock(ulong compressedLength, CancellationToken token)
+        {
+            Stream memStream = ReadIntoStream((int)compressedLength);
+
+            using (BZip2InputStream decompressStream = new BZip2InputStream(memStream))
+            {
+                DataWriter.WriteData(decompressStream);
+            }
+        }
+
+        /// <summary>
+        /// Processes an uncompressed data block
+        /// </summary>
+        /// <param name="length">Length of the data block in bytes</param>
+        /// <param name="token">A cancellation token, allowing the called to cancel the processing</param>
+        protected void ProcessUncompressedDataBlock(ulong length, CancellationToken token)
+        {
+            // Batch size for copying data (1 Mb)
+            ulong batchSize = 1048576;
+
+            // Copy the data to the destination file one batch at a time
+            while (length > 0)
+            {
+                ulong nextBatch = Math.Min(length, batchSize);
+                length -= nextBatch;
+
+                using (Stream readData = ReadIntoStream((int)nextBatch))
+                {
+                    DataWriter.WriteData(readData);
+                }
+
+                if (token.IsCancellationRequested)
+                {
+                    token.ThrowIfCancellationRequested();
+                }
+            }
+        }
+
+        protected void ProcessDataBlock(ulong CompressedSize, ulong UncompressedSize, TCompressionType CompressionType, TEntityType EntityType, string EntityPath, CancellationToken token)
+        {
+            // Update the archive's progress record
+            Progress.FilePosition = (ulong) (SizesOfPartsAlreadyRead + InputStream.Position);
+            Progress.RunningCompressed += CompressedSize;
+            Progress.RunningUncompressed += UncompressedSize;
+            Progress.Status = ExtractionStatus.Running;
+
+            // Create the event arguments we'll use when invoking the event
+            ProgressEventArgs args = new ProgressEventArgs(Progress);
+
+            // If we don't have a data writer we just need to skip over the data
+            if (DataWriter == null)
+            {
+                if (CompressedSize > 0)
+                {
+                    SkipBytes((long) CompressedSize);
+
+                    Progress.FilePosition += CompressedSize;
+                }
+
+                return;
+            }
+
+            // Is this a directory?
+            switch (EntityType)
+            {
+                case TEntityType.Directory:
+                    DataWriter.MakeDirRecursive(DataWriter.GetAbsoluteFilePath(EntityPath));
+
+                    return;
+
+                case TEntityType.Symlink:
+                    if (CompressedSize > 0)
+                    {
+                        string strTarget = ReadUtf8String((int)CompressedSize);
+                        DataWriter.MakeSymlink(strTarget, DataWriter.GetAbsoluteFilePath(EntityPath));
+                    }
+
+                    return;
+            }
+
+            // Begin writing to file
+            DataWriter.StartFile(EntityPath);
+
+            // Is this a zero length file?
+            if (CompressedSize == 0)
+            {
+                DataWriter.StopFile();
+                return;
+            }
+
+            switch (CompressionType)
+            {
+                case TCompressionType.Uncompressed:
+                    ProcessUncompressedDataBlock(CompressedSize, token);
+                    break;
+
+                case TCompressionType.GZip:
+                    ProcessGZipDataBlock(CompressedSize, token);
+                    break;
+
+                case TCompressionType.BZip2:
+                    ProcessBZip2DataBlock(CompressedSize, token);
+                    break;
+
+            }
+
+            // Stop writing data to the file
+            DataWriter.StopFile();
+
+            Progress.FilePosition += CompressedSize;
         }
         #endregion
     }

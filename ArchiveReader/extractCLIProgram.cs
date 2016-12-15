@@ -13,7 +13,7 @@ namespace Akeeba.extractCLI
         {
             ResourceManager text = Resources.Language.ResourceManager;
 
-            using (Unarchiver.Unarchiver extractor = Unarchiver.Unarchiver.CreateForFile(@"C:\Apache24\htdocs\backups\test.jpa"))
+            using (Unarchiver.Unarchiver extractor = Unarchiver.Unarchiver.CreateForFile(@"C:\Apache24\htdocs\backups\test.zip"))
             {
                 try
                 {

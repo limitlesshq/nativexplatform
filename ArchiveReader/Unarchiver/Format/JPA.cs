@@ -31,26 +31,6 @@ namespace Akeeba.Unarchiver.Format
         }
 
         /// <summary>
-        /// Type of an entity in a JPA archive
-        /// </summary>
-        public enum JpaEntityType
-        {
-            Directory,
-            File,
-            Symlink
-        };
-
-        /// <summary>
-        /// Type of compression of an entity in a JPA archive
-        /// </summary>
-        public enum JpaCompressionType
-        {
-            Uncompressed,
-            GZip,
-            BZip2
-        };
-
-        /// <summary>
         /// Describes the Entity Description Block of a JPA archive with the Timestamp Extra Field extension
         /// </summary>
         public struct JpaFileHeader
@@ -59,8 +39,8 @@ namespace Akeeba.Unarchiver.Format
             public ushort BlockLength;
             public ushort LengthOfEntityPath;
             public string EntityPath;
-            public JpaEntityType EntityType;
-            public JpaCompressionType CompressionType;
+            public TEntityType EntityType;
+            public TCompressionType CompressionType;
             public ulong CompressedSize;
             public ulong UncompressedSize;
             public ulong EntityPermissions;
@@ -266,8 +246,8 @@ namespace Akeeba.Unarchiver.Format
             fileHeader.BlockLength = ReadUShort();
             fileHeader.LengthOfEntityPath = ReadUShort();
             fileHeader.EntityPath = ReadUtf8String(fileHeader.LengthOfEntityPath);
-            fileHeader.EntityType = (JpaEntityType) Enum.ToObject(typeof(JpaEntityType), ReadSByte());
-            fileHeader.CompressionType = (JpaCompressionType) Enum.ToObject(typeof(JpaCompressionType), ReadSByte());
+            fileHeader.EntityType = (TEntityType) Enum.ToObject(typeof(TEntityType), ReadSByte());
+            fileHeader.CompressionType = (TCompressionType) Enum.ToObject(typeof(TCompressionType), ReadSByte());
             fileHeader.CompressedSize = ReadULong();
             fileHeader.UncompressedSize = ReadULong();
             fileHeader.EntityPermissions = ReadULong();
@@ -332,136 +312,13 @@ namespace Akeeba.Unarchiver.Format
         /// </summary>
         /// <param name="dataBlockHeader">The header of the block being processed</param>
         /// <param name="token">A cancellation token, allowing the called to cancel the processing</param>
-        public void ProcessDataBlock(JpaFileHeader dataBlockHeader, CancellationToken token)
+        protected void ProcessDataBlock(JpaFileHeader dataBlockHeader, CancellationToken token)
         {
-            // Update the archive's progress record
-            Progress.FilePosition = (ulong) (SizesOfPartsAlreadyRead + InputStream.Position);
-            Progress.RunningCompressed += dataBlockHeader.CompressedSize;
-            Progress.RunningUncompressed += dataBlockHeader.CompressedSize;
-            Progress.Status = ExtractionStatus.Running;
-
-            // Create the event arguments we'll use when invoking the event
-            ProgressEventArgs args = new ProgressEventArgs(Progress);
-
-            // If we don't have a data writer we just need to skip over the data
-            if (DataWriter == null)
-            {
-                if (dataBlockHeader.CompressedSize > 0)
-                {
-                    SkipBytes((long) dataBlockHeader.CompressedSize);
-
-                    Progress.FilePosition += dataBlockHeader.CompressedSize;
-                }
-
-                return;
-            }
-
-            // Is this a directory?
-            switch (dataBlockHeader.EntityType)
-            {
-                case JpaEntityType.Directory:
-                    DataWriter.MakeDirRecursive(DataWriter.GetAbsoluteFilePath(dataBlockHeader.EntityPath));
-
-                    return;
-
-                case JpaEntityType.Symlink:
-                    if (dataBlockHeader.LengthOfEntityPath > 0)
-                    {
-                        string strTarget = ReadUtf8String(dataBlockHeader.LengthOfEntityPath);
-                        DataWriter.MakeSymlink(strTarget, DataWriter.GetAbsoluteFilePath(dataBlockHeader.EntityPath));
-                    }
-
-                    return;
-            }
-
-            // Begin writing to file
-            DataWriter.StartFile(dataBlockHeader.EntityPath);
-
-            // Is this a zero length file?
-            if (dataBlockHeader.CompressedSize == 0)
-            {
-                DataWriter.StopFile();
-                return;
-            }
-
-            switch (dataBlockHeader.CompressionType)
-            {
-                case JpaCompressionType.Uncompressed:
-                    ProcessUncompressedDataBlock(dataBlockHeader.CompressedSize, token);
-                    break;
-
-                case JpaCompressionType.GZip:
-                    ProcessGZipDataBlock(dataBlockHeader.CompressedSize, token);
-                    break;
-
-                case JpaCompressionType.BZip2:
-                    ProcessBZip2DataBlock(dataBlockHeader.CompressedSize, token);
-                    break;
-
-            }
-
-            // Stop writing data to the file
-            DataWriter.StopFile();
-
-            Progress.FilePosition += dataBlockHeader.CompressedSize;
+            ProcessDataBlock(dataBlockHeader.CompressedSize, dataBlockHeader.UncompressedSize,
+                dataBlockHeader.CompressionType, dataBlockHeader.EntityType, dataBlockHeader.EntityPath,
+                token);
         }
 
-        /// <summary>
-        /// Processes a GZip-compressed data block
-        /// </summary>
-        /// <param name="compressedLength">Length of the data block in bytes</param>
-        /// <param name="token">A cancellation token, allowing the called to cancel the processing</param>
-        protected void ProcessGZipDataBlock(ulong compressedLength, CancellationToken token)
-        {
-            Stream memStream = ReadIntoStream((int)compressedLength);
 
-            using (GZipStream decompressStream = new GZipStream(memStream, CompressionMode.Decompress))
-            {
-                DataWriter.WriteData(decompressStream);
-            }
-        }
-
-        /// <summary>
-        /// Processes a BZip2-compressed data block
-        /// </summary>
-        /// <param name="compressedLength">Length of the data block in bytes</param>
-        /// <param name="token">A cancellation token, allowing the called to cancel the processing</param>
-        protected void ProcessBZip2DataBlock(ulong compressedLength, CancellationToken token)
-        {
-            Stream memStream = ReadIntoStream((int)compressedLength);
-
-            using (BZip2InputStream decompressStream = new BZip2InputStream(memStream))
-            {
-                DataWriter.WriteData(decompressStream);
-            }
-        }
-
-        /// <summary>
-        /// Processes an uncompressed data block
-        /// </summary>
-        /// <param name="length">Length of the data block in bytes</param>
-        /// <param name="token">A cancellation token, allowing the called to cancel the processing</param>
-        protected void ProcessUncompressedDataBlock(ulong length, CancellationToken token)
-        {
-            // Batch size for copying data (1 Mb)
-            ulong batchSize = 1048576;
-
-            // Copy the data to the destination file one batch at a time
-            while (length > 0)
-            {
-                ulong nextBatch = Math.Min(length, batchSize);
-                length -= nextBatch;
-
-                using (Stream readData = ReadIntoStream((int)nextBatch))
-                {
-                    DataWriter.WriteData(readData);
-                }
-
-                if (token.IsCancellationRequested)
-                {
-                    token.ThrowIfCancellationRequested();
-                }
-            }
-        }
     }
 }

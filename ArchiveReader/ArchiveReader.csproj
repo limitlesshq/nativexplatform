@@ -58,6 +58,7 @@
     <Compile Include="Unarchiver\DataWriter\NullWriter.cs" />
     <Compile Include="Unarchiver\DataWriter\DirectFileWriter.cs" />
     <Compile Include="Unarchiver\DataWriter\IDataWriter.cs" />
+    <Compile Include="Unarchiver\Format\ZIP.cs" />
     <Compile Include="Unarchiver\Unarchiver.cs" />
     <Compile Include="Unarchiver\CustomTypes.cs" />
     <Compile Include="Unarchiver\EventArgs\EntityEventArgs.cs" />
@@ -77,6 +78,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Language.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Unarchiver" />
+    <Folder Include="Unarchiver\Format" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
