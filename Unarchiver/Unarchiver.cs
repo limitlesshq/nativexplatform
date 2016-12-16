@@ -8,6 +8,7 @@ using System.IO.Compression;
 using Akeeba.Unarchiver.EventArgs;
 using Akeeba.Unarchiver.DataWriter;
 using System.Threading;
+using Akeeba.Unarchiver.Resources;
 using ICSharpCode.SharpZipLib.BZip2;
 
 namespace Akeeba.Unarchiver
@@ -77,14 +78,14 @@ namespace Akeeba.Unarchiver
             {
                 if (!File.Exists(value))
                 {
-                    throw new FileNotFoundException();
+                    throw new FileNotFoundException(String.Format(Language.ResourceManager.GetString("ERR_UNARCHIVER_FILE_NOT_FOUND"), value));
                 }
 
                 string strExtension = Path.GetExtension(value) ?? "";
 
                 if (strExtension.ToUpper().Substring(1) != SupportedExtension.ToUpper())
                 {
-                    throw new InvalidExtensionException();
+                    throw new InvalidExtensionException(String.Format(Language.ResourceManager.GetString("ERR_UNARCHIVER_INVALID_EXTENSION"), value, SupportedExtension.ToUpper()));
                 }
 
                 _archivePath = value;
@@ -151,7 +152,7 @@ namespace Akeeba.Unarchiver
                     }
                     else if ((CurrentPartNumber <= 0) || (CurrentPartNumber > Parts))
                     {
-                        throw new IndexOutOfRangeException();
+                        throw new IndexOutOfRangeException(String.Format(Language.ResourceManager.GetString("ERR_UNARCHIVER_PART_NUMBER_OUT_OF_RANGE"), CurrentPartNumber, Parts));
                     }
 
                     InternalInputStream = new FileStream(GetPartFilename((int)CurrentPartNumber), FileMode.Open);
@@ -235,7 +236,7 @@ namespace Akeeba.Unarchiver
 
             if (classType == null)
             {
-                throw new InvalidExtensionException();
+                throw new InvalidExtensionException(String.Format(Language.ResourceManager.GetString("ERR_UNARCHIVER_UNKNOWN_EXTENSION"), extension));
             }
 
             // Use the System.Activator to spin up the object, passing the filePath as the constructor argument
@@ -379,7 +380,7 @@ namespace Akeeba.Unarchiver
             // Range check
             if ((partNumber <= 0) || (partNumber > Parts))
             {
-                throw new IndexOutOfRangeException();
+                throw new IndexOutOfRangeException(String.Format(Language.ResourceManager.GetString("ERR_UNARCHIVER_PART_NUMBER_OUT_OF_RANGE"), partNumber, Parts));
             }
 
             // The n-th (final) part has special handling
