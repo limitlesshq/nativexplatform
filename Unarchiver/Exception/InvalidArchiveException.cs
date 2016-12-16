@@ -7,7 +7,7 @@ namespace Akeeba.Unarchiver
     /// The archive has an invalid format
     /// </summary>
     [Serializable]
-    internal class InvalidArchiveException : Exception
+    public class InvalidArchiveException : Exception
     {
         public InvalidArchiveException()
         {

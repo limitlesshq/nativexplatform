@@ -10,7 +10,7 @@ namespace Akeeba.Unarchiver.DataWriter
     /// <summary>
     /// Null data writer. Does not write anything, anywhere. Used for testing archive extraction.
     /// </summary>
-    class NullWriter: IDataWriter
+    public sealed class NullWriter: IDataWriter
     {
         public void MakeDirRecursive(string directory)
         {

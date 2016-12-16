@@ -3,7 +3,7 @@
     /// <summary>
     /// Arguments for the entity event
     /// </summary>
-    public class EntityEventArgs : System.EventArgs
+    public sealed class EntityEventArgs : System.EventArgs
     {
         public EntityEventArgs(EntityInformation a)
         {

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using Akeeba.Unarchiver.Resources;
 
 #if WINDOWS
 using System.Runtime.InteropServices;
@@ -15,7 +16,7 @@ namespace Akeeba.Unarchiver.DataWriter
     /// <summary>
     /// Handles direct writing to files.
     /// </summary>
-    class DirectFileWriter: IDataWriter, IDisposable
+    public class DirectFileWriter: IDataWriter, IDisposable
     {
 #region Properties
         /// <summary>
@@ -37,7 +38,7 @@ namespace Akeeba.Unarchiver.DataWriter
             {
                 if (!Directory.Exists(value))
                 {
-                    throw new DirectoryNotFoundException();
+                    throw new DirectoryNotFoundException(String.Format(Language.ResourceManager.GetString("ERR_DATAWRITER_DIRECTORY_NOT_FOUND"), value));
                 }
 
                 _targetRoot = value;

@@ -5,7 +5,7 @@ namespace Akeeba.Unarchiver.DataWriter
     /// <summary>
     /// Interface for a Data Writer class
     /// </summary>
-    interface IDataWriter
+    public interface IDataWriter
     {
         /// <summary>
         /// Creates a new directory and all its parent directories

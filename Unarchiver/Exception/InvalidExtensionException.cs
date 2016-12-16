@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Akeeba.Unarchiver
 {
     [Serializable]
-    internal class InvalidExtensionException : Exception
+    public class InvalidExtensionException : Exception
     {
         public InvalidExtensionException()
         {

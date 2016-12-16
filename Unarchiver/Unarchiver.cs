@@ -15,7 +15,7 @@ namespace Akeeba.Unarchiver
     /// <summary>
     /// Abstract unarchiver. Handles all the basic plumbing of an archive reader ("unarchiver") class.
     /// </summary>
-    abstract class Unarchiver: IDisposable
+    abstract public class Unarchiver: IDisposable
     {
         #region Data types
         /// <summary>

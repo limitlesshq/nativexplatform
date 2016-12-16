@@ -3,7 +3,7 @@
     /// <summary>
     /// Arguments for the archiveInformation event
     /// </summary>
-    public class ArchiveInformationEventArgs: System.EventArgs
+    public sealed class ArchiveInformationEventArgs: System.EventArgs
     {
         public ArchiveInformationEventArgs(ArchiveInformation a)
         {

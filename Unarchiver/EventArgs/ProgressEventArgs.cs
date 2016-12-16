@@ -3,7 +3,7 @@
     /// <summary>
     /// Arguments for the progress event
     /// </summary>
-    public class ProgressEventArgs : System.EventArgs
+    public sealed class ProgressEventArgs : System.EventArgs
     {
         public ProgressEventArgs(ExtractionProgress a)
         {

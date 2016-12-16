@@ -9,11 +9,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Akeeba.Unarchiver.DataWriter;
 using System.Threading;
+using Akeeba.Unarchiver.Resources;
 using ICSharpCode.SharpZipLib.BZip2;
 
 namespace Akeeba.Unarchiver.Format
 {
-    class ZIP : Unarchiver
+    internal class ZIP : Unarchiver
     {
         /// <summary>
         /// ZIP End of Central Directory record
@@ -218,13 +219,13 @@ namespace Akeeba.Unarchiver.Format
             }
             catch (Exception)
             {
-                throw new InvalidArchiveException();
+                throw new InvalidArchiveException(Language.ResourceManager.GetString("ERR_FORMAT_ZIP_EOCD_NOT_FOUND"));
             }
 
             // EOCD not found within the last part. That's a violation of the ZIP standard.
             if (localOffset < 0)
             {
-                throw new InvalidArchiveException();
+                throw new InvalidArchiveException(Language.ResourceManager.GetString("ERR_FORMAT_ZIP_EOCD_NOT_FOUND"));
             }
 
             // Go back to the EOCD offset and let's read the contents
@@ -301,7 +302,7 @@ namespace Akeeba.Unarchiver.Format
 
                 if (cdHeader.Signature != BitConverter.ToUInt32(new byte[] {0x50, 0x4b, 0x01, 0x02}, 0))
                 {
-                    throw new InvalidArchiveException();
+                    throw new InvalidArchiveException(String.Format(Language.ResourceManager.GetString("ERR_FORMAT_INVALID_CD_HEADER_AT_POSITION"), CurrentPartNumber, InputStream.Position - 4));
                 }
 
                 cdHeader.VersionMadeBy = ReadUShort();
@@ -320,7 +321,6 @@ namespace Akeeba.Unarchiver.Format
                 cdHeader.InternalFileAttributes = ReadUShort();
                 cdHeader.ExternalFileAttributes = ReadULong();
                 cdHeader.RelativeOffset = ReadULong();
-                // Da fuck, there are another two bytes?
                 cdHeader.Filename = ReadUtf8String(cdHeader.FileNameLength);
                 cdHeader.Comment = "";
 
@@ -430,7 +430,7 @@ namespace Akeeba.Unarchiver.Format
                     break;
 
                 default:
-                    throw new InvalidArchiveException();
+                    throw new InvalidArchiveException(Language.ResourceManager.GetString("ERR_FORMAT_INVALID_COMPRESSION_METHOD"));
             }
 
             // Decide on the file type

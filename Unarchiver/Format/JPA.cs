@@ -9,10 +9,11 @@ using System.Threading.Tasks;
 using Akeeba.Unarchiver.DataWriter;
 using System.Threading;
 using ICSharpCode.SharpZipLib.BZip2;
+using Akeeba.Unarchiver.Resources;
 
 namespace Akeeba.Unarchiver.Format
 {
-    class JPA : Unarchiver
+    internal class JPA : Unarchiver
     {
         /// <summary>
         /// Describes the Standard Header of a JPA archive with the Extra Header Field - Spanned Archive Marker extension
@@ -92,7 +93,7 @@ namespace Akeeba.Unarchiver.Format
                         token.ThrowIfCancellationRequested();
                     }
 
-                    ProcessDataBlock(fileHeader, token);
+                    ProcessDataBlock(fileHeader.CompressedSize, fileHeader.UncompressedSize, fileHeader.CompressionType, fileHeader.EntityType, fileHeader.EntityPath, token);
 
                     args = new ProgressEventArgs(Progress);
                     OnProgressEvent(args);
@@ -154,7 +155,7 @@ namespace Akeeba.Unarchiver.Format
 
             if (archiveHeader.Signature != "JPA")
             {
-                throw new InvalidArchiveException();
+                throw new InvalidArchiveException(String.Format(Language.ResourceManager.GetString("ERR_FORMAT_INVALID_FILE_TYPE_SIGNATURE"), "JPA"));
             }
 
             archiveHeader.HeaderLength = ReadUShort();
@@ -176,7 +177,7 @@ namespace Akeeba.Unarchiver.Format
 
                     if ((headerSignature[0] != 0x4a) || (headerSignature[1] != 0x50) || (headerSignature[2] != 0x01))
                     {
-                        throw new InvalidArchiveException();
+                        throw new InvalidArchiveException(Language.ResourceManager.GetString("ERR_FORMAT_INVALID_JPA_EXTRA_HEADER"));
                     }
 
                     // The next two bytes tell us how long this header is, without the 4 byte signature and type but WITH the header length field
@@ -196,7 +197,7 @@ namespace Akeeba.Unarchiver.Format
 
                         default:
                             // I have no idea what this is!
-                            throw new InvalidArchiveException();
+                            throw new InvalidArchiveException(Language.ResourceManager.GetString("ERR_FORMAT_INVALID_JPA_EXTRA_HEADER"));
                     }
                 }
             }
@@ -240,7 +241,7 @@ namespace Akeeba.Unarchiver.Format
 
             if (fileHeader.Signature != "JPF")
             {
-                throw new InvalidArchiveException();
+                throw new InvalidArchiveException(String.Format(Language.ResourceManager.GetString("ERR_FORMAT_INVALID_HEADER_AT_POSITION"), CurrentPartNumber, InputStream.Position - 3));
             }
 
             fileHeader.BlockLength = ReadUShort();
@@ -276,7 +277,7 @@ namespace Akeeba.Unarchiver.Format
                     }
                     else
                     {
-                        throw new InvalidArchiveException();
+                        throw new InvalidArchiveException(String.Format(Language.ResourceManager.GetString("ERR_FORMAT_INVALID_EXTRA_HEADER_AT_POSITION"), CurrentPartNumber, InputStream.Position - 3));
                     }
                 }
             }
@@ -306,19 +307,6 @@ namespace Akeeba.Unarchiver.Format
             // Lastly, return the read file header
             return fileHeader;
         }
-
-        /// <summary>
-        /// Processes a data block in a JPA file located in the current file position
-        /// </summary>
-        /// <param name="dataBlockHeader">The header of the block being processed</param>
-        /// <param name="token">A cancellation token, allowing the called to cancel the processing</param>
-        protected void ProcessDataBlock(JpaFileHeader dataBlockHeader, CancellationToken token)
-        {
-            ProcessDataBlock(dataBlockHeader.CompressedSize, dataBlockHeader.UncompressedSize,
-                dataBlockHeader.CompressionType, dataBlockHeader.EntityType, dataBlockHeader.EntityPath,
-                token);
-        }
-
 
     }
 }
