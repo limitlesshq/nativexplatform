@@ -1,7 +1,9 @@
 ﻿using Akeeba.Unarchiver;
+using Akeeba.Unarchiver.Encrypt;
 using Akeeba.Unarchiver.EventArgs;
 using System;
 using System.Resources;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 

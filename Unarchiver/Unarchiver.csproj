@@ -53,6 +53,7 @@
     <Compile Include="DataWriter\DirectFileWriter.cs" />
     <Compile Include="DataWriter\IDataWriter.cs" />
     <Compile Include="DataWriter\NullWriter.cs" />
+    <Compile Include="Encrypt\AesCounter.cs" />
     <Compile Include="EventArgs\ArchiveInformationEventArgs.cs" />
     <Compile Include="EventArgs\EntityEventArgs.cs" />
     <Compile Include="EventArgs\ProgressEventArgs.cs" />
