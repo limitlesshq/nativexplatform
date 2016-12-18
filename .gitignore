@@ -242,6 +242,4 @@ ModelManifest.xml
 .fake/
 
 # IntelliJ IDEA
-.idea/**/workspace.xml
-.idea/**/tasks.xml
-.idea/**/*.iws
+.idea/**
