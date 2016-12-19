@@ -227,8 +227,9 @@ namespace Akeeba.Unarchiver
         /// Gets a suitable unarchiver for the provided archive file
         /// </summary>
         /// <param name="filePath">The absolute filename of the archive file you want to create an unarchiver for</param>
+        /// <param name="password">The password for extracting the archive. Currently only implemented for JPS archives.</param>
         /// <returns></returns>
-        public static Unarchiver CreateForFile(string filePath)
+        public static Unarchiver CreateForFile(string filePath, string password = "")
         {
             string extension = Path.GetExtension(filePath) ?? "";
             string strClassName = "Akeeba.Unarchiver.Format." + extension.ToUpper().Substring(1);
@@ -240,7 +241,7 @@ namespace Akeeba.Unarchiver
             }
 
             // Use the System.Activator to spin up the object, passing the filePath as the constructor argument
-            return (Unarchiver)Activator.CreateInstance(classType, filePath);
+            return (Unarchiver)Activator.CreateInstance(classType, filePath, password);
         }
         #endregion
 

@@ -83,7 +83,8 @@ namespace Akeeba.Unarchiver.Format
         /// Inherit the constructor from the base class
         /// </summary>
         /// <param name="filePath"></param>
-        public ZIP(string filePath) : base()
+        /// <param name="password">The password for extracting the archive. Currently only implemented for JPS archives.</param>
+        public ZIP(string filePath, string password = "") : base()
         {
             SupportedExtension = "zip";
 
