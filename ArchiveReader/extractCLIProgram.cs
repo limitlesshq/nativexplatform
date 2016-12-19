@@ -15,9 +15,9 @@ namespace Akeeba.extractCLI
         {
             ResourceManager text = Resources.Language.ResourceManager;
 
-            using (Unarchiver.Unarchiver extractor = Unarchiver.Unarchiver.CreateForFile(@"C:\Apache24\htdocs\backups\test.zip"))
+            try
             {
-                try
+                using (Unarchiver.Unarchiver extractor = Unarchiver.Unarchiver.CreateForFile(@"C:\Apache24\htdocs\backups\test.zip"))
                 {
                     // Attach event subscribers
                     extractor.ProgressEvent += OnProgressHandler;
@@ -40,11 +40,11 @@ namespace Akeeba.extractCLI
 
                     t.Wait(token);
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine(text.GetString("ERR_HEADER"));
-                    Console.WriteLine(e.Message);
-                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(text.GetString("ERR_HEADER"));
+                Console.WriteLine(e.Message);
             }
         }
 

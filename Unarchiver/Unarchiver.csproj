@@ -61,6 +61,7 @@
     <Compile Include="Exception\InvalidExtensionException.cs" />
     <Compile Include="Exception\InvalidHeaderException.cs" />
     <Compile Include="Format\JPA.cs" />
+    <Compile Include="Format\JPS.cs" />
     <Compile Include="Format\ZIP.cs" />
     <Compile Include="Resources\Language.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -79,9 +80,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Language.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Format" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -291,6 +291,14 @@ namespace Akeeba.Unarchiver.Encrypt
             return w;
         }
 
+        /// <summary>
+        /// Create a legacy decryption key from the given password. The key expansion uses only the first sixteen
+        /// characters of the password and uses it to encrypt itself using AES-128 in CTR mode. Therefore it's not
+        /// really strong. This is the default key expansion used in the first two published versions of the JPS
+        /// format, 1.9 and 1.10.
+        /// </summary>
+        /// <param name="password">The password to convert to a key</param>
+        /// <returns></returns>
         public static byte[] makeKey(string password)
         {
             byte[] pwBytes = new byte[16];

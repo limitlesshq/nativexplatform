@@ -443,9 +443,14 @@ namespace Akeeba.Unarchiver
         /// </summary>
         /// <param name="len">Maximum length of the string, in bytes (might be different than number of characters)</param>
         /// <returns>The string read from the file</returns>
-        protected string ReadUtf8String(int len)
+        protected string ReadUtf8String(int len, Stream source = null)
         {
-            byte[] buffer = ReadBytes(len);
+            if (source == null)
+            {
+                source = InputStream;
+            }
+
+            byte[] buffer = ReadBytes(len, source);
 
             return Encoding.UTF8.GetString(buffer);
         }
@@ -455,9 +460,14 @@ namespace Akeeba.Unarchiver
         /// </summary>
         /// <param name="len">Maximum length of the string, in bytes (same as characters, it's an 8bit encoding)</param>
         /// <returns>The string read from the file</returns>
-        protected string ReadAsciiString(int len)
+        protected string ReadAsciiString(int len, Stream source = null)
         {
-            byte[] buffer = ReadBytes(len);
+            if (source == null)
+            {
+                source = InputStream;
+            }
+
+            byte[] buffer = ReadBytes(len, source);
 
             return Encoding.ASCII.GetString(buffer);
         }
@@ -467,9 +477,14 @@ namespace Akeeba.Unarchiver
         /// </summary>
         /// <param name="len">Maximum length of the string, in bytes (might be different than number of characters)</param>
         /// <returns>The string read from the file</returns>
-        protected string ReadUtf32String(int len)
+        protected string ReadUtf32String(int len, Stream source = null)
         {
-            byte[] buffer = ReadBytes(len);
+            if (source == null)
+            {
+                source = InputStream;
+            }
+
+            byte[] buffer = ReadBytes(len, source);
 
             return Encoding.UTF32.GetString(buffer);
         }
@@ -478,9 +493,14 @@ namespace Akeeba.Unarchiver
         /// Reads a signed short integer from the archive
         /// </summary>
         /// <returns>The value read from the archive</returns>
-        protected short ReadShort()
+        protected short ReadShort(Stream source = null)
         {
-            byte[] buffer = ReadBytes(2);
+            if (source == null)
+            {
+                source = InputStream;
+            }
+
+            byte[] buffer = ReadBytes(2, source);
 
             return BitConverter.ToInt16(buffer, 0);
         }
@@ -489,9 +509,14 @@ namespace Akeeba.Unarchiver
         /// Reads a signed long integer from the archive
         /// </summary>
         /// <returns>The value read from the archive</returns>
-        protected long ReadLong()
+        protected long ReadLong(Stream source = null)
         {
-            byte[] buffer = ReadBytes(4);
+            if (source == null)
+            {
+                source = InputStream;
+            }
+
+            byte[] buffer = ReadBytes(4, source);
 
             return BitConverter.ToInt32(buffer, 0);
         }
@@ -500,9 +525,14 @@ namespace Akeeba.Unarchiver
         /// Reads a signed byte from the archive
         /// </summary>
         /// <returns>The value read from the archive</returns>
-        protected sbyte ReadSByte()
+        protected sbyte ReadSByte(Stream source = null)
         {
-            byte[] buffer = ReadBytes(1);
+            if (source == null)
+            {
+                source = InputStream;
+            }
+
+            byte[] buffer = ReadBytes(1, source);
 
             return (buffer[0] > 127) ? (sbyte)(256 - buffer[0]) : (sbyte)buffer[0];
         }
@@ -511,9 +541,14 @@ namespace Akeeba.Unarchiver
         /// Reads an unsigned short integer from the archive
         /// </summary>
         /// <returns>The value read from the archive</returns>
-        protected ushort ReadUShort()
+        protected ushort ReadUShort(Stream source = null)
         {
-            byte[] buffer = ReadBytes(2);
+            if (source == null)
+            {
+                source = InputStream;
+            }
+
+            byte[] buffer = ReadBytes(2, source);
 
             return BitConverter.ToUInt16(buffer, 0);
         }
@@ -522,9 +557,14 @@ namespace Akeeba.Unarchiver
         /// Reads an unsigned long integer from the archive
         /// </summary>
         /// <returns>The value read from the archive</returns>
-        protected ulong ReadULong()
+        protected ulong ReadULong(Stream source = null)
         {
-            byte[] buffer = ReadBytes(4);
+            if (source == null)
+            {
+                source = InputStream;
+            }
+
+            byte[] buffer = ReadBytes(4, source);
 
             return BitConverter.ToUInt32(buffer, 0);
         }
@@ -533,9 +573,14 @@ namespace Akeeba.Unarchiver
         /// Reads an unsigned byte from the archive
         /// </summary>
         /// <returns>The value read from the archive</returns>
-        protected byte ReadByte()
+        protected byte ReadByte(Stream source = null)
         {
-            byte[] buffer = ReadBytes(1);
+            if (source == null)
+            {
+                source = InputStream;
+            }
+
+            byte[] buffer = ReadBytes(1, source);
 
             return buffer[0];
         }
@@ -545,9 +590,14 @@ namespace Akeeba.Unarchiver
         /// </summary>
         /// <param name="len">Up to how many bytes of data should we read</param>
         /// <returns>The MemoryStream with the data read from the archive</returns>
-        protected MemoryStream ReadIntoStream(int len)
+        protected MemoryStream ReadIntoStream(int len, Stream source = null)
         {
-            byte[] buffer = ReadBytes(len);
+            if (source == null)
+            {
+                source = InputStream;
+            }
+
+            byte[] buffer = ReadBytes(len, source);
 
             return new MemoryStream(buffer);
         }
@@ -557,11 +607,22 @@ namespace Akeeba.Unarchiver
         /// </summary>
         /// <param name="len">How many bytes to read in total</param>
         /// <returns>A byte[] array with the content read from the file. May be smaller than len elements!</returns>
-        protected byte[] ReadBytes(int len)
+        protected byte[] ReadBytes(int len, Stream source = null)
         {
+            if (source == null)
+            {
+                source = InputStream;
+            }
+
             byte[] buffer = new byte[len];
 
-            int readLength = InputStream.Read(buffer, 0, len);
+            int readLength = source.Read(buffer, 0, len);
+
+            // Using a different source stream than the InputStream file source? Return whatever we read.
+            if (!source.Equals(InputStream))
+            {
+                return buffer;
+            }
 
             // I've read as many bytes as I wanted. I'm done.
             if (readLength == len)

@@ -120,6 +120,18 @@
   <data name="ERR_DATAWRITER_DIRECTORY_NOT_FOUND" xml:space="preserve">
     <value>The folder {0} does not exist</value>
   </data>
+  <data name="ERR_FORMAT_JPS_INVALID_VERSION" xml:space="preserve">
+    <value>I do not know how to extract JPS format version {0}.{1} archive files.</value>
+  </data>
+  <data name="ERR_FORMAT_JPS_INVALID_EXTRA_HEADER_FOR_VERSION" xml:space="preserve">
+    <value>Archive files of the JPS format version {0}.{1} are not allowed to have extra header data.</value>
+  </data>
+  <data name="ERR_FORMAT_JPS_DECRYPTED_SIZE_DIFFERENCE" xml:space="preserve">
+    <value>Invalid size of decrypted data. Expected {0} bytes, got {1} bytes.</value>
+  </data>
+  <data name="ERR_FORMAT_JPS_DECRYPTION_FAILURE" xml:space="preserve">
+    <value>Could not decrypt data.</value>
+  </data>
   <data name="ERR_FORMAT_INVALID_FILE_TYPE_SIGNATURE" xml:space="preserve">
     <value>This file does not seem to be a {0} archive.</value>
   </data>
@@ -140,6 +152,9 @@
   </data>
   <data name="ERR_FORMAT_INVALID_COMPRESSION_METHOD" xml:space="preserve">
     <value>Unknown compression method detected. The archive file is corrupt.</value>
+  </data>
+  <data name="ERR_FORMAT_INVALID_ENTITY_TYPE" xml:space="preserve">
+    <value>Invalid entity type in the archive file. The archive file is corrupt.</value>
   </data>
   <data name="ERR_UNARCHIVER_FILE_NOT_FOUND" xml:space="preserve">
     <value>The file {0} does not exist.</value>
