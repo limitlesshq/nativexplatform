@@ -1,4 +1,5 @@
 ﻿using Akeeba.Unarchiver.EventArgs;
+using Akeeba.Unarchiver.EventArgs;
 using System;
 using System.Collections;
 using System.IO;
@@ -95,6 +96,7 @@ namespace Akeeba.Unarchiver.Format
             SupportedExtension = "jps";
 
             ArchivePath = filePath;
+            Password = password;
         }
 
         /// <summary>
@@ -118,7 +120,7 @@ namespace Akeeba.Unarchiver.Format
 
             try
             {
-                // Read the End of Central Directory header
+                // Read the archive header
                 archiveHeader = ReadArchiveHeader();
 
                 // Invoke event at start of extraction
@@ -506,12 +508,17 @@ namespace Akeeba.Unarchiver.Format
                 // TODO Implement version 2.0 logic
             }
 
+            // How many bytes to trim pff the input stream before decompressing
+            int trimBytes = 4;
+
             // Do I have an IV?
+            encryptedSteam.Seek(-24, SeekOrigin.End);
             string IVSignature = ReadAsciiString(4, encryptedSteam);
             byte[] IV;
 
             if (IVSignature == "JPIV")
             {
+                trimBytes += 20;
                 IV = ReadBytes(16, encryptedSteam);
             }
             else
@@ -524,6 +531,8 @@ namespace Akeeba.Unarchiver.Format
             encryptedSteam.Seek(-4, SeekOrigin.End);
             ulong decryptedSize = ReadULong(encryptedSteam);
             encryptedSteam.Seek(0, SeekOrigin.Begin);
+            // Trim the encrypted footer placed after the encrypted data
+            encryptedSteam.SetLength(encryptedSteam.Length - trimBytes);
 
             try
             {
@@ -566,7 +575,7 @@ namespace Akeeba.Unarchiver.Format
                     }
                 }
             }
-            catch (Exception)
+            catch (AbandonedMutexException e)
             {
                 throw new InvalidArchiveException(
                     Language.ResourceManager.GetString("ERR_FORMAT_JPS_DECRYPTION_FAILURE")
@@ -576,17 +585,17 @@ namespace Akeeba.Unarchiver.Format
 
         private MemoryStream ReadAndDecryptNextDataChunkBlock()
         {
-            ushort EncryptedSize = ReadUShort();
-            ushort DecryptedSize = ReadUShort();
+            ulong EncryptedSize = ReadULong();
+            ulong DecryptedSize = ReadULong();
 
             Progress.RunningCompressed += EncryptedSize;
 
             // Read the encrypted data
-            using (MemoryStream encryptedSteam = ReadIntoStream(EncryptedSize))
+            using (MemoryStream encryptedSteam = ReadIntoStream((int)EncryptedSize))
             {
                 MemoryStream decryptedStream = Decrypt(encryptedSteam);
 
-                if (decryptedStream.Length != DecryptedSize)
+                if (decryptedStream.Length != (long)DecryptedSize)
                 {
                     throw new InvalidArchiveException(
                         String.Format(

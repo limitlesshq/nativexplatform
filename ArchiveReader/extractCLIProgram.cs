@@ -17,7 +17,7 @@ namespace Akeeba.extractCLI
 
             try
             {
-                using (Unarchiver.Unarchiver extractor = Unarchiver.Unarchiver.CreateForFile(@"C:\Apache24\htdocs\backups\test.jps"))
+                using (Unarchiver.Unarchiver extractor = Unarchiver.Unarchiver.CreateForFile(@"C:\Apache24\htdocs\backups\test.jps", "test"))
                 {
                     // Attach event subscribers
                     extractor.ProgressEvent += OnProgressHandler;
