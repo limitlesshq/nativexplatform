@@ -422,6 +422,11 @@ namespace Akeeba.Unarchiver.Format
                     using (MemoryStream source = ReadAndDecryptNextDataChunkBlock())
                     {
                         string symlinkTarget = ReadUtf8String((int) dataBlockHeader.UncompressedSize);
+
+                        if (DataWriter != null)
+                        {
+                            DataWriter.MakeSymlink(symlinkTarget, DataWriter.GetAbsoluteFilePath(dataBlockHeader.Path));
+                        }
                     }
 
                     Progress.RunningUncompressed += dataBlockHeader.UncompressedSize;
