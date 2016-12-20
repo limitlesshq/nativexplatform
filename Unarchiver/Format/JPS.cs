@@ -430,14 +430,14 @@ namespace Akeeba.Unarchiver.Format
                 // We have a file. Now it's more complicated. We have to read through and process each chunk until
                 // we have reached the decompressed size.
                 case TEntityType.File:
-                    ulong runningDecompressed = 0;
+                    ulong currentRunningDecompressed = 0;
 
                     if (DataWriter != null)
                     {
                         DataWriter.StartFile(dataBlockHeader.Path);
                     }
 
-                    while (runningDecompressed < dataBlockHeader.UncompressedSize)
+                    while (currentRunningDecompressed < dataBlockHeader.UncompressedSize)
                     {
                         // First chance to cancel: before decompressing data
                         if (token.IsCancellationRequested)
@@ -447,40 +447,65 @@ namespace Akeeba.Unarchiver.Format
 
                         using (MemoryStream decryptedStream = ReadAndDecryptNextDataChunkBlock())
                         {
-                            runningDecompressed += (ulong) decryptedStream.Length;
-                            Progress.RunningUncompressed += (ulong) decryptedStream.Length;
-
-                            if (DataWriter != null)
+                            // Second chance to cancel: after decompressing data, before decompressing / writing data
+                            if (token.IsCancellationRequested)
                             {
-                                // Second chance to cancel: after decompressing data, before decompressing / writing data
-                                if (token.IsCancellationRequested)
-                                {
-                                    token.ThrowIfCancellationRequested();
-                                }
+                                token.ThrowIfCancellationRequested();
+                            }
 
-                                switch (dataBlockHeader.CompressionType)
-                                {
-                                    case TCompressionType.GZip:
-                                        using (GZipStream decompressStream = new GZipStream(decryptedStream, CompressionMode.Decompress))
+                            switch (dataBlockHeader.CompressionType)
+                            {
+                                case TCompressionType.GZip:
+                                    using (GZipStream decompressStream = new GZipStream(decryptedStream, CompressionMode.Decompress))
+                                    {
+                                        // We need to decompress the data to get its length
+                                        using (MemoryStream sourceStream = new MemoryStream())
                                         {
-                                            DataWriter.WriteData(decompressStream);
-                                        }
-                                        break;
+                                            decompressStream.CopyTo(sourceStream);
 
-                                    case TCompressionType.BZip2:
-                                        using (BZip2InputStream decompressStream = new BZip2InputStream(decryptedStream))
+                                            ulong sourceStreamLength = (ulong) sourceStream.Length;
+                                            currentRunningDecompressed += sourceStreamLength;
+
+                                            if (DataWriter != null)
+                                            {
+                                                DataWriter.WriteData(sourceStream);
+                                            }
+                                        }
+                                    }
+                                    break;
+
+                                case TCompressionType.BZip2:
+                                    using (BZip2InputStream decompressStream = new BZip2InputStream(decryptedStream))
+                                    {
+                                        // We need to decompress the data to get its length
+                                        using (MemoryStream sourceStream = new MemoryStream())
                                         {
-                                            DataWriter.WriteData(decompressStream);
-                                        }
-                                        break;
+                                            decompressStream.CopyTo(sourceStream);
 
-                                    case TCompressionType.Uncompressed:
+                                            ulong sourceStreamLength = (ulong) sourceStream.Length;
+                                            currentRunningDecompressed += sourceStreamLength;
+
+                                            if (DataWriter != null)
+                                            {
+                                                DataWriter.WriteData(sourceStream);
+                                            }
+                                        }
+                                    }
+                                    break;
+
+                                case TCompressionType.Uncompressed:
+                                    currentRunningDecompressed += (ulong) decryptedStream.Length;
+
+                                    if (DataWriter != null)
+                                    {
                                         DataWriter.WriteData(decryptedStream);
-                                        break;
-                                }
+                                    }
+                                    break;
                             }
                         }
                     }
+
+                    Progress.RunningUncompressed += currentRunningDecompressed;
 
                     if (DataWriter != null)
                     {
@@ -604,7 +629,7 @@ namespace Akeeba.Unarchiver.Format
                     );
                 }
 
-                return encryptedSteam;
+                return decryptedStream;
             }
         }
     }
