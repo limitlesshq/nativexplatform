@@ -461,7 +461,7 @@ namespace Akeeba.Unarchiver.Format
                             switch (dataBlockHeader.CompressionType)
                             {
                                 case TCompressionType.GZip:
-                                    using (GZipStream decompressStream = new GZipStream(decryptedStream, CompressionMode.Decompress))
+                                    using (DeflateStream decompressStream = new DeflateStream(decryptedStream, CompressionMode.Decompress))
                                     {
                                         // We need to decompress the data to get its length
                                         using (MemoryStream sourceStream = new MemoryStream())
