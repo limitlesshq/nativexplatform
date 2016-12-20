@@ -185,7 +185,8 @@ namespace Akeeba.Unarchiver.Format
         private JpsHeaderData ReadArchiveHeader()
         {
             // Open the first part
-            Open(0);
+            Close();
+            Open(1);
 
             // Read the file signature. Must be "JPS"
             JpsHeaderData headerData;
@@ -229,8 +230,9 @@ namespace Akeeba.Unarchiver.Format
             // TODO Also set _useLegacyKey = false in version 2
 
             // Open the last part and read the End Of Archive header data
+            Close();
             Open(Parts);
-            InputStream.Seek(18, SeekOrigin.End);
+            InputStream.Seek(-17, SeekOrigin.End);
 
             headerData.EOASignature = ReadAsciiString(3);
 
@@ -247,7 +249,7 @@ namespace Akeeba.Unarchiver.Format
             headerData.CompressedSize = ReadULong();
 
             // Now we can reopen the first part and go past the header
-            Open(0);
+            Open(1);
             SkipBytes(8 + headerData.ExtraHeaderLength);
 
             // Invoke the archiveInformation event. We need to do some work to get there, through...
@@ -519,7 +521,7 @@ namespace Akeeba.Unarchiver.Format
             }
 
             // Read the decrypted data size at the end of the block
-            encryptedSteam.Seek(4, SeekOrigin.End);
+            encryptedSteam.Seek(-4, SeekOrigin.End);
             ulong decryptedSize = ReadULong(encryptedSteam);
             encryptedSteam.Seek(0, SeekOrigin.Begin);
 

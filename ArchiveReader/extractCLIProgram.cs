@@ -17,7 +17,7 @@ namespace Akeeba.extractCLI
 
             try
             {
-                using (Unarchiver.Unarchiver extractor = Unarchiver.Unarchiver.CreateForFile(@"C:\Apache24\htdocs\backups\test.zip"))
+                using (Unarchiver.Unarchiver extractor = Unarchiver.Unarchiver.CreateForFile(@"C:\Apache24\htdocs\backups\test.jps"))
                 {
                     // Attach event subscribers
                     extractor.ProgressEvent += OnProgressHandler;
@@ -31,7 +31,7 @@ namespace Akeeba.extractCLI
                         {
                             if (extractor != null)
                             {
-                                extractor.Test(token);
+                                extractor.Scan(token);
                             }
                         }, token,
                         TaskCreationOptions.LongRunning,
