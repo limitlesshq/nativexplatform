@@ -20,6 +20,7 @@
 using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
+using CommandLine;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
@@ -30,9 +31,20 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Akeeba Ltd")]
 [assembly: AssemblyProduct("Akeeba Backup Portable Tools")]
-[assembly: AssemblyCopyright("Copyright © Nicholas K. Dionysopoulos / Akeeba Ltd 2016")]
+[assembly: AssemblyCopyright("Copyright (C)2006-2016 Nicholas K. Dionysopoulos / Akeeba Ltd")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
+
+// CommandLineParser parameters
+[assembly: AssemblyLicense(
+	           "This is free software. You may redistribute copies of it under the terms of",
+	           "the MIT License <http://www.opensource.org/licenses/mit-license.php>.")]
+[assembly: AssemblyUsage(
+	           @"Usage:    extractCLI archive [targetFolder] [options]",
+	           "",
+	           @"Examples: extractCLI archive.jpa C:\Target\Folder",
+	           @"          extractCLI C:\Foo\archive.zip -t",
+	           @"          extractCLI archive.jps C:\Target\Folder -p myPassword")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
@@ -55,6 +67,6 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.0.0.*")]
+[assembly: AssemblyFileVersion("1.0.0.*")]
 [assembly: NeutralResourcesLanguage("en-US")]

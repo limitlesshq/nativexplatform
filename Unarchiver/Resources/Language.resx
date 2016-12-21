@@ -132,6 +132,9 @@
   <data name="ERR_FORMAT_JPS_DECRYPTION_FAILURE" xml:space="preserve">
     <value>Could not decrypt data.</value>
   </data>
+  <data name="ERR_FORMAT_JPS_EMPTY_PASSWORD" xml:space="preserve">
+    <value>You must specify the encryption password to extract a JPS archive.</value>
+  </data>
   <data name="ERR_FORMAT_INVALID_FILE_TYPE_SIGNATURE" xml:space="preserve">
     <value>This file does not seem to be a {0} archive.</value>
   </data>

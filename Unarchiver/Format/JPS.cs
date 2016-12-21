@@ -78,21 +78,66 @@ namespace Akeeba.Unarchiver.Format
             public ulong FileModificationTime;
         }
 
-        private byte[] _key;
+	    private enum JpsPbkdf2Algorithm
+	    {
+		    SHA1,
+		    SHA256,
+		    SHA512
+	    };
 
+	    /// <summary>
+	    /// The legacy AES-128 key derived from the password. This uses the old, insecure method of encrypting the first
+	    /// 16 bytes of the password with itself using AES-128 CTR which is insecure. Used in JPS 1.9 and 1.10.
+	    /// </summary>
+        private byte[] _legacyKey;
+
+	    /// <summary>
+	    /// AES-128 key derived from the password using PBKDF2. See _salt, _iterations and _algorithm for the parameters.
+	    /// </summary>
+        private byte[] _safeKey;
+
+	    /// <summary>
+	    /// The salt to use with PBKDF2.
+	    /// </summary>
+	    private byte[] _salt;
+
+	    /// <summary>
+	    /// The number of iterations to use with PBKDF2.
+	    /// </summary>
+	    private ushort _iterations = 1000;
+
+	    /// <summary>
+	    /// The algorithm to use with PBKDF2.
+	    /// </summary>
+	    private JpsPbkdf2Algorithm _algorithm = JpsPbkdf2Algorithm.SHA1;
+
+	    /// <summary>
+	    /// The raw password for decrypting JPS archives
+	    /// </summary>
         private string _password;
 
+	    /// <summary>
+	    /// Allows you to set the password for decrypting JPS archives
+	    /// </summary>
         public string Password
         {
             set
             {
-                _password = value;
+	            if (value != null)
+	            {
+		            _password = value;
 
-                // Derive the legacy encryption key
-                _key = AesCounter.makeKey(_password);
+		            // Derive the legacy encryption key
+		            _legacyKey = AesCounter.makeKey(_password);
+	            }
             }
         }
 
+	    /// <summary>
+	    /// When true, the AES key is derived from the password by encrypting itself (up to 16 bytes!) using AES-CTR.
+	    /// This is not very secure. When set to false we use PBKDF2 with 1000 iterations of SHA1 to derive a key from
+	    /// the entire password.
+	    /// </summary>
         private bool _useLegacyKey = true;
 
         /// <summary>
@@ -125,6 +170,11 @@ namespace Akeeba.Unarchiver.Format
 
             JpsHeaderData archiveHeader;
 
+	        if (_legacyKey == null)
+	        {
+		        throw new InvalidArchiveException(Language.ResourceManager.GetString("ERR_FORMAT_JPS_EMPTY_PASSWORD"));
+	        }
+
             try
             {
                 // Read the archive header
@@ -137,8 +187,6 @@ namespace Akeeba.Unarchiver.Format
                 // The end of archive is 18 bytes before the end of the archive due to the End of Archive record
                 while ((CurrentPartNumber != null) && (Progress.FilePosition < (archiveHeader.TotalSize - 18)))
                 {
-                    Console.WriteLine($"Part {CurrentPartNumber} of {Parts}, offset {InputStream.Position} of {InputStream.Length}, progress {Progress.FilePosition} of {archiveHeader.TotalSize}");
-
                     JpsEntityDescriptionBlockData fileHeader = ReadFileHeader();
 
                     if (token.IsCancellationRequested)
@@ -218,7 +266,9 @@ namespace Akeeba.Unarchiver.Format
             // Make sure it's a supported JPS version
             bool oneNine = (headerData.MajorVersion == 1) && (headerData.MinorVersion == 9);
             bool oneTen = (headerData.MajorVersion == 1) && (headerData.MinorVersion == 10);
+            bool twoZero = (headerData.MajorVersion == 2) && (headerData.MinorVersion == 0);
 
+	        // TODO Also reference twoZero here after implementing support for JPS format version 2.0
             if (!oneNine && !oneTen)
             {
                 throw new InvalidArchiveException(String.Format(
@@ -237,8 +287,14 @@ namespace Akeeba.Unarchiver.Format
                 ));
             }
 
-            // TODO Version 2.0. Read extra header data and decide how to handle key derivation.
-            // TODO Also set _useLegacyKey = false in version 2
+	        // TODO JPS 2.0 MUST have an extra header. Make sure it exists, read it and decide how to handle key derivation (global or per file).
+
+	        // In JPS 2.0 we are going to use PBKDF2 to derive the key from the password, therefore legacy needs to be
+	        // disabled.
+	        if (twoZero)
+	        {
+		        _useLegacyKey = false;
+	        }
 
             // Open the last part and read the End Of Archive header data
             Close();
@@ -541,11 +597,11 @@ namespace Akeeba.Unarchiver.Format
         private MemoryStream Decrypt(Stream encryptedSteam)
         {
             // Get the correct key to use with the Rijndael algorithm
-            byte[] key = _key;
+            byte[] key = _legacyKey;
 
             if (!_useLegacyKey)
             {
-                // TODO Implement version 2.0 logic
+                // TODO Implement version 2.0 key derivation logic
             }
 
             // How many bytes to trim pff the input stream before decompressing

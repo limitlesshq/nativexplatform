@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Akeeba.extractCLI</RootNamespace>
-    <AssemblyName>extractCLU</AssemblyName>
+    <AssemblyName>extractCLI</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -87,6 +87,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="extractCLIProgram.cs" />
+    <Compile Include="Options.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Language.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -104,9 +105,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Language.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Unarchiver\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Unarchiver\Unarchiver.csproj">
