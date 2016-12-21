@@ -163,13 +163,13 @@ namespace Akeeba.Unarchiver.DataWriter
 
                 case PlatformID.MacOSX:
                 case PlatformID.Unix:
-#if __MonoCS__
                     // Linux, macOS on Mono: use Mono.Posix
-                    Mono.Posix.UnixFileInfo f = new Mono.Posix.UnixFileInfo(target);
+                    Mono.Unix.UnixFileInfo f = new Mono.Unix.UnixFileInfo(target);
                     f.CreateSymbolicLink(String.Format("\"{0}{1}{2}\"", RootDirectory, Path.DirectorySeparatorChar, source));
 
                     return;
-#else
+
+                    /**
                     // Linux, macOS on plain .NET: we run the ln command directly
                     Process p = new Process();
                     p.StartInfo.UseShellExecute = false;
@@ -187,7 +187,7 @@ namespace Akeeba.Unarchiver.DataWriter
 
                     // Read the output stream first and then wait.
                     string output = p.StandardOutput.ReadToEnd();
-#endif
+                    /**/
 
                     break;
             }
