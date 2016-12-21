@@ -21,9 +21,8 @@ using System;
 using System.IO;
 using System.Text;
 using Akeeba.Unarchiver.Resources;
-#if WINDOWS
 using System.Runtime.InteropServices;
-#endif
+using System.Diagnostics;
 
 namespace Akeeba.Unarchiver.DataWriter
 {
@@ -150,29 +149,48 @@ namespace Akeeba.Unarchiver.DataWriter
         /// <param name="source">The relative path of the new link being created</param>
         public void MakeSymlink(string target, string source)
         {
-            #if WINDOWS
-            // Windows: we use CreateSymbolicLink from kernel32.dll
-            int flag = Directory.Exists(target) ? UnsafeNativeMethods.SYMLINK_FLAG_DIRECTORY : 0;
-            UnsafeNativeMethods.CreateSymbolicLink(source, target, flag);
-            #else
-            // Linux, macOS: we run the ln command directly
-            Process p = new Process();
-            p.StartInfo.UseShellExecute = false;
-            p.StartInfo.RedirectStandardOutput = true;
-            p.StartInfo.FileName = "ln";
-
-            StringBuilder sbArgs = new StringBuilder(@"-s ", 512);
-            sbArgs.AppendFormat("\"{0}\"", target);
-            sbArgs.Append(' ');
-            sbArgs.AppendFormat("\"{0}{1}{2}\"", RootDirectory, Path.DirectorySeparatorChar, source);
-
-            p.StartInfo.Arguments = sbArgs.ToString();
-
-            p.Start();
+            OperatingSystem os = Environment.OSVersion;
             
-            // Read the output stream first and then wait.
-            string output = p.StandardOutput.ReadToEnd();
+            switch (os.Platform)
+            {
+                case PlatformID.Win32NT:
+                case PlatformID.Win32S:
+                case PlatformID.Win32Windows:
+                    // Windows: we use CreateSymbolicLink from kernel32.dll
+                    int flag = Directory.Exists(target) ? UnsafeNativeMethods.SYMLINK_FLAG_DIRECTORY : 0;
+                    UnsafeNativeMethods.CreateSymbolicLink(source, target, flag);
+                    break;
+
+                case PlatformID.MacOSX:
+                case PlatformID.Unix:
+#if __MonoCS__
+                    // Linux, macOS on Mono: use Mono.Posix
+                    Mono.Posix.UnixFileInfo f = new Mono.Posix.UnixFileInfo(target);
+                    f.CreateSymbolicLink(String.Format("\"{0}{1}{2}\"", RootDirectory, Path.DirectorySeparatorChar, source));
+
+                    return;
+#else
+                    // Linux, macOS on plain .NET: we run the ln command directly
+                    Process p = new Process();
+                    p.StartInfo.UseShellExecute = false;
+                    p.StartInfo.RedirectStandardOutput = true;
+                    p.StartInfo.FileName = "ln";
+
+                    StringBuilder sbArgs = new StringBuilder(@"-s ", 512);
+                    sbArgs.AppendFormat("\"{0}\"", target);
+                    sbArgs.Append(' ');
+                    sbArgs.AppendFormat("\"{0}{1}{2}\"", RootDirectory, Path.DirectorySeparatorChar, source);
+
+                    p.StartInfo.Arguments = sbArgs.ToString();
+
+                    p.Start();
+
+                    // Read the output stream first and then wait.
+                    string output = p.StandardOutput.ReadToEnd();
 #endif
+
+                    break;
+            }
         }
 
         /// <summary>
@@ -189,9 +207,9 @@ namespace Akeeba.Unarchiver.DataWriter
             return sb.ToString();
         }
 
-        #endregion
+#endregion
 
-        #region IDisposable Support
+#region IDisposable Support
         private bool _disposedValue; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
@@ -229,7 +247,7 @@ namespace Akeeba.Unarchiver.DataWriter
             // Uncomment the following line if the finalizer is overridden above.
             // GC.SuppressFinalize(this);
         }
-        #endregion
+#endregion
     }
 
     /// <summary>
@@ -237,11 +255,9 @@ namespace Akeeba.Unarchiver.DataWriter
     /// </summary>
     internal static class UnsafeNativeMethods
     {
-#if WINDOWS
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
         static public extern bool CreateSymbolicLink(string lpSymlinkFileName, string lpTargetFileName, int dwFlags);
 
         static public int SYMLINK_FLAG_DIRECTORY = 1;
-#endif
     }
 }
