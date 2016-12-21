@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.IO.Compression;
-using Akeeba.Unarchiver.EventArgs;
-using Akeeba.Unarchiver.DataWriter;
+using System.Text;
 using System.Threading;
+using Akeeba.Unarchiver.DataWriter;
+using Akeeba.Unarchiver.EventArgs;
 using Akeeba.Unarchiver.Resources;
 using ICSharpCode.SharpZipLib.BZip2;
 

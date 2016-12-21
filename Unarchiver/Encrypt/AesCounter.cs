@@ -1,13 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using System.Runtime.Remoting.Messaging;
-using System.Xml.XPath;
 
 namespace Akeeba.Unarchiver.Encrypt
 {

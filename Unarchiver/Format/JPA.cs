@@ -1,14 +1,7 @@
-﻿using Akeeba.Unarchiver.EventArgs;
-using System;
+﻿using System;
 using System.IO;
-using System.IO.Compression;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Akeeba.Unarchiver.DataWriter;
 using System.Threading;
-using ICSharpCode.SharpZipLib.BZip2;
+using Akeeba.Unarchiver.EventArgs;
 using Akeeba.Unarchiver.Resources;
 
 namespace Akeeba.Unarchiver.Format
