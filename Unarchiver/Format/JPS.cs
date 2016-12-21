@@ -1,22 +1,12 @@
-﻿using Akeeba.Unarchiver.EventArgs;
-using Akeeba.Unarchiver.EventArgs;
-using System;
-using System.Collections;
+﻿using System;
 using System.IO;
 using System.IO.Compression;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Akeeba.Unarchiver.DataWriter;
+using System.Security.Cryptography;
 using System.Threading;
 using Akeeba.Unarchiver.Encrypt;
+using Akeeba.Unarchiver.EventArgs;
 using Akeeba.Unarchiver.Resources;
 using ICSharpCode.SharpZipLib.BZip2;
-using System.Security.Cryptography;
-using ICSharpCode.SharpZipLib.Core;
-using ProgressEventArgs = Akeeba.Unarchiver.EventArgs.ProgressEventArgs;
 
 namespace Akeeba.Unarchiver.Format
 {
@@ -29,13 +19,13 @@ namespace Akeeba.Unarchiver.Format
         {
             // Standard Header (8 bytes)
             public string Signature;
-            public byte majorVersion;
-            public byte minorVersion;
-            public byte spannedArchive;
+            public byte MajorVersion;
+            public byte MinorVersion;
+            public byte SpannedArchive;
             public ushort ExtraHeaderLength;
 
             // End of Archive Header (17 bytes)
-            public string EOASignature;
+            public string EndOfArchiveSignature;
             public ushort NumberOfParts;
             public ulong NumberOfFiles;
             public ulong UncompressedSize;
@@ -100,8 +90,6 @@ namespace Akeeba.Unarchiver.Format
         }
 
         /// <summary>
-        /// TODO Implement me!
-        ///
         /// Implements the Extract method which extracts a backup archive. A DataWriter must be already assigned and configured or an
         /// exception will be raised.
         /// </summary>
@@ -130,6 +118,8 @@ namespace Akeeba.Unarchiver.Format
                 // The end of archive is 18 bytes before the end of the archive due to the End of Archive record
                 while ((CurrentPartNumber != null) && (Progress.FilePosition < (archiveHeader.TotalSize - 18)))
                 {
+                    Console.WriteLine($"Part {CurrentPartNumber} of {Parts}, offset {InputStream.Position} of {InputStream.Length}, progress {Progress.FilePosition} of {archiveHeader.TotalSize}");
+
                     JpsEntityDescriptionBlockData fileHeader = ReadFileHeader();
 
                     if (token.IsCancellationRequested)
@@ -201,20 +191,20 @@ namespace Akeeba.Unarchiver.Format
             }
 
             // Read the rest of the header
-            headerData.majorVersion = ReadByte();
-            headerData.minorVersion = ReadByte();
-            headerData.spannedArchive = ReadByte();
+            headerData.MajorVersion = ReadByte();
+            headerData.MinorVersion = ReadByte();
+            headerData.SpannedArchive = ReadByte();
             headerData.ExtraHeaderLength = ReadUShort();
 
             // Make sure it's a supported JPS version
-            bool oneNine = (headerData.majorVersion == 1) && (headerData.minorVersion == 9);
-            bool oneTen = (headerData.majorVersion == 1) && (headerData.minorVersion == 10);
+            bool oneNine = (headerData.MajorVersion == 1) && (headerData.MinorVersion == 9);
+            bool oneTen = (headerData.MajorVersion == 1) && (headerData.MinorVersion == 10);
 
             if (!oneNine && !oneTen)
             {
                 throw new InvalidArchiveException(String.Format(
-                    Language.ResourceManager.GetString("ERR_FORMAT_JPS_INVALID_VERSION"), headerData.majorVersion,
-                    headerData.minorVersion
+                    Language.ResourceManager.GetString("ERR_FORMAT_JPS_INVALID_VERSION"), headerData.MajorVersion,
+                    headerData.MinorVersion
                 ));
             }
 
@@ -223,8 +213,8 @@ namespace Akeeba.Unarchiver.Format
             {
                 throw new InvalidArchiveException(String.Format(
                     Language.ResourceManager.GetString("ERR_FORMAT_JPS_INVALID_EXTRA_HEADER_FOR_VERSION"),
-                    headerData.majorVersion,
-                    headerData.minorVersion
+                    headerData.MajorVersion,
+                    headerData.MinorVersion
                 ));
             }
 
@@ -236,9 +226,9 @@ namespace Akeeba.Unarchiver.Format
             Open(Parts);
             InputStream.Seek(-17, SeekOrigin.End);
 
-            headerData.EOASignature = ReadAsciiString(3);
+            headerData.EndOfArchiveSignature = ReadAsciiString(3);
 
-            if (headerData.EOASignature != "JPE")
+            if (headerData.EndOfArchiveSignature != "JPE")
             {
                 throw new InvalidArchiveException(
                     String.Format(Language.ResourceManager.GetString("ERR_FORMAT_INVALID_FILE_TYPE_SIGNATURE"), "JPS"));
@@ -511,6 +501,7 @@ namespace Akeeba.Unarchiver.Format
                     }
 
                     Progress.RunningUncompressed += currentRunningDecompressed;
+                    Progress.FilePosition = (ulong) (SizesOfPartsAlreadyRead + InputStream.Position);
 
                     if (DataWriter != null)
                     {
