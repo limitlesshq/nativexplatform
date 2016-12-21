@@ -808,7 +808,7 @@ namespace Akeeba.Unarchiver
         {
             Stream memStream = ReadIntoStream((int)compressedLength);
 
-            using (GZipStream decompressStream = new GZipStream(memStream, CompressionMode.Decompress))
+            using (DeflateStream decompressStream = new DeflateStream(memStream, CompressionMode.Decompress))
             {
                 DataWriter.WriteData(decompressStream);
             }
