@@ -156,7 +156,7 @@ namespace Akeeba.extractCLI
 				return 250;
             }
 
-	        return 0;
+            return 0;
         }
 
         private static void OnProgressHandler(object sender, ProgressEventArgs e)
@@ -169,10 +169,14 @@ namespace Akeeba.extractCLI
 	                if (!_options.Silent || _options.Verbose)
 	                {
 		                Console.WriteLine(text.GetString("ERR_HEADER"));
-		                Console.WriteLine(e.Progress.LastException.Message);
-		                Console.WriteLine(e.Progress.LastException.StackTrace);
-	                }
-	                break;
+                        Console.WriteLine(e.Progress.LastException.Message);
+                    }
+
+                    if (_options.Verbose)
+                    {
+                        Console.WriteLine(e.Progress.LastException.StackTrace);
+                    }
+                    break;
 
                 case ExtractionStatus.Running:
 	                if (_options.Verbose)

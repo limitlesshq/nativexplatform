@@ -61,11 +61,29 @@ namespace Akeeba.extractCLI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The file {0} cannot be opened for reading.
+        /// </summary>
+        internal static string ERR_CANNOT_READ {
+            get {
+                return ResourceManager.GetString("ERR_CANNOT_READ", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An error has occured.
         /// </summary>
         internal static string ERR_HEADER {
             get {
                 return ResourceManager.GetString("ERR_HEADER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file {0} does not exist.
+        /// </summary>
+        internal static string ERR_NOT_FOUND {
+            get {
+                return ResourceManager.GetString("ERR_NOT_FOUND", resourceCulture);
             }
         }
         
