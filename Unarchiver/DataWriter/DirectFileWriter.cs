@@ -95,7 +95,17 @@ namespace Akeeba.Unarchiver.DataWriter
             // Close any already open stream
             _outStream?.Close();
 
-            _outStream = new FileStream(GetAbsoluteFilePath(relativePathName), FileMode.Create);
+            // Get the absolute path to the file
+            string absoluteFileName = GetAbsoluteFilePath(relativePathName);
+            string absolutePathName = Path.GetDirectoryName(absoluteFileName);
+
+            if (!Directory.Exists(absolutePathName))
+            {
+                MakeDirRecursive(absolutePathName);
+            }
+
+            // Open a new file stream
+            _outStream = new FileStream(absoluteFileName, FileMode.Create);
         }
 
         /// <summary>
@@ -130,7 +140,7 @@ namespace Akeeba.Unarchiver.DataWriter
         /// <param name="buffer">The stream containing the data to write</param>
         public void WriteData(Stream buffer)
         {
-            buffer.CopyTo(_outStream, 1048576);
+            buffer.CopyTo(_outStream);
         }
 
         /// <summary>
