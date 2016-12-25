@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "extractCLI", "extractCLI\ex
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unarchiver", "Unarchiver\Unarchiver.csproj", "{F8C19539-9779-4E56-8979-659485BC45EE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtractWizard", "ExtractWizard\ExtractWizard.csproj", "{CCC3DF7C-11F7-49ED-88BF-0D26C62F7D98}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,6 +24,10 @@ Global
 		{F8C19539-9779-4E56-8979-659485BC45EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8C19539-9779-4E56-8979-659485BC45EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8C19539-9779-4E56-8979-659485BC45EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCC3DF7C-11F7-49ED-88BF-0D26C62F7D98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCC3DF7C-11F7-49ED-88BF-0D26C62F7D98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCC3DF7C-11F7-49ED-88BF-0D26C62F7D98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCC3DF7C-11F7-49ED-88BF-0D26C62F7D98}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
