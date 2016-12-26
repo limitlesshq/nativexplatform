@@ -30,5 +30,10 @@ namespace ExtractWizard
             // Ask the Controller to initialize the View
             _controller.IntializeView();
         }
+
+        private void btnBrowseArchive_Click(object sender, EventArgs e)
+        {
+            _controller.onBrowseArchiveButtonClick(sender, e);
+        }
     }
 }

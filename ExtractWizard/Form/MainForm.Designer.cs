@@ -96,6 +96,7 @@
             this.btnBrowseArchive.Tag = "BTN_BROWSE_ARCHIVE";
             this.btnBrowseArchive.Text = "&Browse...";
             this.btnBrowseArchive.UseVisualStyleBackColor = true;
+            this.btnBrowseArchive.Click += new System.EventHandler(this.btnBrowseArchive_Click);
             // 
             // editPassword
             // 

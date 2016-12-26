@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ExtractWizard.Controller
 {
@@ -65,6 +66,61 @@ namespace ExtractWizard.Controller
             _gateway.SetExtractButtonText(_languageResource.GetString("BTN_EXTRACT"));
             _gateway.SetExtractionProgress(0);
             _gateway.SetExtractedFileName("");
+        }
+
+        /// <summary>
+        /// Browse for an archive file and update the interface
+        /// </summary>
+        /// <param name="sender">The button UI control which was clicked</param>
+        /// <param name="e">Event arguments</param>
+        public void onBrowseArchiveButtonClick(object sender, EventArgs e)
+        {
+            string fileName = "";
+
+            using (OpenFileDialog fileDialog = new OpenFileDialog())
+            {
+                // Set up the dialog
+                fileDialog.AddExtension = true;
+                fileDialog.AutoUpgradeEnabled = true;
+                fileDialog.CheckFileExists = true;
+                fileDialog.CheckPathExists = true;
+                fileDialog.DefaultExt = "jpa";
+                fileDialog.DereferenceLinks = true;
+                fileDialog.Filter = $"Backup archives (*.jpa)|*.jpa|Encrypted archives (*.jps)|*.jps|ZIP backup archives (*.zip)|*.zip";
+                fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                fileDialog.Multiselect = false;
+                fileDialog.SupportMultiDottedExtensions = true;
+                fileDialog.Title = "Select a backup archive";
+
+                // Show the dialog
+                DialogResult dialogResult = fileDialog.ShowDialog();
+
+                // Did the user cancel the dialog?
+                if (dialogResult != DialogResult.OK)
+                {
+                    return;
+                }
+
+                fileName = fileDialog.FileName;
+
+                // Did the user not select a file?
+                if (fileName == "")
+                {
+                    return;
+                }
+
+            }
+
+            // Update the archive path
+            _gateway.SetBackupArchivePath(fileName);
+
+            // If the extraction path is empty set it to be the same path as the archive file
+            if (_gateway.GetOutputFolderPath() != "")
+            {
+                return;
+            }
+
+            _gateway.SetOutputFolderPath(System.IO.Path.GetDirectoryName(fileName));
         }
     }
 }
