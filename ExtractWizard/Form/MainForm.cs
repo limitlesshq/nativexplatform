@@ -35,5 +35,10 @@ namespace ExtractWizard
         {
             _controller.onBrowseArchiveButtonClick(sender, e);
         }
+
+        private void btnExtractToFolder_Click(object sender, EventArgs e)
+        {
+            _controller.onBrowseOutputFolderButtonClick(sender, e);
+        }
     }
 }

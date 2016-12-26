@@ -159,6 +159,7 @@
             this.btnExtractToFolder.Tag = "BTN_BROWSE_FOLDER";
             this.btnExtractToFolder.Text = "B&rowse...";
             this.btnExtractToFolder.UseVisualStyleBackColor = true;
+            this.btnExtractToFolder.Click += new System.EventHandler(this.btnExtractToFolder_Click);
             // 
             // editExtractToFolder
             // 

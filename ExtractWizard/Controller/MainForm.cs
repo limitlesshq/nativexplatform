@@ -122,5 +122,43 @@ namespace ExtractWizard.Controller
 
             _gateway.SetOutputFolderPath(System.IO.Path.GetDirectoryName(fileName));
         }
+
+        /// <summary>
+        /// Browse for an output folder and update the interface
+        /// </summary>
+        /// <param name="sender">The button UI control which was clicked</param>
+        /// <param name="e">Event arguments</param>
+        public void onBrowseOutputFolderButtonClick(object sender, EventArgs e)
+        {
+            string folderName = "";
+
+            using (FolderBrowserDialog folderDialog = new FolderBrowserDialog())
+            {
+                // Set up the dialog
+                //folderDialog.RootFolder = Environment.SpecialFolder.MyComputer;
+                folderDialog.ShowNewFolderButton = true;
+
+                // Show the dialog
+                DialogResult dialogResult = folderDialog.ShowDialog();
+
+                // Did the user cancel the dialog?
+                if (dialogResult != DialogResult.OK)
+                {
+                    return;
+                }
+
+                folderName = folderDialog.SelectedPath;
+
+                // Did the user not select a folder?
+                if (folderName == "")
+                {
+                    return;
+                }
+
+            }
+
+            // Update the output directory
+            _gateway.SetOutputFolderPath(folderName);
+        }
     }
 }
