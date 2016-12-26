@@ -20,6 +20,16 @@ namespace ExtractWizard.Controller
     class MainForm
     {
         /// <summary>
+        /// The link to the PayPal donation page
+        /// </summary>
+        private const string _donationLink = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=D9CFZ4H35NFWW";
+
+        /// <summary>
+        /// The link to the documentation page
+        /// </summary>
+        private const string _helpLink = "https://www.akeebabackup.com/documentation/extract-wizard.html";
+
+        /// <summary>
         /// The Gateway to the main form
         /// </summary>
         private IMainFormGateway _gateway;
@@ -159,6 +169,26 @@ namespace ExtractWizard.Controller
 
             // Update the output directory
             _gateway.SetOutputFolderPath(folderName);
+        }
+
+        /// <summary>
+        /// Open the donation page
+        /// </summary>
+        /// <param name="sender">The button UI control which was clicked</param>
+        /// <param name="e">Event arguments</param>
+        public void onDonateButtonClick(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(_donationLink);
+        }
+
+        /// <summary>
+        /// Open the help (documentation) page
+        /// </summary>
+        /// <param name="sender">The button UI control which was clicked</param>
+        /// <param name="e">Event arguments</param>
+        public void onHelpButtonClick(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(_helpLink);
         }
     }
 }

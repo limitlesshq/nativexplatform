@@ -84,6 +84,7 @@
             this.btnHelp.Tag = "BTN_HELP";
             this.btnHelp.Text = "&Help";
             this.btnHelp.UseVisualStyleBackColor = true;
+            this.btnHelp.Click += new System.EventHandler(this.btnHelp_Click);
             // 
             // btnBrowseArchive
             // 
@@ -214,6 +215,7 @@
             this.btnDonate.Size = new System.Drawing.Size(95, 33);
             this.btnDonate.TabIndex = 14;
             this.btnDonate.UseVisualStyleBackColor = false;
+            this.btnDonate.Click += new System.EventHandler(this.btnDonate_Click);
             // 
             // groupProgress
             // 

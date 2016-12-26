@@ -40,5 +40,15 @@ namespace ExtractWizard
         {
             _controller.onBrowseOutputFolderButtonClick(sender, e);
         }
+
+        private void btnDonate_Click(object sender, EventArgs e)
+        {
+            _controller.onDonateButtonClick(sender, e);
+        }
+
+        private void btnHelp_Click(object sender, EventArgs e)
+        {
+            _controller.onHelpButtonClick(sender, e);
+        }
     }
 }
