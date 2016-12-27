@@ -99,7 +99,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="akeeba.pfx" />
     <None Include="App.config" />
     <None Include="Properties\app.manifest" />
   </ItemGroup>
