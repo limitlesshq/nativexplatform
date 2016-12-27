@@ -47,6 +47,7 @@ namespace ExtractWizard
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.groupOptions = new System.Windows.Forms.GroupBox();
             this.btnHelp = new System.Windows.Forms.Button();
             this.btnBrowseArchive = new System.Windows.Forms.Button();
@@ -279,6 +280,7 @@ namespace ExtractWizard
             this.Controls.Add(this.groupProgress);
             this.Controls.Add(this.groupOptions);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
