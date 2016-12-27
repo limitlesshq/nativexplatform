@@ -56,6 +56,7 @@
     </Compile>
     <Compile Include="Gateway\IMainFormGateway.cs" />
     <Compile Include="Gateway\MainFormGateway.cs" />
+    <Compile Include="Helpers\ThreadHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Language.Designer.cs">
@@ -99,7 +100,12 @@
   <ItemGroup>
     <None Include="Resources\blue-rect-paypal-26px.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Unarchiver\Unarchiver.csproj">
+      <Project>{F8C19539-9779-4E56-8979-659485BC45EE}</Project>
+      <Name>Unarchiver</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

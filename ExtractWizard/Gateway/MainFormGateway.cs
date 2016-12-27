@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExtractWizard.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Resources;
@@ -72,7 +73,7 @@ namespace ExtractWizard.Gateway
         /// <param name="BackupArchivePath"></param>
         public void SetBackupArchivePath(string backupArchivePath)
         {
-            myForm.editBackupArchive.Text = backupArchivePath;
+            ThreadHelper.SetText(myForm, myForm.editBackupArchive, backupArchivePath);
         }
 
         /// <summary>
@@ -90,7 +91,7 @@ namespace ExtractWizard.Gateway
         /// <param name="outputFolderPath"></param>
         public void SetOutputFolderPath(string outputFolderPath)
         {
-            myForm.editExtractToFolder.Text = outputFolderPath;
+            ThreadHelper.SetText(myForm, myForm.editExtractToFolder, outputFolderPath);
         }
 
         /// <summary>
@@ -108,7 +109,7 @@ namespace ExtractWizard.Gateway
         /// <returns></returns>
         public void SetPassword(string password)
         {
-            myForm.editPassword.Text = password;
+            ThreadHelper.SetText(myForm, myForm.editPassword, password);
         }
 
         /// <summary>
@@ -135,7 +136,7 @@ namespace ExtractWizard.Gateway
         /// <returns></returns>
         public void SetIgnoreFileWriteErrors(bool isChecked)
         {
-            myForm.chkIgnoreErrors.Checked = isChecked;
+            ThreadHelper.SetCheckboxEnabled(myForm, myForm.chkIgnoreErrors, isChecked);
         }
 
         /// <summary>
@@ -153,7 +154,7 @@ namespace ExtractWizard.Gateway
         /// <returns></returns>
         public void SetDryRun(bool isChecked)
         {
-            myForm.chkDryRun.Checked = isChecked;
+            ThreadHelper.SetCheckboxEnabled(myForm, myForm.chkDryRun, isChecked);
         }
 
         /// <summary>
@@ -163,23 +164,23 @@ namespace ExtractWizard.Gateway
         public void SetExtractionOptionsState(bool enabled)
         {
             // Set state of edit box labels
-            myForm.lblBackupArchive.Enabled = enabled;
-            myForm.lblExtractToFolder.Enabled = enabled;
-            myForm.lblPassword.Enabled = enabled;
+            ThreadHelper.SetEnabled(myForm, myForm.lblBackupArchive, enabled);
+            ThreadHelper.SetEnabled(myForm, myForm.lblExtractToFolder, enabled);
+            ThreadHelper.SetEnabled(myForm, myForm.lblPassword, enabled);
 
             // Set state of edit boxes
-            myForm.editBackupArchive.Enabled = enabled;
-            myForm.editExtractToFolder.Enabled = enabled;
-            myForm.editPassword.Enabled = enabled;
+            ThreadHelper.SetEnabled(myForm, myForm.editBackupArchive, enabled);
+            ThreadHelper.SetEnabled(myForm, myForm.editExtractToFolder, enabled);
+            ThreadHelper.SetEnabled(myForm, myForm.editPassword, enabled);
 
             // Set state of check boxes
-            myForm.chkDryRun.Enabled = enabled;
-            myForm.chkIgnoreErrors.Enabled = enabled;
+            ThreadHelper.SetEnabled(myForm, myForm.chkDryRun, enabled);
+            ThreadHelper.SetEnabled(myForm, myForm.chkIgnoreErrors, enabled);
 
             // Set state of buttons
-            myForm.btnBrowseArchive.Enabled = enabled;
-            myForm.btnExtractToFolder.Enabled = enabled;
-            myForm.btnHelp.Enabled = enabled;
+            ThreadHelper.SetEnabled(myForm, myForm.btnBrowseArchive, enabled);
+            ThreadHelper.SetEnabled(myForm, myForm.btnExtractToFolder, enabled);
+            ThreadHelper.SetEnabled(myForm, myForm.btnHelp, enabled);
         }
 
         /// <summary>
@@ -188,7 +189,7 @@ namespace ExtractWizard.Gateway
         /// <param name="label"></param>
         public void SetExtractButtonText(string label)
         {
-            myForm.btnExtract.Text = label;
+            ThreadHelper.SetText(myForm, myForm.btnExtract, label);
         }
 
         /// <summary>
@@ -202,7 +203,7 @@ namespace ExtractWizard.Gateway
             percent = Math.Min(100, percent);
 
             // Set the progress bar value
-            myForm.progressBarExtract.Value = percent;
+            ThreadHelper.SetProgressValue(myForm, myForm.progressBarExtract, percent);
         }
 
         /// <summary>
@@ -211,7 +212,7 @@ namespace ExtractWizard.Gateway
         /// <param name="fileName"></param>
         public void SetExtractedFileName(string fileName)
         {
-            myForm.lblExtractedFile.Text = fileName;
+            ThreadHelper.SetText(myForm, myForm.lblExtractedFile, fileName);
         }
     }
 }
