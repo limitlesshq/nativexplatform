@@ -135,7 +135,7 @@ namespace ExtractWizard.Controller
         /// <param name="e">Event arguments</param>
         public void OnBrowseArchiveButtonClick(object sender, EventArgs e)
         {
-            string fileName = "";
+            string fileName = _gateway.GetBackupArchivePath();
 
             using (OpenFileDialog fileDialog = new OpenFileDialog())
             {
@@ -148,6 +148,7 @@ namespace ExtractWizard.Controller
                 sb.Append("|*.zip");
 
                 // Set up the dialog
+                fileDialog.FileName = fileName;
                 fileDialog.AddExtension = true;
                 fileDialog.AutoUpgradeEnabled = true;
                 fileDialog.CheckFileExists = true;
@@ -159,6 +160,12 @@ namespace ExtractWizard.Controller
                 fileDialog.Multiselect = false;
                 fileDialog.SupportMultiDottedExtensions = true;
                 fileDialog.Title = _languageResource.GetString("LBL_HEADER_SELECT_ARCHIVE");
+
+                // If we have a file we will open that folder instead of My Documents
+                if (fileName != "")
+                {
+                    fileDialog.InitialDirectory = Path.GetDirectoryName(fileName);
+                }
 
                 // Show the dialog
                 DialogResult dialogResult = fileDialog.ShowDialog();
@@ -198,12 +205,13 @@ namespace ExtractWizard.Controller
         /// <param name="e">Event arguments</param>
         public void OnBrowseOutputFolderButtonClick(object sender, EventArgs e)
         {
-            string folderName = "";
+            string folderName = _gateway.GetOutputFolderPath();
 
             using (FolderBrowserDialog folderDialog = new FolderBrowserDialog())
             {
                 // Set up the dialog
                 //folderDialog.RootFolder = Environment.SpecialFolder.MyComputer;
+                folderDialog.SelectedPath = folderName;
                 folderDialog.ShowNewFolderButton = true;
 
                 // Show the dialog
