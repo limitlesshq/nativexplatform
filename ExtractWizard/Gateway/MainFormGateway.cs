@@ -23,7 +23,15 @@ namespace ExtractWizard.Gateway
     /// </summary>
     class MainFormGateway : IMainFormGateway
     {
-        private MainForm myForm;
+        /// <summary>
+        /// The form object we're the gateway for
+        /// </summary>
+        private MainForm _myForm;
+
+        /// <summary>
+        /// Caches our Windows detection result for performance reasons
+        /// </summary>
+        private bool? _isWindows = null;
 
         /// <summary>
         /// Public constructor. This specialised gateway expects a MainForm object as input.
@@ -31,7 +39,7 @@ namespace ExtractWizard.Gateway
         /// <param name="myForm"></param>
         public MainFormGateway(MainForm myForm)
         {
-            this.myForm = myForm;
+            this._myForm = myForm;
         }
 
         /// <summary>
@@ -40,7 +48,7 @@ namespace ExtractWizard.Gateway
         /// <param name="title"></param>
         public void SetWindowTitle(string title)
         {
-            myForm.Text = title;
+            _myForm.Text = title;
         }
 
         /// <summary>
@@ -49,22 +57,22 @@ namespace ExtractWizard.Gateway
         public void TranslateInterface(ResourceManager text)
         {
             // Groups
-            myForm.groupOptions.Text = text.GetString((string)myForm.groupOptions.Tag);
-            myForm.groupProgress.Text = text.GetString((string)myForm.groupProgress.Tag);
+            _myForm.groupOptions.Text = text.GetString((string)_myForm.groupOptions.Tag);
+            _myForm.groupProgress.Text = text.GetString((string)_myForm.groupProgress.Tag);
 
             // Labels
-            myForm.lblBackupArchive.Text = text.GetString((string) myForm.lblBackupArchive.Tag);
-            myForm.lblExtractToFolder.Text = text.GetString((string)myForm.lblExtractToFolder.Tag);
-            myForm.lblPassword.Text = text.GetString((string)myForm.lblPassword.Tag);
+            _myForm.lblBackupArchive.Text = text.GetString((string) _myForm.lblBackupArchive.Tag);
+            _myForm.lblExtractToFolder.Text = text.GetString((string)_myForm.lblExtractToFolder.Tag);
+            _myForm.lblPassword.Text = text.GetString((string)_myForm.lblPassword.Tag);
 
             // Checkboxes
-            myForm.chkDryRun.Text = text.GetString((string)myForm.chkDryRun.Tag);
-            myForm.chkIgnoreErrors.Text = text.GetString((string)myForm.chkIgnoreErrors.Tag);
+            _myForm.chkDryRun.Text = text.GetString((string)_myForm.chkDryRun.Tag);
+            _myForm.chkIgnoreErrors.Text = text.GetString((string)_myForm.chkIgnoreErrors.Tag);
 
             // Buttons
-            myForm.btnBrowseArchive.Text = text.GetString((string)myForm.btnBrowseArchive.Tag);
-            myForm.btnExtractToFolder.Text = text.GetString((string)myForm.btnExtractToFolder.Tag);
-            myForm.btnHelp.Text = text.GetString((string)myForm.btnHelp.Tag);
+            _myForm.btnBrowseArchive.Text = text.GetString((string)_myForm.btnBrowseArchive.Tag);
+            _myForm.btnExtractToFolder.Text = text.GetString((string)_myForm.btnExtractToFolder.Tag);
+            _myForm.btnHelp.Text = text.GetString((string)_myForm.btnHelp.Tag);
         }
 
         /// <summary>
@@ -73,7 +81,7 @@ namespace ExtractWizard.Gateway
         /// <param name="BackupArchivePath"></param>
         public void SetBackupArchivePath(string backupArchivePath)
         {
-            ThreadHelper.SetText(myForm, myForm.editBackupArchive, backupArchivePath);
+            ThreadHelper.SetText(_myForm, _myForm.editBackupArchive, backupArchivePath);
         }
 
         /// <summary>
@@ -82,7 +90,7 @@ namespace ExtractWizard.Gateway
         /// <returns></returns>
         public string GetBackupArchivePath()
         {
-            return myForm.editBackupArchive.Text;
+            return _myForm.editBackupArchive.Text;
         }
 
         /// <summary>
@@ -91,7 +99,7 @@ namespace ExtractWizard.Gateway
         /// <param name="outputFolderPath"></param>
         public void SetOutputFolderPath(string outputFolderPath)
         {
-            ThreadHelper.SetText(myForm, myForm.editExtractToFolder, outputFolderPath);
+            ThreadHelper.SetText(_myForm, _myForm.editExtractToFolder, outputFolderPath);
         }
 
         /// <summary>
@@ -100,7 +108,7 @@ namespace ExtractWizard.Gateway
         /// <returns></returns>
         public string GetOutputFolderPath()
         {
-            return myForm.editExtractToFolder.Text;
+            return _myForm.editExtractToFolder.Text;
         }
 
         /// <summary>
@@ -109,7 +117,7 @@ namespace ExtractWizard.Gateway
         /// <returns></returns>
         public void SetPassword(string password)
         {
-            ThreadHelper.SetText(myForm, myForm.editPassword, password);
+            ThreadHelper.SetText(_myForm, _myForm.editPassword, password);
         }
 
         /// <summary>
@@ -118,7 +126,7 @@ namespace ExtractWizard.Gateway
         /// <returns></returns>
         public string GetPassword()
         {
-            return myForm.editPassword.Text;
+            return _myForm.editPassword.Text;
         }
 
         /// <summary>
@@ -127,7 +135,7 @@ namespace ExtractWizard.Gateway
         /// <returns></returns>
         public bool GetIgnoreFileWriteErrors()
         {
-            return myForm.chkIgnoreErrors.Checked;
+            return _myForm.chkIgnoreErrors.Checked;
         }
 
         /// <summary>
@@ -136,7 +144,7 @@ namespace ExtractWizard.Gateway
         /// <returns></returns>
         public void SetIgnoreFileWriteErrors(bool isChecked)
         {
-            ThreadHelper.SetCheckboxEnabled(myForm, myForm.chkIgnoreErrors, isChecked);
+            ThreadHelper.SetCheckboxEnabled(_myForm, _myForm.chkIgnoreErrors, isChecked);
         }
 
         /// <summary>
@@ -145,7 +153,7 @@ namespace ExtractWizard.Gateway
         /// <returns></returns>
         public bool GetDryRun()
         {
-            return myForm.chkDryRun.Checked;
+            return _myForm.chkDryRun.Checked;
         }
 
         /// <summary>
@@ -154,7 +162,7 @@ namespace ExtractWizard.Gateway
         /// <returns></returns>
         public void SetDryRun(bool isChecked)
         {
-            ThreadHelper.SetCheckboxEnabled(myForm, myForm.chkDryRun, isChecked);
+            ThreadHelper.SetCheckboxEnabled(_myForm, _myForm.chkDryRun, isChecked);
         }
 
         /// <summary>
@@ -164,23 +172,23 @@ namespace ExtractWizard.Gateway
         public void SetExtractionOptionsState(bool enabled)
         {
             // Set state of edit box labels
-            ThreadHelper.SetEnabled(myForm, myForm.lblBackupArchive, enabled);
-            ThreadHelper.SetEnabled(myForm, myForm.lblExtractToFolder, enabled);
-            ThreadHelper.SetEnabled(myForm, myForm.lblPassword, enabled);
+            ThreadHelper.SetEnabled(_myForm, _myForm.lblBackupArchive, enabled);
+            ThreadHelper.SetEnabled(_myForm, _myForm.lblExtractToFolder, enabled);
+            ThreadHelper.SetEnabled(_myForm, _myForm.lblPassword, enabled);
 
             // Set state of edit boxes
-            ThreadHelper.SetEnabled(myForm, myForm.editBackupArchive, enabled);
-            ThreadHelper.SetEnabled(myForm, myForm.editExtractToFolder, enabled);
-            ThreadHelper.SetEnabled(myForm, myForm.editPassword, enabled);
+            ThreadHelper.SetEnabled(_myForm, _myForm.editBackupArchive, enabled);
+            ThreadHelper.SetEnabled(_myForm, _myForm.editExtractToFolder, enabled);
+            ThreadHelper.SetEnabled(_myForm, _myForm.editPassword, enabled);
 
             // Set state of check boxes
-            ThreadHelper.SetEnabled(myForm, myForm.chkDryRun, enabled);
-            ThreadHelper.SetEnabled(myForm, myForm.chkIgnoreErrors, enabled);
+            ThreadHelper.SetEnabled(_myForm, _myForm.chkDryRun, enabled);
+            ThreadHelper.SetEnabled(_myForm, _myForm.chkIgnoreErrors, enabled);
 
             // Set state of buttons
-            ThreadHelper.SetEnabled(myForm, myForm.btnBrowseArchive, enabled);
-            ThreadHelper.SetEnabled(myForm, myForm.btnExtractToFolder, enabled);
-            ThreadHelper.SetEnabled(myForm, myForm.btnHelp, enabled);
+            ThreadHelper.SetEnabled(_myForm, _myForm.btnBrowseArchive, enabled);
+            ThreadHelper.SetEnabled(_myForm, _myForm.btnExtractToFolder, enabled);
+            ThreadHelper.SetEnabled(_myForm, _myForm.btnHelp, enabled);
         }
 
         /// <summary>
@@ -189,7 +197,7 @@ namespace ExtractWizard.Gateway
         /// <param name="label"></param>
         public void SetExtractButtonText(string label)
         {
-            ThreadHelper.SetText(myForm, myForm.btnExtract, label);
+            ThreadHelper.SetText(_myForm, _myForm.btnExtract, label);
         }
 
         /// <summary>
@@ -203,7 +211,7 @@ namespace ExtractWizard.Gateway
             percent = Math.Min(100, percent);
 
             // Set the progress bar value
-            ThreadHelper.SetProgressValue(myForm, myForm.progressBarExtract, percent);
+            ThreadHelper.SetProgressValue(_myForm, _myForm.progressBarExtract, percent);
         }
 
         /// <summary>
@@ -212,7 +220,66 @@ namespace ExtractWizard.Gateway
         /// <param name="fileName"></param>
         public void SetExtractedFileName(string fileName)
         {
-            ThreadHelper.SetText(myForm, myForm.lblExtractedFile, fileName);
+            ThreadHelper.SetText(_myForm, _myForm.lblExtractedFile, fileName);
+        }
+
+        /// <summary>
+        /// Set the taskbar progress bar's state. Has an effect only on Windows 7+.
+        /// </summary>
+        /// <param name="state"></param>
+        public void SetTaskbarProgressState(TaskBarProgress.TaskbarStates state)
+        {
+            // Make sure we're on Windows
+            if (!IsWindows())
+            {
+                return;
+            }
+
+            // Use the helper to set the state
+            ThreadHelper.SetTaskbarProgressState(_myForm, state);
+        }
+
+        /// <summary>
+        /// Set the taskbar progress bar's value (whole percentage points, 0-100). Has an effect only on Windows 7+.
+        /// </summary>
+        /// <param name="state"></param>
+        public void SetTaskbarProgressValue(int value)
+        {
+            // Make sure we're on Windows
+            if (!IsWindows())
+            {
+                return;
+            }
+
+            // Use the helper to set the value
+            ThreadHelper.SetTaskbarProgressPercent(_myForm, value);
+        }
+
+        /// <summary>
+        /// Are we running on Windows?
+        /// 
+        /// The first time called it runs a detection and caches the rsult. Subsequent calls use the
+        /// cached result for performance reasons.
+        /// </summary>
+        /// <returns></returns>
+        private bool IsWindows()
+        {
+            // Do I need to update the cache?
+            if (_isWindows == null)
+            {
+                _isWindows = true;
+
+                OperatingSystem os = Environment.OSVersion;
+                PlatformID[] windowsOS = { PlatformID.Win32NT, PlatformID.Win32S, PlatformID.Win32Windows };
+
+                if (Array.IndexOf(windowsOS, os.Platform) == -1)
+                {
+                    _isWindows = false;
+                }
+            }
+
+            // Return the cached value
+            return (bool)_isWindows;
         }
     }
 }

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Resources;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Resources;
+using ExtractWizard.Helpers;
 
 namespace ExtractWizard.Gateway
 {
@@ -115,5 +111,17 @@ namespace ExtractWizard.Gateway
         /// </summary>
         /// <param name="fileName"></param>
         void SetExtractedFileName(string fileName);
+
+        /// <summary>
+        /// Set the taskbar progress bar's state. Has an effect only on Windows 7+.
+        /// </summary>
+        /// <param name="state"></param>
+        void SetTaskbarProgressState(TaskBarProgress.TaskbarStates state);
+
+        /// <summary>
+        /// Set the taskbar progress bar's value (whole percentage points, 0-100). Has an effect only on Windows 7+.
+        /// </summary>
+        /// <param name="state"></param>
+        void SetTaskbarProgressValue(int value);
     }
 }

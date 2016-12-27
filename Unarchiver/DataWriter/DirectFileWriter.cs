@@ -49,11 +49,6 @@ namespace Akeeba.Unarchiver.DataWriter
 
             set
             {
-                if (!Directory.Exists(value))
-                {
-                    throw new DirectoryNotFoundException(String.Format(Language.ResourceManager.GetString("ERR_DATAWRITER_DIRECTORY_NOT_FOUND"), value));
-                }
-
                 _targetRoot = value;
             }
         }

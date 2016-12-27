@@ -3,6 +3,7 @@ using Akeeba.Unarchiver.DataWriter;
 using Akeeba.Unarchiver.EventArgs;
 using ExtractWizard.Gateway;
 using ExtractWizard.Resources;
+using ExtractWizard.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -98,6 +99,8 @@ namespace ExtractWizard.Controller
             _gateway.SetExtractButtonText(_languageResource.GetString("BTN_EXTRACT"));
             _gateway.SetExtractionProgress(0);
             _gateway.SetExtractedFileName("");
+            _gateway.SetTaskbarProgressState(TaskBarProgress.TaskbarStates.NoProgress);
+            _gateway.SetTaskbarProgressValue(0);
 
             if (tokenSource != null)
             {
@@ -231,6 +234,9 @@ namespace ExtractWizard.Controller
                 _gateway.SetExtractButtonText(_languageResource.GetString("BTN_CANCEL"));
                 _gateway.SetExtractionOptionsState(false);
 
+                _gateway.SetTaskbarProgressState(TaskBarProgress.TaskbarStates.Normal);
+                _gateway.SetTaskbarProgressValue(0);
+
                 StartExtractionAsync();
 
                 return;
@@ -295,6 +301,8 @@ namespace ExtractWizard.Controller
             {
                 Exception targetException = (e.InnerException == null) ? e : e.InnerException;
 
+                _gateway.SetTaskbarProgressState(TaskBarProgress.TaskbarStates.Error);
+
                 // Show error message
                 MessageBox.Show(e.Message, _languageResource.GetString("LBL_ERROR_CAPTION"), MessageBoxButtons.OK);
             }
@@ -321,7 +329,8 @@ namespace ExtractWizard.Controller
             switch (e.Progress.Status)
             {
                 case ExtractionStatus.Error:
-                    // TODO Set progress status to error
+                    // Set progress status to error
+                    _gateway.SetTaskbarProgressState(TaskBarProgress.TaskbarStates.Error);
 
                     // Show error message
                     MessageBox.Show(e.Progress.LastException.Message, _languageResource.GetString("LBL_ERROR_CAPTION"), MessageBoxButtons.OK);
@@ -344,6 +353,7 @@ namespace ExtractWizard.Controller
                     percentage = Math.Min(100, percentage);
 
                     _gateway.SetExtractionProgress(percentage);
+                    _gateway.SetTaskbarProgressValue(percentage);
 
                     break;
 
@@ -354,6 +364,7 @@ namespace ExtractWizard.Controller
 
                 case ExtractionStatus.Idle:
                     // Show cancelation message
+                    _gateway.SetTaskbarProgressState(TaskBarProgress.TaskbarStates.Paused);
                     MessageBox.Show(_languageResource.GetString("LBL_CANCEL_BODY"), _languageResource.GetString("LBL_CANCEL_CAPTION"), MessageBoxButtons.OK);
 
                     break;

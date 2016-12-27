@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ExtractWizard.Helpers;
 
 namespace ExtractWizard.Helpers
 {
@@ -144,5 +145,59 @@ namespace ExtractWizard.Helpers
 
             control.Enabled = value;
         }
+
+        /// <summary>
+        /// Delegate for SetTaskbarProgressState
+        /// </summary>
+        /// <param name="form"></param>
+        /// <param name="state"></param>
+        delegate void SetTaskbarProgressStateCallback(Form form, TaskBarProgress.TaskbarStates state);
+
+        /// <summary>
+        /// Set the taskbar progress bar state
+        /// </summary>
+        /// <param name="form"></param>
+        /// <param name="state"></param>
+        public static void SetTaskbarProgressState(Form form, TaskBarProgress.TaskbarStates state)
+        {
+            if (form.InvokeRequired)
+            {
+                SetTaskbarProgressStateCallback d = new SetTaskbarProgressStateCallback(SetTaskbarProgressState);
+                form.Invoke(d, new object[] { form, state });
+
+                return;
+            }
+
+            TaskBarProgress.SetState(form.Handle, state);
+        }
+
+        /// <summary>
+        /// Delegate for SetTaskbarProgressPercent
+        /// </summary>
+        /// <param name="form"></param>
+        /// <param name="value"></param>
+        delegate void SetTaskbarProgressPercentCallback(Form form, int value);
+
+        /// <summary>
+        /// Sets the taskbar progress bar value (0-100)
+        /// </summary>
+        /// <param name="form"></param>
+        /// <param name="value"></param>
+        public static void SetTaskbarProgressPercent(Form form, int value)
+        {
+            value = Math.Max(0, value);
+            value = Math.Min(100, value);
+
+            if (form.InvokeRequired)
+            {
+                SetTaskbarProgressPercentCallback d = new SetTaskbarProgressPercentCallback(SetTaskbarProgressPercent);
+                form.Invoke(d, new object[] { form, value });
+
+                return;
+            }
+
+            TaskBarProgress.SetValue(form.Handle, (double) value, 100);
+        }
+
     }
 }
