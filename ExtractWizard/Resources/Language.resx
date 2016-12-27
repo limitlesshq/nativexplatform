@@ -147,10 +147,25 @@
   <data name="LBL_BACKUP_ARCHIVE" xml:space="preserve">
     <value>Backup &amp;Archive</value>
   </data>
+  <data name="LBL_CANCEL_BODY" xml:space="preserve">
+    <value>The extraction process has been canceled before completion. Please note that the backup archive is only partially extracted.</value>
+  </data>
+  <data name="LBL_CANCEL_CAPTION" xml:space="preserve">
+    <value>Extraction canceled</value>
+  </data>
+  <data name="LBL_ERROR_CAPTION" xml:space="preserve">
+    <value>Extraction failed</value>
+  </data>
   <data name="LBL_EXTRACT_TO" xml:space="preserve">
     <value>Extract to &amp;folder</value>
   </data>
   <data name="LBL_PASSWORD" xml:space="preserve">
     <value>&amp;Password (for JPS files)</value>
+  </data>
+  <data name="LBL_SUCCESS_BODY" xml:space="preserve">
+    <value>The extraction of the backup archive has finished successfully.</value>
+  </data>
+  <data name="LBL_SUCCESS_CAPTION" xml:space="preserve">
+    <value>Extraction complete</value>
   </data>
 </root>

@@ -203,6 +203,7 @@
             this.btnExtract.TabIndex = 12;
             this.btnExtract.Text = "Do it!";
             this.btnExtract.UseVisualStyleBackColor = true;
+            this.btnExtract.Click += new System.EventHandler(this.btnExtract_Click);
             // 
             // btnDonate
             // 

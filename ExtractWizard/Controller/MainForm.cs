@@ -1,4 +1,7 @@
-﻿using ExtractWizard.Gateway;
+﻿using Akeeba.Unarchiver;
+using Akeeba.Unarchiver.DataWriter;
+using Akeeba.Unarchiver.EventArgs;
+using ExtractWizard.Gateway;
 using ExtractWizard.Resources;
 using System;
 using System.Collections.Generic;
@@ -6,6 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -19,6 +23,16 @@ namespace ExtractWizard.Controller
     /// </summary>
     class MainForm
     {
+        /// <summary>
+        /// The cancelation token source object, used to cancel the archive extraction when needed.
+        /// </summary>
+        private CancellationTokenSource tokenSource = null;
+
+        /// <summary>
+        /// The total size of all parts of the backup archive in bytes.
+        /// </summary>
+        private ulong totalArchiveSize = 0;
+
         /// <summary>
         /// The link to the PayPal donation page
         /// </summary>
@@ -59,13 +73,14 @@ namespace ExtractWizard.Controller
             _gateway.SetWindowTitle($"Akeeba eXtract Wizard {version}");
             _gateway.TranslateInterface(_languageResource);
 
-            ResetView();
+            ResetOptions();
+            ResetProgress();
         }
 
         /// <summary>
-        /// Resets the View. Populates all fields to their default values and gets ready to extract yet another archive.
+        /// Resets the options panel. Populates all fields to their default values.
         /// </summary>
-        public void ResetView()
+        private void ResetOptions()
         {
             _gateway.SetBackupArchivePath("");
             _gateway.SetOutputFolderPath("");
@@ -73,9 +88,22 @@ namespace ExtractWizard.Controller
             _gateway.SetIgnoreFileWriteErrors(true);
             _gateway.SetDryRun(false);
             _gateway.SetExtractionOptionsState(true);
+        }
+
+        /// <summary>
+        /// Resets the progress panel and the cancellation token source.
+        /// </summary>
+        private void ResetProgress()
+        {
             _gateway.SetExtractButtonText(_languageResource.GetString("BTN_EXTRACT"));
             _gateway.SetExtractionProgress(0);
             _gateway.SetExtractedFileName("");
+
+            if (tokenSource != null)
+            {
+                tokenSource.Dispose();
+                tokenSource = null;
+            }
         }
 
         /// <summary>
@@ -189,6 +217,170 @@ namespace ExtractWizard.Controller
         public void onHelpButtonClick(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start(_helpLink);
+        }
+
+        /// <summary>
+        /// Handle the clicks of the start / stop button
+        /// </summary>
+        /// <param name="sender">The button UI control which was clicked</param>
+        /// <param name="e">Event arguments</param>
+        public void onStartStopButtonClick(object sender, EventArgs e)
+        {
+            if (tokenSource == null)
+            {
+                _gateway.SetExtractButtonText(_languageResource.GetString("BTN_CANCEL"));
+                _gateway.SetExtractionOptionsState(false);
+
+                StartExtractionAsync();
+
+                return;
+            }
+
+            StopExtraction();
+        }
+
+        /// <summary>
+        /// Start the archive extraction asynchronously.
+        /// </summary>
+        /// <returns></returns>
+        private async Task StartExtractionAsync()
+        {
+            string archiveFile = _gateway.GetBackupArchivePath();
+            string outputDirectory = _gateway.GetOutputFolderPath();
+            string password = _gateway.GetPassword();
+            bool ignoreWriteErrors = _gateway.GetIgnoreFileWriteErrors();
+            bool dryRun = _gateway.GetDryRun();
+
+            tokenSource = new CancellationTokenSource();
+            CancellationToken token = tokenSource.Token;
+
+            try
+            {
+                using (Unarchiver extractor = Unarchiver.CreateForFile(archiveFile, password))
+                {
+                    // Wire events
+                    totalArchiveSize = 0;
+
+                    extractor.ArchiveInformationEvent += onArchiveInformationHandler;
+                    extractor.ProgressEvent += OnProgressHandler;
+                    extractor.EntityEvent += onEntityHandler;
+
+                    Task t = Task.Factory.StartNew(
+                        () =>
+                        {
+                            if (extractor == null)
+                            {
+                                throw new Exception("Internal state consistency violation: extractor object is null");
+                            }
+
+                        // Get the appropriate writer
+                        IDataWriter writer = new NullWriter();
+
+                            if (!dryRun)
+                            {
+                                writer = new DirectFileWriter(outputDirectory);
+                            }
+
+                        // Test the extraction
+                        extractor.Extract(token, writer);
+                        }, token,
+                        TaskCreationOptions.None,
+                        TaskScheduler.Default
+                    );
+
+                    await t;
+                }
+            }
+            catch (Exception e)
+            {
+                Exception targetException = (e.InnerException == null) ? e : e.InnerException;
+
+                // Show error message
+                MessageBox.Show(e.Message, _languageResource.GetString("LBL_ERROR_CAPTION"), MessageBoxButtons.OK);
+            }
+
+            _gateway.SetExtractionOptionsState(true);
+            ResetProgress();
+        }
+
+        /// <summary>
+        /// Cancel the archive extraction
+        /// </summary>
+        private void StopExtraction()
+        {
+            tokenSource.Cancel();
+        }
+
+        /// <summary>
+        /// Handle the progress event of the unarchiver
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnProgressHandler(object sender, ProgressEventArgs e)
+        {
+            switch (e.Progress.Status)
+            {
+                case ExtractionStatus.Error:
+                    // TODO Set progress status to error
+
+                    // Show error message
+                    MessageBox.Show(e.Progress.LastException.Message, _languageResource.GetString("LBL_ERROR_CAPTION"), MessageBoxButtons.OK);
+                    break;
+
+                case ExtractionStatus.Running:
+                    // Set the progress bar's percentage
+                    if (totalArchiveSize <= 0)
+                    {
+                        _gateway.SetExtractionProgress(0);
+
+                        return;
+                    }
+
+                    double progress = e.Progress.FilePosition / (float) totalArchiveSize;
+                    double progressPercent = 100 * progress;
+                    int percentage = (int) Math.Floor(progressPercent);
+
+                    percentage = Math.Max(0, percentage);
+                    percentage = Math.Min(100, percentage);
+
+                    _gateway.SetExtractionProgress(percentage);
+
+                    break;
+
+                case ExtractionStatus.Finished:
+                    // Show OK message
+                    MessageBox.Show(_languageResource.GetString("LBL_SUCCESS_BODY"), _languageResource.GetString("LBL_SUCCESS_CAPTION"), MessageBoxButtons.OK);
+                    break;
+
+                case ExtractionStatus.Idle:
+                    // Show cancelation message
+                    MessageBox.Show(_languageResource.GetString("LBL_CANCEL_BODY"), _languageResource.GetString("LBL_CANCEL_CAPTION"), MessageBoxButtons.OK);
+
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Handle the unarchiver's entity event. Used to update the interface with ther name of
+        /// the file being currently extracted.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="a"></param>
+        private void onEntityHandler(object sender, EntityEventArgs a)
+        {
+            _gateway.SetExtractedFileName(a.Information.StoredName);
+        }
+
+        /// <summary>
+        /// Handle the unarchiver's archive information event. We need it to get the total size of
+        /// the archive in bytes which we will then use to get the percentage of the file
+        /// extracted for the progress bar display.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="a"></param>
+        private void onArchiveInformationHandler(object sender, ArchiveInformationEventArgs a)
+        {
+            totalArchiveSize = a.ArchiveInformation.ArchiveSize;
         }
     }
 }

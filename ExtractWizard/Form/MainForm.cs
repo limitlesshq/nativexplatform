@@ -50,5 +50,10 @@ namespace ExtractWizard
         {
             _controller.onHelpButtonClick(sender, e);
         }
+
+        private void btnExtract_Click(object sender, EventArgs e)
+        {
+            _controller.onStartStopButtonClick(sender, e);
+        }
     }
 }

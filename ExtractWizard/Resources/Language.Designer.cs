@@ -151,6 +151,33 @@ namespace ExtractWizard.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The extraction process has been canceled before completion. Please note that the backup archive is only partially extracted..
+        /// </summary>
+        internal static string LBL_CANCEL_BODY {
+            get {
+                return ResourceManager.GetString("LBL_CANCEL_BODY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extraction canceled.
+        /// </summary>
+        internal static string LBL_CANCEL_CAPTION {
+            get {
+                return ResourceManager.GetString("LBL_CANCEL_CAPTION", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extraction failed.
+        /// </summary>
+        internal static string LBL_ERROR_CAPTION {
+            get {
+                return ResourceManager.GetString("LBL_ERROR_CAPTION", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Extract to &amp;folder.
         /// </summary>
         internal static string LBL_EXTRACT_TO {
@@ -165,6 +192,24 @@ namespace ExtractWizard.Resources {
         internal static string LBL_PASSWORD {
             get {
                 return ResourceManager.GetString("LBL_PASSWORD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The extraction of the backup archive has finished successfully..
+        /// </summary>
+        internal static string LBL_SUCCESS_BODY {
+            get {
+                return ResourceManager.GetString("LBL_SUCCESS_BODY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extraction complete.
+        /// </summary>
+        internal static string LBL_SUCCESS_CAPTION {
+            get {
+                return ResourceManager.GetString("LBL_SUCCESS_CAPTION", resourceCulture);
             }
         }
     }
