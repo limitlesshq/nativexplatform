@@ -168,4 +168,16 @@
   <data name="LBL_SUCCESS_CAPTION" xml:space="preserve">
     <value>Extraction complete</value>
   </data>
+  <data name="LBL_FILETYPE_JPA" xml:space="preserve">
+    <value>Backup archives (*.jpa)</value>
+  </data>
+  <data name="LBL_FILETYPE_JPS" xml:space="preserve">
+    <value>Encrypted archives (*.jps)</value>
+  </data>
+  <data name="LBL_FILETYPE_ZIP" xml:space="preserve">
+    <value>ZIP backup archives (*.zip)</value>
+  </data>
+  <data name="LBL_HEADER_SELECT_ARCHIVE" xml:space="preserve">
+    <value>Select a backup archive</value>
+  </data>
 </root>

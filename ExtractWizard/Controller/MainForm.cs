@@ -1,18 +1,18 @@
-﻿using Akeeba.Unarchiver;
-using Akeeba.Unarchiver.DataWriter;
-using Akeeba.Unarchiver.EventArgs;
-using ExtractWizard.Gateway;
-using ExtractWizard.Resources;
-using ExtractWizard.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Resources;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Akeeba.Unarchiver;
+using Akeeba.Unarchiver.DataWriter;
+using Akeeba.Unarchiver.EventArgs;
+using ExtractWizard.Gateway;
+using ExtractWizard.Helpers;
+using ExtractWizard.Resources;
 
 namespace ExtractWizard.Controller
 {
@@ -27,22 +27,22 @@ namespace ExtractWizard.Controller
         /// <summary>
         /// The cancelation token source object, used to cancel the archive extraction when needed.
         /// </summary>
-        private CancellationTokenSource tokenSource = null;
+        private CancellationTokenSource _tokenSource = null;
 
         /// <summary>
         /// The total size of all parts of the backup archive in bytes.
         /// </summary>
-        private ulong totalArchiveSize = 0;
+        private ulong _totalArchiveSize = 0;
 
         /// <summary>
         /// The link to the PayPal donation page
         /// </summary>
-        private const string _donationLink = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=D9CFZ4H35NFWW";
+        private const string DonationLink = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=D9CFZ4H35NFWW";
 
         /// <summary>
         /// The link to the documentation page
         /// </summary>
-        private const string _helpLink = "https://www.akeebabackup.com/documentation/extract-wizard.html";
+        private const string HelpLink = "https://www.akeebabackup.com/documentation/extract-wizard.html";
 
         /// <summary>
         /// The Gateway to the main form
@@ -102,10 +102,10 @@ namespace ExtractWizard.Controller
             _gateway.SetTaskbarProgressState(TaskBarProgress.TaskbarStates.NoProgress);
             _gateway.SetTaskbarProgressValue(0);
 
-            if (tokenSource != null)
+            if (_tokenSource != null)
             {
-                tokenSource.Dispose();
-                tokenSource = null;
+                _tokenSource.Dispose();
+                _tokenSource = null;
             }
         }
 
@@ -114,12 +114,20 @@ namespace ExtractWizard.Controller
         /// </summary>
         /// <param name="sender">The button UI control which was clicked</param>
         /// <param name="e">Event arguments</param>
-        public void onBrowseArchiveButtonClick(object sender, EventArgs e)
+        public void OnBrowseArchiveButtonClick(object sender, EventArgs e)
         {
             string fileName = "";
 
             using (OpenFileDialog fileDialog = new OpenFileDialog())
             {
+                StringBuilder sb = new StringBuilder();
+                sb.Append(_languageResource.GetString("LBL_FILETYPE_JPA"));
+                sb.Append("|*.jpa|");
+                sb.Append(_languageResource.GetString("LBL_FILETYPE_JPS"));
+                sb.Append("|*.jps|");
+                sb.Append(_languageResource.GetString("LBL_FILETYPE_ZIP"));
+                sb.Append("|*.zip");
+
                 // Set up the dialog
                 fileDialog.AddExtension = true;
                 fileDialog.AutoUpgradeEnabled = true;
@@ -127,11 +135,11 @@ namespace ExtractWizard.Controller
                 fileDialog.CheckPathExists = true;
                 fileDialog.DefaultExt = "jpa";
                 fileDialog.DereferenceLinks = true;
-                fileDialog.Filter = $"Backup archives (*.jpa)|*.jpa|Encrypted archives (*.jps)|*.jps|ZIP backup archives (*.zip)|*.zip";
+                fileDialog.Filter = sb.ToString();
                 fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                 fileDialog.Multiselect = false;
                 fileDialog.SupportMultiDottedExtensions = true;
-                fileDialog.Title = "Select a backup archive";
+                fileDialog.Title = _languageResource.GetString("LBL_HEADER_SELECT_ARCHIVE");
 
                 // Show the dialog
                 DialogResult dialogResult = fileDialog.ShowDialog();
@@ -161,7 +169,7 @@ namespace ExtractWizard.Controller
                 return;
             }
 
-            _gateway.SetOutputFolderPath(System.IO.Path.GetDirectoryName(fileName));
+            _gateway.SetOutputFolderPath(Path.GetDirectoryName(fileName));
         }
 
         /// <summary>
@@ -169,7 +177,7 @@ namespace ExtractWizard.Controller
         /// </summary>
         /// <param name="sender">The button UI control which was clicked</param>
         /// <param name="e">Event arguments</param>
-        public void onBrowseOutputFolderButtonClick(object sender, EventArgs e)
+        public void OnBrowseOutputFolderButtonClick(object sender, EventArgs e)
         {
             string folderName = "";
 
@@ -207,9 +215,9 @@ namespace ExtractWizard.Controller
         /// </summary>
         /// <param name="sender">The button UI control which was clicked</param>
         /// <param name="e">Event arguments</param>
-        public void onDonateButtonClick(object sender, EventArgs e)
+        public void OnDonateButtonClick(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start(_donationLink);
+            Process.Start(DonationLink);
         }
 
         /// <summary>
@@ -217,9 +225,9 @@ namespace ExtractWizard.Controller
         /// </summary>
         /// <param name="sender">The button UI control which was clicked</param>
         /// <param name="e">Event arguments</param>
-        public void onHelpButtonClick(object sender, EventArgs e)
+        public void OnHelpButtonClick(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start(_helpLink);
+            Process.Start(HelpLink);
         }
 
         /// <summary>
@@ -227,9 +235,9 @@ namespace ExtractWizard.Controller
         /// </summary>
         /// <param name="sender">The button UI control which was clicked</param>
         /// <param name="e">Event arguments</param>
-        public void onStartStopButtonClick(object sender, EventArgs e)
+        public void OnStartStopButtonClick(object sender, EventArgs e)
         {
-            if (tokenSource == null)
+            if (_tokenSource == null)
             {
                 _gateway.SetExtractButtonText(_languageResource.GetString("BTN_CANCEL"));
                 _gateway.SetExtractionOptionsState(false);
@@ -257,15 +265,15 @@ namespace ExtractWizard.Controller
             bool ignoreWriteErrors = _gateway.GetIgnoreFileWriteErrors();
             bool dryRun = _gateway.GetDryRun();
 
-            tokenSource = new CancellationTokenSource();
-            CancellationToken token = tokenSource.Token;
+            _tokenSource = new CancellationTokenSource();
+            CancellationToken token = _tokenSource.Token;
 
             try
             {
                 using (Unarchiver extractor = Unarchiver.CreateForFile(archiveFile, password))
                 {
                     // Wire events
-                    totalArchiveSize = 0;
+                    _totalArchiveSize = 0;
 
                     extractor.ArchiveInformationEvent += onArchiveInformationHandler;
                     extractor.ProgressEvent += OnProgressHandler;
@@ -316,7 +324,7 @@ namespace ExtractWizard.Controller
         /// </summary>
         private void StopExtraction()
         {
-            tokenSource.Cancel();
+            _tokenSource.Cancel();
         }
 
         /// <summary>
@@ -338,14 +346,14 @@ namespace ExtractWizard.Controller
 
                 case ExtractionStatus.Running:
                     // Set the progress bar's percentage
-                    if (totalArchiveSize <= 0)
+                    if (_totalArchiveSize <= 0)
                     {
                         _gateway.SetExtractionProgress(0);
 
                         return;
                     }
 
-                    double progress = e.Progress.FilePosition / (float) totalArchiveSize;
+                    double progress = e.Progress.FilePosition / (float) _totalArchiveSize;
                     double progressPercent = 100 * progress;
                     int percentage = (int) Math.Floor(progressPercent);
 
@@ -391,7 +399,7 @@ namespace ExtractWizard.Controller
         /// <param name="a"></param>
         private void onArchiveInformationHandler(object sender, ArchiveInformationEventArgs a)
         {
-            totalArchiveSize = a.ArchiveInformation.ArchiveSize;
+            _totalArchiveSize = a.ArchiveInformation.ArchiveSize;
         }
     }
 }

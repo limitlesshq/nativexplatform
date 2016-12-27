@@ -33,27 +33,27 @@ namespace ExtractWizard
 
         private void btnBrowseArchive_Click(object sender, EventArgs e)
         {
-            _controller.onBrowseArchiveButtonClick(sender, e);
+            _controller.OnBrowseArchiveButtonClick(sender, e);
         }
 
         private void btnExtractToFolder_Click(object sender, EventArgs e)
         {
-            _controller.onBrowseOutputFolderButtonClick(sender, e);
+            _controller.OnBrowseOutputFolderButtonClick(sender, e);
         }
 
         private void btnDonate_Click(object sender, EventArgs e)
         {
-            _controller.onDonateButtonClick(sender, e);
+            _controller.OnDonateButtonClick(sender, e);
         }
 
         private void btnHelp_Click(object sender, EventArgs e)
         {
-            _controller.onHelpButtonClick(sender, e);
+            _controller.OnHelpButtonClick(sender, e);
         }
 
         private void btnExtract_Click(object sender, EventArgs e)
         {
-            _controller.onStartStopButtonClick(sender, e);
+            _controller.OnStartStopButtonClick(sender, e);
         }
     }
 }
