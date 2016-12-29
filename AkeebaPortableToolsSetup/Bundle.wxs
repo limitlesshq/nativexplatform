@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:bal="http://schemas.microsoft.com/wix/BalExtension">
+	<Bundle
+    Name="Akeeba Portable Tools"
+    Version="4.0.0"
+    Manufacturer="Akeeba Ltd"
+    IconSourceFile="..\ExtractWizard\Resources\extract-small.ico"
+    UpgradeCode="560bc63b-0920-4607-8e23-87a72cbfe4be">
+    <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLargeLicense">
+      <bal:WixStandardBootstrapperApplication
+        LicenseFile="Assets\license.rtf"
+        LogoFile="Assets\logo-64.png"
+        ShowVersion="yes"
+        />
+      
+      <!-- Tell the bootstrapper to run even on .NET 2.0 so it can install .NET 4.5 if necessary -->
+      <Payload
+        Name="BootstrapperCore.config"
+        SourceFile="BootstrapperCore.config"
+        Compressed="yes"
+      />
+      
+       
+    </BootstrapperApplicationRef>
+
+    <Chain>
+
+      <PackageGroupRef Id="NetFx45Web"/>
+      
+      <MsiPackage
+        Id="ExtractWizard"
+        SourceFile="$(var.ExtractWizardSetup.TargetPath)"
+        Description="Akeeba eXtract Wizard Setup"
+        Cache="no"
+        Compressed="yes"
+        EnableFeatureSelection="no"
+        InstallCondition="VersionNT >= v6.0"
+      />
+
+    </Chain>
+  
+	</Bundle>
+</Wix>

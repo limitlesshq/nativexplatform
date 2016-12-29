@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product
+    Id="1f6e3327-9f77-40e4-ab74-ac4c00c4b89b"
+    Name="Akeeba eXtract Wizard"
+    Version="4.0.0"
+    Manufacturer="Akeeba Ltd"
+    Language="1033"
+    UpgradeCode="057e0eee-3bca-4658-8a62-e4f807e1c2a6"
+    >
+		
+    <Package Id="*"
+             Keywords="Installer"
+             Description="Akeeba eXtract Wizard Installer"
+             Manufacturer="Akeeba Ltd"
+             InstallerVersion="200" 
+             Languages="1033"
+             Compressed="yes"
+             InstallScope="perMachine" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of Akeeba eXtract Wizard is already installed." />
+		<MediaTemplate />
+
+		<Feature Id="CompleteInstallation" Title="Full" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+      <ComponentGroupRef Id="ProductShortcuts" />
+		</Feature>
+
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder" Name="PFiles">
+        <Directory Id="Akeeba" Name="Akeeba">
+          <Directory Id="INSTALLFOLDER" Name="ExtractWizardSetup" />
+        </Directory>
+      </Directory>
+    
+      <Directory Id="ProgramMenuFolder" Name="Programs">
+        <Directory Id="ProgramMenuDir" Name="Akeeba">
+        </Directory>
+      </Directory>
+
+      <Directory Id="DesktopFolder" Name="Desktop" />
+    </Directory>
+	</Fragment>
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+			<Component Id="MainExecutable" Guid="4f2329b5-f53b-4b4f-9630-91838ae4489f">
+        <!-- See http://wixtoolset.org/documentation/manual/v3/votive/votive_project_references.html for variable reference -->
+        <File Id="ExtractWizardExe" Source="$(var.ExtractWizard.TargetPath)" KeyPath="yes">
+          <Shortcut Id="startMenuShortcut" Directory="ProgramMenuDir" Name="Akeeba eXtract Wizard"
+            WorkingDirectory="INSTALLDIR" Icon="extract.ico" IconIndex="0" Advertise="yes" />
+          <Shortcut Id="desktopShortcut" Directory="DesktopFolder" Name="Akeeba eXtract Wizard"
+            WorkingDirectory="INSTALLDIR" Icon="extract.ico" IconIndex="0" Advertise="yes" />
+        </File>
+			</Component>
+
+      <Component Id="UnarchiverLibrary" Guid="e4ed48e8-0fa8-4835-a887-f26756656d05">
+        <File Source="$(var.ExtractWizard.TargetDir)ICSharpCode.SharpZipLib.dll" />
+        <File Source="$(var.ExtractWizard.TargetDir)Mono.Posix.dll" />
+        <File Source="$(var.ExtractWizard.TargetDir)Unarchiver.dll" />
+      </Component>
+		</ComponentGroup>
+	</Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="ProductShortcuts" Directory="ProgramMenuDir">
+      <Component Id="ProgramMenuDirAkeeba" Guid="173af473-39e7-4996-ac21-3a2afebe388c">
+        <RemoveFolder Id="ProgramMenuDir" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\Akeeba\ExtractWizard" Type="string" Value="" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+    <Icon Id="extract.ico" SourceFile="$(var.ExtractWizard.TargetDir)Resources/extract.ico" />
+  </Fragment>
+  
+</Wix>
