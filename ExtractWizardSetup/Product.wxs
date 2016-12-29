@@ -24,6 +24,7 @@
 		<Feature Id="CompleteInstallation" Title="Full" Level="1">
 			<ComponentGroupRef Id="ProductComponents" />
       <ComponentGroupRef Id="ProductShortcuts" />
+      <ComponentGroupRef Id="Documentation" />
 		</Feature>
 
 	</Product>
@@ -56,6 +57,10 @@
             WorkingDirectory="INSTALLDIR" Icon="extract.ico" IconIndex="0" Advertise="yes" />
         </File>
 			</Component>
+      
+      <Component Id="ExtractCLI" Guid="6e258fdd-cc67-4392-b67f-410ef908ca8e">
+        <File Id="ExtractCLIExe" Source="$(var.extractCLI.TargetPath)" KeyPath="yes" />
+      </Component>
 
       <Component Id="UnarchiverLibrary" Guid="e4ed48e8-0fa8-4835-a887-f26756656d05">
         <File Source="$(var.ExtractWizard.TargetDir)ICSharpCode.SharpZipLib.dll" />
@@ -63,6 +68,14 @@
         <File Source="$(var.ExtractWizard.TargetDir)Unarchiver.dll" />
       </Component>
 		</ComponentGroup>
+  
+    <ComponentGroup Id="Documentation" Directory="INSTALLFOLDER">
+      <!--
+      <Component Id="ExtractWizardDocumentation" Guid="913ed525-c325-488a-9482-502554b4c73b">
+        <File Id="ExtractWizardDocs" Source="$(var.ExtractWizard.TargetDir)/Documentation/AkeebaExtractWizard.pdf" KeyPath="yes" />
+      </Component>
+      -->
+    </ComponentGroup>
 	</Fragment>
 
   <Fragment>
