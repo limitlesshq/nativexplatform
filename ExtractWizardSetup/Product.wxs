@@ -33,7 +33,7 @@
 		<Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder" Name="PFiles">
         <Directory Id="Akeeba" Name="Akeeba">
-          <Directory Id="INSTALLFOLDER" Name="ExtractWizardSetup" />
+            <Directory Id="INSTALLFOLDER" Name="Extract Wizard"/>
         </Directory>
       </Directory>
     
