@@ -70,11 +70,9 @@
 		</ComponentGroup>
   
     <ComponentGroup Id="Documentation" Directory="INSTALLFOLDER">
-      <!--
-      <Component Id="ExtractWizardDocumentation" Guid="913ed525-c325-488a-9482-502554b4c73b">
-        <File Id="ExtractWizardDocs" Source="$(var.ExtractWizard.TargetDir)/Documentation/AkeebaExtractWizard.pdf" KeyPath="yes" />
+      <Component Id="PortableToolsDocumentation" Guid="913ed525-c325-488a-9482-502554b4c73b">
+        <File Id="PortableToolsDocs" Source="$(var.Documentation.TargetDir)\bin\$(Configuration)\PortableTools.pdf" KeyPath="yes" />
       </Component>
-      -->
     </ComponentGroup>
 	</Fragment>
 
