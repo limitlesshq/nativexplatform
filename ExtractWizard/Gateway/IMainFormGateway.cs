@@ -34,7 +34,7 @@ namespace ExtractWizard.Gateway
     /// http://martinfowler.com/eaaCatalog/gateway.html
     /// http://martinfowler.com/eaaDev/PassiveScreen.html
     /// </summary>
-    interface IMainFormGateway
+    public interface IMainFormGateway
     {
         /// <summary>
         /// Handles the translation of all labels, buttons etc given a ResourceManager holding all the language strings

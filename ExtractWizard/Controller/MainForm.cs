@@ -41,7 +41,7 @@ namespace ExtractWizard.Controller
     /// Technically this is a Presenter since we're following the Passive View pattern, not classic
     /// MVC, but it's easier -even though semanticaly correct- to think about it in terms of MVC.
     /// </summary>
-    class MainForm
+    public class MainForm
     {
         /// <summary>
         /// The cancelation token source object, used to cancel the archive extraction when needed.
