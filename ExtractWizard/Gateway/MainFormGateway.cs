@@ -19,6 +19,7 @@
 
 using System;
 using System.Resources;
+using System.Windows.Forms;
 using ExtractWizard.Helpers;
 
 namespace ExtractWizard.Gateway
@@ -208,10 +209,11 @@ namespace ExtractWizard.Gateway
         /// <summary>
         /// Set the label of the Extract UI button
         /// </summary>
-        /// <param name="label"></param>
-        public void SetExtractButtonText(string label)
+		/// <param name="text">Resource manager handling the translations</param>
+        /// <param name="label">The label's translation key</param>
+		public void SetExtractButtonText(ResourceManager text, string label)
         {
-            ThreadHelper.SetText(_myForm, _myForm.btnExtract, label);
+			ThreadHelper.SetText(_myForm, _myForm.btnExtract, text.GetString(label));
         }
 
         /// <summary>
@@ -295,5 +297,25 @@ namespace ExtractWizard.Gateway
             // Return the cached value
             return (bool)_isWindows;
         }
+
+		/// <summary>
+		/// Shows an error message dialog in a GUI framework appropriate way.
+		/// </summary>
+		/// <param name="title">The title of the message dalog.</param>
+		/// <param name="message">The error message to present to the user.</param>
+		public void showErrorMessage(string title, string message)
+		{
+			MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+		}
+
+		/// <summary>
+		/// Shows an information message dialog in a GUI framework appropriate way.
+		/// </summary>
+		/// <param name="title">The title of the message dalog.</param>
+		/// <param name="message">The message to present to the user.</param>
+		public void showInfoMessage(string title, string message)
+		{
+			MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+		}
     }
 }

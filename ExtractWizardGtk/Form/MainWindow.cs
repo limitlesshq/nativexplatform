@@ -169,10 +169,11 @@ public partial class MainWindow : Gtk.Window, IMainFormGateway
 	/// <summary>
 	/// Set the label of the Extract UI button
 	/// </summary>
-	/// <param name="label"></param>
-	public void SetExtractButtonText(string label)
+	/// <param name="text">Resource manager handling the translations</param>
+	/// <param name="label">The label's translation key</param>
+	public void SetExtractButtonText(ResourceManager text, string label)
 	{
-		btnStartStop.Label = label;
+		btnStartStop.Label = _lang(text, label);
 	}
 
 	/// <summary>
@@ -217,18 +218,42 @@ public partial class MainWindow : Gtk.Window, IMainFormGateway
 	}
 
 	/// <summary>
-	/// Gets the language string for the specified tag from the resource text and replaces Windows-specific
-	/// accelerators with Gtk-specific ones.
+	/// Shows an error message dialog in a GUI framework appropriate way.
+	/// </summary>
+	/// <param name="title">The title of the message dalog.</param>
+	/// <param name="message">The error message to present to the user.</param>
+	public void showErrorMessage(string title, string message)
+	{
+		MessageDialog dialog = new MessageDialog(this, 0, MessageType.Error, ButtonsType.Ok, message);
+		dialog.Title = title;
+		dialog.Run();
+		dialog.Destroy();
+	}
+
+	/// <summary>
+	/// Shows an information message dialog in a GUI framework appropriate way.
+	/// </summary>
+	/// <param name="title">The title of the message dalog.</param>
+	/// <param name="message">The message to present to the user.</param>
+	public void showInfoMessage(string title, string message)
+	{
+		MessageDialog dialog = new MessageDialog(this, 0, MessageType.Info, ButtonsType.Ok, message);
+		dialog.Title = title;
+		dialog.Run();
+		dialog.Destroy();
+	}
+
+	/// <summary>
+	/// Gets the language string for the specified tag from the resource text and removes Windows-specific
+	/// accelerators.
 	/// </summary>
 	/// <returns>The translated string.</returns>
 	/// <param name="text">Language resource.</param>
 	/// <param name="tag">The language tag to use.</param>
 	private string _lang(ResourceManager text, string tag)
 	{
-		return text.GetString(tag).Replace("&", "_");
+		return text.GetString(tag).Replace("&", "");
 	}
-
-
 
 	protected void OnDeleteEvent(object sender, DeleteEventArgs a)
 	{

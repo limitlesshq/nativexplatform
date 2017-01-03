@@ -50,7 +50,7 @@ namespace ExtractWizard.Gateway
         /// <summary>
         /// Sets the text of the Backup Archive UI element
         /// </summary>
-        /// <param name="BackupArchivePath"></param>
+        /// <param name="backupArchivePath"></param>
         void SetBackupArchivePath(string backupArchivePath);
 
         /// <summary>
@@ -116,8 +116,9 @@ namespace ExtractWizard.Gateway
         /// <summary>
         /// Set the label of the Extract UI button
         /// </summary>
-        /// <param name="label"></param>
-        void SetExtractButtonText(string label);
+		/// <param name="text">Resource manager handling the translations</param>
+        /// <param name="label">The label's translation key</param>
+        void SetExtractButtonText(ResourceManager text, string label);
 
         /// <summary>
         /// Set the percentage of the extraction which is already complete
@@ -142,5 +143,19 @@ namespace ExtractWizard.Gateway
         /// </summary>
         /// <param name="state"></param>
         void SetTaskbarProgressValue(int value);
+
+		/// <summary>
+		/// Shows an error message dialog in a GUI framework appropriate way.
+		/// </summary>
+		/// <param name="title">The title of the message dalog.</param>
+		/// <param name="message">The error message to present to the user.</param>
+		void showErrorMessage(string title, string message);
+
+		/// <summary>
+		/// Shows an information message dialog in a GUI framework appropriate way.
+		/// </summary>
+		/// <param name="title">The title of the message dalog.</param>
+		/// <param name="message">The message to present to the user.</param>
+		void showInfoMessage(string title, string message);
     }
 }

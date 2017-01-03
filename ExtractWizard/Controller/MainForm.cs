@@ -115,7 +115,7 @@ namespace ExtractWizard.Controller
         /// </summary>
         private void ResetProgress()
         {
-            _gateway.SetExtractButtonText(_languageResource.GetString("BTN_EXTRACT"));
+            _gateway.SetExtractButtonText(_languageResource, "BTN_EXTRACT");
             _gateway.SetExtractionProgress(0);
             _gateway.SetExtractedFileName("");
             _gateway.SetTaskbarProgressState(TaskBarProgress.TaskbarStates.NoProgress);
@@ -266,7 +266,7 @@ namespace ExtractWizard.Controller
         {
             if (_tokenSource == null)
             {
-                _gateway.SetExtractButtonText(_languageResource.GetString("BTN_CANCEL"));
+                _gateway.SetExtractButtonText(_languageResource, "BTN_CANCEL");
                 _gateway.SetExtractionOptionsState(false);
 
                 _gateway.SetTaskbarProgressState(TaskBarProgress.TaskbarStates.Normal);
@@ -338,8 +338,8 @@ namespace ExtractWizard.Controller
 
                 _gateway.SetTaskbarProgressState(TaskBarProgress.TaskbarStates.Error);
 
-                // Show error message
-                MessageBox.Show(e.Message, _languageResource.GetString("LBL_ERROR_CAPTION"), MessageBoxButtons.OK);
+				// Show error message
+				_gateway.showErrorMessage(_languageResource.GetString("LBL_ERROR_CAPTION"), e.Message);
             }
 
             _gateway.SetExtractionOptionsState(true);
@@ -368,7 +368,7 @@ namespace ExtractWizard.Controller
                     _gateway.SetTaskbarProgressState(TaskBarProgress.TaskbarStates.Error);
 
                     // Show error message
-                    MessageBox.Show(e.Progress.LastException.Message, _languageResource.GetString("LBL_ERROR_CAPTION"), MessageBoxButtons.OK);
+					_gateway.showErrorMessage(_languageResource.GetString("LBL_ERROR_CAPTION"), e.Progress.LastException.Message);
                     break;
 
                 case ExtractionStatus.Running:
@@ -394,13 +394,13 @@ namespace ExtractWizard.Controller
 
                 case ExtractionStatus.Finished:
                     // Show OK message
-                    MessageBox.Show(_languageResource.GetString("LBL_SUCCESS_BODY"), _languageResource.GetString("LBL_SUCCESS_CAPTION"), MessageBoxButtons.OK);
+					_gateway.showInfoMessage(_languageResource.GetString("LBL_ERROR_CAPTION"), _languageResource.GetString("LBL_SUCCESS_BODY"));
                     break;
 
                 case ExtractionStatus.Idle:
                     // Show cancelation message
                     _gateway.SetTaskbarProgressState(TaskBarProgress.TaskbarStates.Paused);
-                    MessageBox.Show(_languageResource.GetString("LBL_CANCEL_BODY"), _languageResource.GetString("LBL_CANCEL_CAPTION"), MessageBoxButtons.OK);
+					_gateway.showInfoMessage(_languageResource.GetString("LBL_ERROR_CAPTION"), _languageResource.GetString("LBL_CANCEL_BODY"));
 
                     break;
             }
