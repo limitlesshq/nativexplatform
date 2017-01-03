@@ -262,10 +262,16 @@ namespace ExtractWizard.Controller
                         // Get the appropriate writer
                         IDataWriter writer = new NullWriter();
 
-                            if (!dryRun)
-                            {
-                                writer = new DirectFileWriter(outputDirectory);
-                            }
+						if (!dryRun)
+						{
+							writer = new DirectFileWriter(outputDirectory);
+
+							if (ignoreWriteErrors)
+							{
+								// TODO Use a different file writer when we are asked to ignore write errorss
+								writer = new DirectFileWriter(outputDirectory);
+							}
+						}
 
                         // Test the extraction
                         extractor.Extract(token, writer);
@@ -284,7 +290,7 @@ namespace ExtractWizard.Controller
                 _gateway.SetTaskbarProgressState(TaskBarProgress.TaskbarStates.Error);
 
 				// Show error message
-				_gateway.showErrorMessage(_languageResource.GetString("LBL_ERROR_CAPTION"), e.Message);
+				_gateway.showErrorMessage(_languageResource.GetString("LBL_ERROR_CAPTION"), targetException.Message);
             }
 
             _gateway.SetExtractionOptionsState(true);
@@ -339,13 +345,13 @@ namespace ExtractWizard.Controller
 
                 case ExtractionStatus.Finished:
                     // Show OK message
-					_gateway.showInfoMessage(_languageResource.GetString("LBL_ERROR_CAPTION"), _languageResource.GetString("LBL_SUCCESS_BODY"));
+					_gateway.showInfoMessage(_languageResource.GetString("LBL_SUCCESS_CAPTION"), _languageResource.GetString("LBL_SUCCESS_BODY"));
                     break;
 
                 case ExtractionStatus.Idle:
                     // Show cancelation message
                     _gateway.SetTaskbarProgressState(TaskBarProgress.TaskbarStates.Paused);
-					_gateway.showInfoMessage(_languageResource.GetString("LBL_ERROR_CAPTION"), _languageResource.GetString("LBL_CANCEL_BODY"));
+					_gateway.showInfoMessage(_languageResource.GetString("LBL_CANCEL_CAPTION"), _languageResource.GetString("LBL_CANCEL_BODY"));
 
                     break;
             }
