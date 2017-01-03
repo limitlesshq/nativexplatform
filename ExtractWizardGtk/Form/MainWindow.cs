@@ -287,6 +287,39 @@ public partial class MainWindow : Gtk.Window, IMainFormGateway
 	}
 
 	/// <summary>
+	/// Picks a folder for opening
+	/// </summary>
+	/// <returns>The path to the filder.</returns>
+	/// <param name="title">The title of the dialog.</param>
+	/// <param name="folderName">The pre-selected folder name.</param>
+	/// <param name="OKLabel">The label for the OK button (where supported)</param>
+	/// <param name="CancelLabel">The label for the Cancel button (where supported)</param>
+	public string pickFolder(string title, string folderName, string OKLabel, string CancelLabel)
+	{
+		FileChooserDialog dialog = new FileChooserDialog(title, this, FileChooserAction.SelectFolder);
+
+		if (folderName != "")
+		{
+			dialog.SetCurrentFolder(folderName);
+		}
+
+		dialog.AddButton(CancelLabel, Gtk.ResponseType.Cancel);
+		dialog.AddButton(OKLabel, Gtk.ResponseType.Accept);
+
+		ResponseType ret = (ResponseType)dialog.Run();
+		string newFolderName = dialog.Filename;
+
+		dialog.Destroy();
+
+		if (ret != ResponseType.Accept)
+		{
+			return "";
+		}
+
+		return newFolderName;
+	}
+
+	/// <summary>
 	/// Gets the language string for the specified tag from the resource text and removes Windows-specific
 	/// accelerators.
 	/// </summary>

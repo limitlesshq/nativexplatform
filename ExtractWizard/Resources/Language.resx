@@ -189,4 +189,7 @@
   <data name="LBL_HEADER_SELECT_ARCHIVE" xml:space="preserve">
     <value>Select a backup archive</value>
   </data>
+  <data name="LBL_HEADER_SELECT_FOLDER" xml:space="preserve">
+    <value>Select a folder to extract to</value>
+  </data>
 </root>

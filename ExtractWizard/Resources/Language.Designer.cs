@@ -190,5 +190,11 @@ namespace ExtractWizard.Resources {
                 return ResourceManager.GetString("LBL_HEADER_SELECT_ARCHIVE", resourceCulture);
             }
         }
+        
+        internal static string LBL_HEADER_SELECT_FOLDER {
+            get {
+                return ResourceManager.GetString("LBL_HEADER_SELECT_FOLDER", resourceCulture);
+            }
+        }
     }
 }

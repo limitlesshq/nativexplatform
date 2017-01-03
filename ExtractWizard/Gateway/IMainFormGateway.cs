@@ -168,5 +168,15 @@ namespace ExtractWizard.Gateway
 		/// <param name="OKLabel">The label for the OK button (where supported)</param>
 		/// <param name="CancelLabel">The label for the Cancel button (where supported)</param>
 		string pickFile(string title, string fileName, string[,] patterns, string OKLabel, string CancelLabel);
+
+		/// <summary>
+		/// Picks a folder for opening
+		/// </summary>
+		/// <returns>The path to the filder.</returns>
+		/// <param name="title">The title of the dialog.</param>
+		/// <param name="folderName">The pre-selected folder name.</param>
+		/// <param name="OKLabel">The label for the OK button (where supported)</param>
+		/// <param name="CancelLabel">The label for the Cancel button (where supported)</param>
+		string pickFolder(string title, string folderName, string OKLabel, string CancelLabel);
     }
 }

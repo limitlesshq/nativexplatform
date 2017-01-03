@@ -381,5 +381,36 @@ namespace ExtractWizard.Gateway
 
 			return fileName;
 		}
+
+		/// <summary>
+		/// Picks a folder for opening
+		/// </summary>
+		/// <returns>The path to the filder.</returns>
+		/// <param name="title">The title of the dialog.</param>
+		/// <param name="folderName">The pre-selected folder name.</param>
+		/// <param name="OKLabel">The label for the OK button (where supported)</param>
+		/// <param name="CancelLabel">The label for the Cancel button (where supported)</param>
+		public string pickFolder(string title, string folderName, string OKLabel, string CancelLabel)
+		{
+			using (FolderBrowserDialog folderDialog = new FolderBrowserDialog())
+			{
+				// Set up the dialog
+				folderDialog.SelectedPath = folderName;
+				folderDialog.ShowNewFolderButton = true;
+
+				// Show the dialog
+				DialogResult dialogResult = folderDialog.ShowDialog();
+
+				// Did the user cancel the dialog?
+				if (dialogResult != DialogResult.OK)
+				{
+					return "";
+				}
+
+				folderName = folderDialog.SelectedPath;
+			}
+
+			return folderName;
+		}
     }
 }

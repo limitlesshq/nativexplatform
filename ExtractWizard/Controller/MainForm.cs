@@ -22,10 +22,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Resources;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using Akeeba.Unarchiver;
 using Akeeba.Unarchiver.DataWriter;
 using Akeeba.Unarchiver.EventArgs;
@@ -143,7 +141,7 @@ namespace ExtractWizard.Controller
 				{_languageResource.GetString("LBL_FILETYPE_ZIP"), "*.zip"}
 			};
 
-			fileName = _gateway.pickFile(title, fileName, patterns, _languageResource.GetString("BTN_CANCELDIALOG"), _languageResource.GetString("BTN_OPEN"));
+			fileName = _gateway.pickFile(title, fileName, patterns, _languageResource.GetString("BTN_OPEN"), _languageResource.GetString("BTN_CANCELDIALOG"));
 
 			// Did the user not select a file?
 			if (fileName == "")
@@ -171,25 +169,8 @@ namespace ExtractWizard.Controller
         public void OnBrowseOutputFolderButtonClick(object sender, EventArgs e)
         {
             string folderName = _gateway.GetOutputFolderPath();
-
-            using (FolderBrowserDialog folderDialog = new FolderBrowserDialog())
-            {
-                // Set up the dialog
-                //folderDialog.RootFolder = Environment.SpecialFolder.MyComputer;
-                folderDialog.SelectedPath = folderName;
-                folderDialog.ShowNewFolderButton = true;
-
-                // Show the dialog
-                DialogResult dialogResult = folderDialog.ShowDialog();
-
-                // Did the user cancel the dialog?
-                if (dialogResult != DialogResult.OK)
-                {
-                    return;
-                }
-
-                folderName = folderDialog.SelectedPath;
-            }
+			string title = _languageResource.GetString("LBL_HEADER_SELECT_FOLDER");
+			folderName = _gateway.pickFolder(title, folderName, _languageResource.GetString("BTN_OPEN"), _languageResource.GetString("BTN_CANCELDIALOG"));
 
 			// Did the user not select a folder?
 			if (folderName == "")
