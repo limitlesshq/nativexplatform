@@ -135,56 +135,21 @@ namespace ExtractWizard.Controller
         /// <param name="e">Event arguments</param>
         public void OnBrowseArchiveButtonClick(object sender, EventArgs e)
         {
+			string title = _languageResource.GetString("LBL_HEADER_SELECT_ARCHIVE");
             string fileName = _gateway.GetBackupArchivePath();
+			string[,] patterns = {
+				{_languageResource.GetString("LBL_FILETYPE_JPA"), "*.jpa"},
+				{_languageResource.GetString("LBL_FILETYPE_JPS"), "*.jps"},
+				{_languageResource.GetString("LBL_FILETYPE_ZIP"), "*.zip"}
+			};
 
-            using (OpenFileDialog fileDialog = new OpenFileDialog())
-            {
-                StringBuilder sb = new StringBuilder();
-                sb.Append(_languageResource.GetString("LBL_FILETYPE_JPA"));
-                sb.Append("|*.jpa|");
-                sb.Append(_languageResource.GetString("LBL_FILETYPE_JPS"));
-                sb.Append("|*.jps|");
-                sb.Append(_languageResource.GetString("LBL_FILETYPE_ZIP"));
-                sb.Append("|*.zip");
+			fileName = _gateway.pickFile(title, fileName, patterns, _languageResource.GetString("BTN_CANCELDIALOG"), _languageResource.GetString("BTN_OPEN"));
 
-                // Set up the dialog
-                fileDialog.FileName = fileName;
-                fileDialog.AddExtension = true;
-                fileDialog.AutoUpgradeEnabled = true;
-                fileDialog.CheckFileExists = true;
-                fileDialog.CheckPathExists = true;
-                fileDialog.DefaultExt = "jpa";
-                fileDialog.DereferenceLinks = true;
-                fileDialog.Filter = sb.ToString();
-                fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                fileDialog.Multiselect = false;
-                fileDialog.SupportMultiDottedExtensions = true;
-                fileDialog.Title = _languageResource.GetString("LBL_HEADER_SELECT_ARCHIVE");
-
-                // If we have a file we will open that folder instead of My Documents
-                if (fileName != "")
-                {
-                    fileDialog.InitialDirectory = Path.GetDirectoryName(fileName);
-                }
-
-                // Show the dialog
-                DialogResult dialogResult = fileDialog.ShowDialog();
-
-                // Did the user cancel the dialog?
-                if (dialogResult != DialogResult.OK)
-                {
-                    return;
-                }
-
-                fileName = fileDialog.FileName;
-
-                // Did the user not select a file?
-                if (fileName == "")
-                {
-                    return;
-                }
-
-            }
+			// Did the user not select a file?
+			if (fileName == "")
+			{
+				return;
+			}
 
             // Update the archive path
             _gateway.SetBackupArchivePath(fileName);
@@ -224,14 +189,13 @@ namespace ExtractWizard.Controller
                 }
 
                 folderName = folderDialog.SelectedPath;
-
-                // Did the user not select a folder?
-                if (folderName == "")
-                {
-                    return;
-                }
-
             }
+
+			// Did the user not select a folder?
+			if (folderName == "")
+			{
+				return;
+			}
 
             // Update the output directory
             _gateway.SetOutputFolderPath(folderName);

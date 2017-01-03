@@ -132,6 +132,15 @@
   <data name="BTN_HELP" xml:space="preserve">
     <value>&amp;Help</value>
   </data>
+  <data name="BTN_OPEN" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="BTN_SELECT" xml:space="preserve">
+    <value>Select</value>
+  </data>
+  <data name="BTN_CANCELDIALOG" xml:space="preserve">
+    <value>Canel</value>
+  </data>
   <data name="CHK_DRY_RUN" xml:space="preserve">
     <value>&amp;Test without extracting</value>
   </data>

@@ -244,6 +244,49 @@ public partial class MainWindow : Gtk.Window, IMainFormGateway
 	}
 
 	/// <summary>
+	/// Picks an archive file for opening
+	/// </summary>
+	/// <returns>The path to the file.</returns>
+	/// <param name="title">The title of the dialog.</param>
+	/// <param name="fileName">The pre-selected file name.</param>
+	/// <param name="patterns">File filter patters as an array of {patternName, pattern}.</param>
+	/// <param name="OKLabel">The label for the OK button (where supported)</param>
+	/// <param name="CancelLabel">The label for the Cancel button (where supported)</param>
+	public string pickFile(string title, string fileName, string[,] patterns, string OKLabel, string CancelLabel)
+	{
+		FileChooserDialog dialog = new FileChooserDialog(title, this, FileChooserAction.Open);
+
+		if (fileName != "")
+		{
+			dialog.CurrentName = fileName;
+			dialog.SetCurrentFolder(fileName);
+		}
+
+		dialog.AddButton(CancelLabel, Gtk.ResponseType.Cancel);
+		dialog.AddButton(OKLabel, Gtk.ResponseType.Accept);
+
+		for (int i = 0; i < patterns.Length / 2; i++)
+		{
+			FileFilter filter = new FileFilter();
+			filter.Name = patterns[i, 0];
+			filter.AddPattern(patterns[i, 1]);
+			dialog.AddFilter(filter);
+		}
+
+		ResponseType ret = (ResponseType)dialog.Run();
+		string newFileName = dialog.Filename;
+
+		dialog.Destroy();
+
+		if (ret != ResponseType.Accept)
+		{
+			return "";
+		}
+
+		return newFileName;
+	}
+
+	/// <summary>
 	/// Gets the language string for the specified tag from the resource text and removes Windows-specific
 	/// accelerators.
 	/// </summary>

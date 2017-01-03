@@ -157,5 +157,16 @@ namespace ExtractWizard.Gateway
 		/// <param name="title">The title of the message dalog.</param>
 		/// <param name="message">The message to present to the user.</param>
 		void showInfoMessage(string title, string message);
+
+		/// <summary>
+		/// Picks an archive file for opening
+		/// </summary>
+		/// <returns>The path to the file.</returns>
+		/// <param name="title">The title of the dialog.</param>
+		/// <param name="fileName">The pre-selected file name.</param>
+		/// <param name="patterns">File filter patters as an array of {patternName, pattern}.</param>
+		/// <param name="OKLabel">The label for the OK button (where supported)</param>
+		/// <param name="CancelLabel">The label for the Cancel button (where supported)</param>
+		string pickFile(string title, string fileName, string[,] patterns, string OKLabel, string CancelLabel);
     }
 }

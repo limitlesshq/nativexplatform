@@ -18,7 +18,9 @@
 //-----------------------------------------------------------------------
 
 using System;
+using System.IO;
 using System.Resources;
+using System.Text;
 using System.Windows.Forms;
 using ExtractWizard.Helpers;
 
@@ -316,6 +318,68 @@ namespace ExtractWizard.Gateway
 		public void showInfoMessage(string title, string message)
 		{
 			MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+		}
+
+		/// <summary>
+		/// Picks an archive file for opening
+		/// </summary>
+		/// <returns>The path to the file.</returns>
+		/// <param name="title">The title of the dialog.</param>
+		/// <param name="fileName">The pre-selected file name.</param>
+		/// <param name="patterns">File filter patters as an array of {patternName, pattern}.</param>
+		/// <param name="OKLabel">The label for the OK button (where supported)</param>
+		/// <param name="CancelLabel">The label for the Cancel button (where supported)</param>
+		public string pickFile(string title, string fileName, string[,] patterns, string OKLabel, string CancelLabel)
+		{
+			using (OpenFileDialog fileDialog = new OpenFileDialog())
+			{
+				StringBuilder sb = new StringBuilder();
+
+				for (int i = 0; i < patterns.Length / 2; i++)
+				{
+					sb.Append(patterns[i, 0]);
+					sb.Append("|");
+					sb.Append(patterns[i, 1]);
+
+					if (i < ((patterns.Length / 2) - 1))
+					{
+						sb.Append("|");
+					}
+				}
+
+				// Set up the dialog
+				fileDialog.FileName = fileName;
+				fileDialog.AddExtension = true;
+				fileDialog.AutoUpgradeEnabled = true;
+				fileDialog.CheckFileExists = true;
+				fileDialog.CheckPathExists = true;
+				fileDialog.DefaultExt = patterns[0, 1].Substring(2);
+				fileDialog.DereferenceLinks = true;
+				fileDialog.Filter = sb.ToString();
+				fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+				fileDialog.Multiselect = false;
+				fileDialog.SupportMultiDottedExtensions = true;
+				fileDialog.Title = title;
+
+				// If we have a file we will open that folder instead of My Documents
+				if (fileName != "")
+				{
+					fileDialog.InitialDirectory = Path.GetDirectoryName(fileName);
+				}
+
+				// Show the dialog
+				DialogResult dialogResult = fileDialog.ShowDialog();
+
+				// Did the user cancel the dialog?
+				if (dialogResult != DialogResult.OK)
+				{
+					return "";
+				}
+
+				fileName = fileDialog.FileName;
+			}
+
+			return fileName;
 		}
     }
 }
