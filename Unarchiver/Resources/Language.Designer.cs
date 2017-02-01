@@ -160,6 +160,33 @@ namespace Akeeba.Unarchiver.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid data in Extra Archive Header.
+        /// </summary>
+        internal static string ERR_FORMAT_JPS_EXTRAHEADER_INVALID {
+            get {
+                return ResourceManager.GetString("ERR_FORMAT_JPS_EXTRAHEADER_INVALID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown Extra Archive Header type.
+        /// </summary>
+        internal static string ERR_FORMAT_JPS_EXTRAHEADER_UNKNOWN {
+            get {
+                return ResourceManager.GetString("ERR_FORMAT_JPS_EXTRAHEADER_UNKNOWN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wrong length of Extra Archive Header.
+        /// </summary>
+        internal static string ERR_FORMAT_JPS_EXTRAHEADER_WRONGLENGTH {
+            get {
+                return ResourceManager.GetString("ERR_FORMAT_JPS_EXTRAHEADER_WRONGLENGTH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Archive files of the JPS format version {0}.{1} are not allowed to have extra header data..
         /// </summary>
         internal static string ERR_FORMAT_JPS_INVALID_EXTRA_HEADER_FOR_VERSION {

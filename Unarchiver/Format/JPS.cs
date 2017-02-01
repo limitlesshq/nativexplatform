@@ -96,7 +96,12 @@ namespace Akeeba.Unarchiver.Format
 	    /// </summary>
         private byte[] _safeKey;
 
-	    /// <summary>
+        /// <summary>
+        /// Should I use a static, archive-wide salt with PBKDF2?
+        /// </summary>
+        private bool _useStaticSalt = false;
+
+        /// <summary>
 	    /// The salt to use with PBKDF2.
 	    /// </summary>
 	    private byte[] _salt;
@@ -104,7 +109,7 @@ namespace Akeeba.Unarchiver.Format
 	    /// <summary>
 	    /// The number of iterations to use with PBKDF2.
 	    /// </summary>
-	    private ushort _iterations = 1000;
+	    private ulong _iterations = 100000;
 
 	    /// <summary>
 	    /// The algorithm to use with PBKDF2.
@@ -268,8 +273,7 @@ namespace Akeeba.Unarchiver.Format
             bool oneTen = (headerData.MajorVersion == 1) && (headerData.MinorVersion == 10);
             bool twoZero = (headerData.MajorVersion == 2) && (headerData.MinorVersion == 0);
 
-	        // TODO Also reference twoZero here after implementing support for JPS format version 2.0
-            if (!oneNine && !oneTen)
+            if (!oneNine && !oneTen && !twoZero)
             {
                 throw new InvalidArchiveException(String.Format(
                     Language.ResourceManager.GetString("ERR_FORMAT_JPS_INVALID_VERSION"), headerData.MajorVersion,
@@ -287,11 +291,21 @@ namespace Akeeba.Unarchiver.Format
                 ));
             }
 
-	        // TODO JPS 2.0 MUST have an extra header. Make sure it exists, read it and decide how to handle key derivation (global or per file).
+	        // JPS 2.0 MUST have an extra header. Make sure it exists.
+            if (twoZero && (headerData.ExtraHeaderLength != 76))
+            {
+                throw new InvalidArchiveException(Language.ResourceManager.GetString("ERR_FORMAT_JPS_EXTRAHEADER_WRONGLENGTH"));
+            }
 
-	        // In JPS 2.0 we are going to use PBKDF2 to derive the key from the password, therefore legacy needs to be
-	        // disabled.
-	        if (twoZero)
+            // Read the JPS 2.0 extra header
+            if (twoZero)
+            {
+                ReadPbkdf2ExtraArchiveHeader();
+            }
+
+            // In JPS 2.0 we are going to use PBKDF2 to derive the key from the password, therefore legacy needs to be
+            // disabled.
+            if (twoZero)
 	        {
 		        _useLegacyKey = false;
 	        }
@@ -596,31 +610,44 @@ namespace Akeeba.Unarchiver.Format
         /// <exception cref="InvalidArchiveException"></exception>
         private MemoryStream Decrypt(Stream encryptedSteam)
         {
-            // Get the correct key to use with the Rijndael algorithm
+            // Initialize the key and IV with the default values used in legacy JPS 1.9 archives
             byte[] key = _legacyKey;
+            byte[] IV = key;
 
-            if (!_useLegacyKey)
-            {
-                // TODO Implement version 2.0 key derivation logic
-            }
-
-            // How many bytes to trim pff the input stream before decompressing
+            // How many bytes to trim off the input stream before decompressing
             int trimBytes = 4;
 
-            // Do I have an IV?
-            encryptedSteam.Seek(-24, SeekOrigin.End);
-            string IVSignature = ReadAsciiString(4, encryptedSteam);
-            byte[] IV;
-
-            if (IVSignature == "JPIV")
+            // On JPS 2.0 archives we need to default to the global key derived using PBKDF2 using the static salt
+            if (!_useLegacyKey)
             {
-                trimBytes += 20;
-                IV = ReadBytes(16, encryptedSteam);
+                key = _safeKey;
             }
-            else
+
+            // If I have a per-block salt read it and derive a new decryption key
+            if (encryptedSteam.Length > 92)
             {
-                encryptedSteam.Seek(0, SeekOrigin.Begin);
-                IV = key;
+                encryptedSteam.Seek(-92, SeekOrigin.End);
+                string SaltSignature = ReadAsciiString(4, encryptedSteam);
+
+                if (SaltSignature == "JPST")
+                {
+                    trimBytes += 68;
+                    byte[] salt = ReadBytes(64, encryptedSteam);
+                    key = Pbkdf2SHA1(_password, salt, _iterations);
+                }
+            }
+
+            // If I have a per-block IV use this one instead of the default, unsafe one used in JPS 1.9
+            if (encryptedSteam.Length > 24)
+            {
+                encryptedSteam.Seek(-24, SeekOrigin.End);
+                string IVSignature = ReadAsciiString(4, encryptedSteam);
+
+                if (IVSignature == "JPIV")
+                {
+                    trimBytes += 20;
+                    IV = ReadBytes(16, encryptedSteam);
+                }
             }
 
             // Read the decrypted data size at the end of the block
@@ -679,6 +706,11 @@ namespace Akeeba.Unarchiver.Format
             }
         }
 
+        /// <summary>
+        /// Reads the next encrypted block from the archive and returns a decrypted stream with its contents
+        /// </summary>
+        /// <returns>MemoryStream</returns>
+        /// <exception cref="InvalidArchiveException"></exception>
         private MemoryStream ReadAndDecryptNextDataChunkBlock()
         {
             ulong EncryptedSize = ReadULong();
@@ -702,6 +734,54 @@ namespace Akeeba.Unarchiver.Format
 
                 return decryptedStream;
             }
+        }
+
+        /// <summary>
+        /// Reads the extra archive header with the PBKDF2 configuration parameters present in JPS 2.0 and later archive
+        /// files. The configuration information is stored in the respective class properties.
+        /// </summary>
+        /// <exception cref="InvalidArchiveException"></exception>
+        private void ReadPbkdf2ExtraArchiveHeader()
+        {
+            string signature1 = ReadAsciiString(2);
+            byte[] signature2 = ReadBytes(2);
+
+            if ((signature1 != "JH") || (signature2[0] != 0x00) || (signature2[1] != 0x01))
+            {
+                throw new InvalidArchiveException(Language.ResourceManager.GetString("ERR_FORMAT_JPS_EXTRAHEADER_UNKNOWN"));
+            }
+
+            // Read options and store them in the class
+            ushort length = ReadUShort();
+            _algorithm = (JpsPbkdf2Algorithm)Enum.ToObject(typeof(JpsPbkdf2Algorithm), ReadByte());
+            _iterations = ReadULong();
+            _useStaticSalt = ReadByte() == 1;
+
+            if (length != 76)
+            {
+                throw new InvalidArchiveException(Language.ResourceManager.GetString("ERR_FORMAT_JPS_EXTRAHEADER_WRONGLENGTH"));
+            }
+
+            if (_algorithm != JpsPbkdf2Algorithm.SHA1)
+            {
+                throw new InvalidArchiveException(Language.ResourceManager.GetString("ERR_FORMAT_JPS_PBKDF2_ALGO_NOT_SUPPORTED"));
+            }
+
+            // Finally, read the salt
+            _salt = ReadBytes(64);
+
+            // If we are using a static salt, store the key in the object property
+            if (_useStaticSalt)
+            {
+                _safeKey = Pbkdf2SHA1(_password, _salt, _iterations);
+            }
+
+        }
+
+        private byte[] Pbkdf2SHA1(string password, byte[] salt, ulong iterations)
+        {
+            Rfc2898DeriveBytes deriveBytes = new Rfc2898DeriveBytes(password, salt, (int) iterations);
+            return deriveBytes.GetBytes(16);
         }
     }
 }

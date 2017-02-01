@@ -171,4 +171,16 @@
   <data name="ERR_UNARCHIVER_PART_NUMBER_OUT_OF_RANGE" xml:space="preserve">
     <value>Part number {0} is out of range. The archive only has {1} parts in total.</value>
   </data>
+  <data name="ERR_FORMAT_JPS_EXTRAHEADER_INVALID" xml:space="preserve">
+    <value>Invalid data in Extra Archive Header</value>
+  </data>
+  <data name="ERR_FORMAT_JPS_EXTRAHEADER_UNKNOWN" xml:space="preserve">
+    <value>Unknown Extra Archive Header type.</value>
+  </data>
+  <data name="ERR_FORMAT_JPS_EXTRAHEADER_WRONGLENGTH" xml:space="preserve">
+    <value>Wrong length of Extra Archive Header.</value>
+  </data>
+  <data name="ERR_FORMAT_JPS_PBKDF2_ALGO_NOT_SUPPORTED" xml:space="preserve">
+    <value>Only PBKDF2 with the SHA-1 algorithm is supported by Akeeba eXtract Wizard.</value>
+  </data>
 </root>
