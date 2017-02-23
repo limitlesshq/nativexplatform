@@ -1,0 +1,298 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<stetic-interface>
+  <configuration>
+    <images-root-path>..</images-root-path>
+  </configuration>
+  <import>
+    <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <widget-library name="../bin/Debug/ExtractWizardGtk.exe" internal="true" />
+  </import>
+  <widget class="Gtk.Window" id="MainWindow" design-size="618 500">
+    <property name="MemberName" />
+    <property name="Title" translatable="yes">MainWindow</property>
+    <property name="WindowPosition">CenterOnParent</property>
+    <property name="Resizable">False</property>
+    <property name="AllowGrow">False</property>
+    <signal name="DeleteEvent" handler="OnDeleteEvent" />
+    <child>
+      <widget class="Gtk.Fixed" id="fixed1">
+        <property name="MemberName" />
+        <property name="WidthRequest">540</property>
+        <property name="HeightRequest">320</property>
+        <property name="HasWindow">False</property>
+        <child>
+          <widget class="Gtk.Frame" id="groupOptions">
+            <property name="MemberName" />
+            <property name="WidthRequest">530</property>
+            <property name="ShadowType">In</property>
+            <child>
+              <widget class="Gtk.Alignment" id="GtkAlignment">
+                <property name="MemberName" />
+                <property name="Xalign">0</property>
+                <property name="Yalign">0</property>
+                <property name="LeftPadding">12</property>
+                <child>
+                  <widget class="Gtk.Fixed" id="fixed2">
+                    <property name="MemberName" />
+                    <property name="HasWindow">False</property>
+                    <child>
+                      <widget class="Gtk.Label" id="lblArchive">
+                        <property name="MemberName" />
+                        <property name="HeightRequest">20</property>
+                        <property name="LabelProp" translatable="yes">Backup archive</property>
+                        <property name="UseUnderline">True</property>
+                        <property name="MnemonicWidget">editArchive</property>
+                      </widget>
+                      <packing>
+                        <property name="X">8</property>
+                        <property name="Y">10</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Entry" id="editArchive">
+                        <property name="MemberName" />
+                        <property name="WidthRequest">200</property>
+                        <property name="CanFocus">True</property>
+                        <property name="IsEditable">True</property>
+                        <property name="InvisibleChar">●</property>
+                      </widget>
+                      <packing>
+                        <property name="X">220</property>
+                        <property name="Y">8</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Button" id="btnArchive">
+                        <property name="MemberName" />
+                        <property name="WidthRequest">80</property>
+                        <property name="CanFocus">True</property>
+                        <property name="Type">TextOnly</property>
+                        <property name="Label" translatable="yes">Browse</property>
+                        <property name="UseUnderline">True</property>
+                        <signal name="Clicked" handler="OnBtnArchiveClicked" after="yes" />
+                      </widget>
+                      <packing>
+                        <property name="X">425</property>
+                        <property name="Y">8</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Label" id="lblOutputFolder">
+                        <property name="MemberName" />
+                        <property name="LabelProp" translatable="yes">Output folder</property>
+                        <property name="UseUnderline">True</property>
+                        <property name="MnemonicWidget">editOutputFolder</property>
+                      </widget>
+                      <packing>
+                        <property name="X">8</property>
+                        <property name="Y">44</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Entry" id="editOutputFolder">
+                        <property name="MemberName" />
+                        <property name="WidthRequest">200</property>
+                        <property name="CanFocus">True</property>
+                        <property name="IsEditable">True</property>
+                        <property name="InvisibleChar">●</property>
+                      </widget>
+                      <packing>
+                        <property name="X">220</property>
+                        <property name="Y">40</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Button" id="btnFolder">
+                        <property name="MemberName" />
+                        <property name="WidthRequest">80</property>
+                        <property name="CanFocus">True</property>
+                        <property name="Type">TextOnly</property>
+                        <property name="Label" translatable="yes">Browse</property>
+                        <property name="UseUnderline">True</property>
+                        <signal name="Clicked" handler="OnBtnFolderClicked" after="yes" />
+                      </widget>
+                      <packing>
+                        <property name="X">425</property>
+                        <property name="Y">40</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Label" id="lblPassword">
+                        <property name="MemberName" />
+                        <property name="LabelProp" translatable="yes">Password</property>
+                        <property name="UseUnderline">True</property>
+                        <property name="MnemonicWidget">editPassword</property>
+                      </widget>
+                      <packing>
+                        <property name="X">8</property>
+                        <property name="Y">76</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Entry" id="editPassword">
+                        <property name="MemberName" />
+                        <property name="WidthRequest">200</property>
+                        <property name="CanFocus">True</property>
+                        <property name="IsEditable">True</property>
+                        <property name="Visibility">False</property>
+                        <property name="InvisibleChar">●</property>
+                      </widget>
+                      <packing>
+                        <property name="X">220</property>
+                        <property name="Y">72</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.CheckButton" id="chkIgnoreErrors">
+                        <property name="MemberName" />
+                        <property name="CanFocus">True</property>
+                        <property name="Label" translatable="yes">Ignore write errors</property>
+                        <property name="Active">True</property>
+                        <property name="DrawIndicator">True</property>
+                        <property name="HasLabel">True</property>
+                        <property name="UseUnderline">True</property>
+                      </widget>
+                      <packing>
+                        <property name="X">220</property>
+                        <property name="Y">104</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.CheckButton" id="chkDryRun">
+                        <property name="MemberName" />
+                        <property name="CanFocus">True</property>
+                        <property name="Label" translatable="yes">Dry run</property>
+                        <property name="DrawIndicator">True</property>
+                        <property name="HasLabel">True</property>
+                        <property name="UseUnderline">True</property>
+                      </widget>
+                      <packing>
+                        <property name="X">220</property>
+                        <property name="Y">136</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Button" id="btnStartStop">
+                        <property name="MemberName" />
+                        <property name="WidthRequest">200</property>
+                        <property name="CanFocus">True</property>
+                        <property name="Type">TextOnly</property>
+                        <property name="Label" translatable="yes">_Start</property>
+                        <property name="UseUnderline">True</property>
+                        <signal name="Clicked" handler="OnBtnStartStopClicked" after="yes" />
+                      </widget>
+                      <packing>
+                        <property name="X">220</property>
+                        <property name="Y">170</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Button" id="btnHelp">
+                        <property name="MemberName" />
+                        <property name="WidthRequest">80</property>
+                        <property name="CanFocus">True</property>
+                        <property name="Type">TextOnly</property>
+                        <property name="Label" translatable="yes">_Help</property>
+                        <property name="UseUnderline">True</property>
+                        <signal name="Clicked" handler="OnBtnHelpClicked" after="yes" />
+                      </widget>
+                      <packing>
+                        <property name="X">425</property>
+                        <property name="Y">170</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Image" id="btnDonate">
+                        <property name="MemberName" />
+                        <property name="Pixbuf">resource:ExtractWizardGtk.blue-rect-paypal-26px.png</property>
+                        <signal name="ButtonPressEvent" handler="OnBtnDonateButtonPressEvent" after="yes" />
+                      </widget>
+                      <packing>
+                        <property name="X">8</property>
+                        <property name="Y">104</property>
+                      </packing>
+                    </child>
+                  </widget>
+                </child>
+              </widget>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="lblGroupOptions">
+                <property name="MemberName" />
+                <property name="LabelProp" translatable="yes">Extraction Options</property>
+                <property name="UseUnderline">True</property>
+              </widget>
+              <packing>
+                <property name="type">label_item</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="X">4</property>
+            <property name="Y">4</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Frame" id="groupProgress">
+            <property name="MemberName" />
+            <property name="WidthRequest">530</property>
+            <property name="HeightRequest">80</property>
+            <property name="ShadowType">In</property>
+            <child>
+              <widget class="Gtk.Alignment" id="GtkAlignment1">
+                <property name="MemberName" />
+                <property name="Xalign">0</property>
+                <property name="Yalign">0</property>
+                <property name="LeftPadding">12</property>
+                <child>
+                  <widget class="Gtk.Fixed" id="fixed3">
+                    <property name="MemberName" />
+                    <property name="HasWindow">False</property>
+                    <child>
+                      <widget class="Gtk.ProgressBar" id="progressbarExtraction">
+                        <property name="MemberName" />
+                        <property name="WidthRequest">500</property>
+                        <property name="Text" translatable="yes" />
+                        <property name="Fraction">0.5</property>
+                      </widget>
+                      <packing>
+                        <property name="X">4</property>
+                        <property name="Y">4</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Label" id="lblExtractedFile">
+                        <property name="MemberName" />
+                        <property name="WidthRequest">500</property>
+                        <property name="HeightRequest">25</property>
+                        <property name="LabelProp" translatable="yes">This is some very long text that should wrap around if there is not enough space in this otherwise really big label I have put on the form</property>
+                      </widget>
+                      <packing>
+                        <property name="X">4</property>
+                        <property name="Y">32</property>
+                      </packing>
+                    </child>
+                  </widget>
+                </child>
+              </widget>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="lblGroupProgress">
+                <property name="MemberName" />
+                <property name="LabelProp" translatable="yes">Extraction Progress</property>
+                <property name="UseUnderline">True</property>
+              </widget>
+              <packing>
+                <property name="type">label_item</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="X">4</property>
+            <property name="Y">230</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+</stetic-interface>
