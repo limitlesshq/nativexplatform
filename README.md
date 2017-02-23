@@ -24,7 +24,7 @@ The GitHub reposiory is meant for use by developers only. If you are a developer
 suggestion or proposal you are welcome to submit an Issue or, better yet, a Pull Request with your code.
 
 The repository comes as a single Solution. You can open it with most .NET IDEs such as Visual Studio, Xamarin Studio,
-MonoDeveloper or JetBrains Rider. Before trying to compile the solution please remember to install the NuGet packages.
+MonoDevelop or JetBrains Rider. Before trying to compile the solution please remember to install the NuGet packages.
 
 The projects in this solution are as follows:
 * **extractCLI** The command-line version of Akeeba eXtract
