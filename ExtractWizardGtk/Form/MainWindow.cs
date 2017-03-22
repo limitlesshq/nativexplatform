@@ -23,7 +23,10 @@ public partial class MainWindow : Gtk.Window, IMainFormGateway
 	/// <param name="title"></param>
 	public void SetWindowTitle(string title)
 	{
-		Title = title;
+        Gtk.Application.Invoke(delegate
+        {
+            Title = title;
+        });
 	}
 
 	/// <summary>
@@ -56,7 +59,10 @@ public partial class MainWindow : Gtk.Window, IMainFormGateway
 	/// <param name="backupArchivePath"></param>
 	public void SetBackupArchivePath(string backupArchivePath)
 	{
-		editArchive.Text = backupArchivePath;
+        Gtk.Application.Invoke(delegate
+        {
+            editArchive.Text = backupArchivePath;
+        });
 	}
 
 	/// <summary>
@@ -74,7 +80,10 @@ public partial class MainWindow : Gtk.Window, IMainFormGateway
 	/// <param name="outputFolderPath"></param>
 	public void SetOutputFolderPath(string outputFolderPath)
 	{
-		editOutputFolder.Text = outputFolderPath;
+        Gtk.Application.Invoke(delegate
+        {
+            editOutputFolder.Text = outputFolderPath;
+        });
 	}
 
 	/// <summary>
@@ -92,7 +101,10 @@ public partial class MainWindow : Gtk.Window, IMainFormGateway
 	/// <returns></returns>
 	public void SetPassword(string password)
 	{
-		editPassword.Text = password;
+        Gtk.Application.Invoke(delegate
+        {
+            editPassword.Text = password;
+        });
 	}
 
 	/// <summary>
@@ -119,7 +131,10 @@ public partial class MainWindow : Gtk.Window, IMainFormGateway
 	/// <returns></returns>
 	public void SetIgnoreFileWriteErrors(bool isChecked)
 	{
-		chkIgnoreErrors.Active = isChecked;
+        Gtk.Application.Invoke(delegate
+        {
+            chkIgnoreErrors.Active = isChecked;
+        });
 	}
 
 	/// <summary>
@@ -137,7 +152,10 @@ public partial class MainWindow : Gtk.Window, IMainFormGateway
 	/// <returns></returns>
 	public void SetDryRun(bool isChecked)
 	{
-		chkDryRun.Active = isChecked;
+        Gtk.Application.Invoke(delegate
+        {
+            chkDryRun.Active = isChecked;
+        });
 	}
 
 	/// <summary>
@@ -146,24 +164,27 @@ public partial class MainWindow : Gtk.Window, IMainFormGateway
 	/// <param name="enabled"></param>
 	public void SetExtractionOptionsState(bool enabled)
 	{
-		// Set state of edit box labels
-		lblArchive.Sensitive = enabled;
-		lblOutputFolder.Sensitive = enabled;
-		lblPassword.Sensitive = enabled;
+        Gtk.Application.Invoke(delegate
+        {
+            // Set state of edit box labels
+            lblArchive.Sensitive = enabled;
+            lblOutputFolder.Sensitive = enabled;
+            lblPassword.Sensitive = enabled;
 
-		// Set state of edit boxes
-		editArchive.Sensitive = enabled;
-		editOutputFolder.Sensitive = enabled;
-		editPassword.Sensitive = enabled;
+            // Set state of edit boxes
+            editArchive.Sensitive = enabled;
+            editOutputFolder.Sensitive = enabled;
+            editPassword.Sensitive = enabled;
 
-		// Set state of check boxes
-		chkDryRun.Sensitive = enabled;
-		chkIgnoreErrors.Sensitive = enabled;
+            // Set state of check boxes
+            chkDryRun.Sensitive = enabled;
+            chkIgnoreErrors.Sensitive = enabled;
 
-		// Set state of buttons
-		btnArchive.Sensitive = enabled;
-		btnFolder.Sensitive = enabled;
-		btnHelp.Sensitive = enabled;
+            // Set state of buttons
+            btnArchive.Sensitive = enabled;
+            btnFolder.Sensitive = enabled;
+            btnHelp.Sensitive = enabled;
+        });
 	}
 
 	/// <summary>
@@ -173,7 +194,10 @@ public partial class MainWindow : Gtk.Window, IMainFormGateway
 	/// <param name="label">The label's translation key</param>
 	public void SetExtractButtonText(ResourceManager text, string label)
 	{
-		btnStartStop.Label = _lang(text, label);
+        Gtk.Application.Invoke(delegate
+        {
+            btnStartStop.Label = _lang(text, label);
+        });
 	}
 
 	/// <summary>
@@ -182,12 +206,15 @@ public partial class MainWindow : Gtk.Window, IMainFormGateway
 	/// <param name="percent"></param>
 	public void SetExtractionProgress(int percent)
 	{
-		// Squash percentage between 0 - 100
-		percent = Math.Max(0, percent);
-		percent = Math.Min(100, percent);
+        Gtk.Application.Invoke(delegate
+        {
+            // Squash percentage between 0 - 100
+            percent = Math.Max(0, percent);
+            percent = Math.Min(100, percent);
 
-		// Set the progress bar value
-		progressbarExtraction.Fraction = (double)percent / 100.0;
+            // Set the progress bar value
+            progressbarExtraction.Fraction = (double)percent / 100.0;
+        });
 	}
 
 	/// <summary>
@@ -196,7 +223,11 @@ public partial class MainWindow : Gtk.Window, IMainFormGateway
 	/// <param name="fileName"></param>
 	public void SetExtractedFileName(string fileName)
 	{
-		lblExtractedFile.Text = fileName;
+        Gtk.Application.Invoke(delegate
+        {
+            lblExtractedFile.Text = fileName;
+        });
+        
 	}
 
 	/// <summary>
@@ -224,10 +255,13 @@ public partial class MainWindow : Gtk.Window, IMainFormGateway
 	/// <param name="message">The error message to present to the user.</param>
 	public void showErrorMessage(string title, string message)
 	{
-		MessageDialog dialog = new MessageDialog(this, 0, MessageType.Error, ButtonsType.Ok, message);
-		dialog.Title = title;
-		dialog.Run();
-		dialog.Destroy();
+        Gtk.Application.Invoke(delegate
+        {
+            MessageDialog dialog = new MessageDialog(this, 0, MessageType.Error, ButtonsType.Ok, message);
+            dialog.Title = title;
+            dialog.Run();
+            dialog.Destroy();            
+        });
 	}
 
 	/// <summary>
@@ -237,10 +271,13 @@ public partial class MainWindow : Gtk.Window, IMainFormGateway
 	/// <param name="message">The message to present to the user.</param>
 	public void showInfoMessage(string title, string message)
 	{
-		MessageDialog dialog = new MessageDialog(this, 0, MessageType.Info, ButtonsType.Ok, message);
-		dialog.Title = title;
-		dialog.Run();
-		dialog.Destroy();
+        Gtk.Application.Invoke(delegate
+        {
+            MessageDialog dialog = new MessageDialog(this, 0, MessageType.Info, ButtonsType.Ok, message);
+            dialog.Title = title;
+            dialog.Run();
+            dialog.Destroy();            
+        });
 	}
 
 	/// <summary>
