@@ -24,7 +24,6 @@
 		<Feature Id="CompleteInstallation" Title="Full" Level="1">
 			<ComponentGroupRef Id="ProductComponents" />
       <ComponentGroupRef Id="ProductShortcuts" />
-      <ComponentGroupRef Id="Documentation" />
 		</Feature>
 
 	</Product>
@@ -67,13 +66,7 @@
         <File Source="$(var.ExtractWizard.TargetDir)Mono.Posix.dll" />
         <File Source="$(var.ExtractWizard.TargetDir)Unarchiver.dll" />
       </Component>
-		</ComponentGroup>
-  
-    <ComponentGroup Id="Documentation" Directory="INSTALLFOLDER">
-      <Component Id="PortableToolsDocumentation" Guid="913ed525-c325-488a-9482-502554b4c73b">
-        <File Id="PortableToolsDocs" Source="$(var.Documentation.TargetDir)\bin\$(Configuration)\PortableTools.pdf" KeyPath="yes" />
-      </Component>
-    </ComponentGroup>
+		</ComponentGroup>  
 	</Fragment>
 
   <Fragment>
