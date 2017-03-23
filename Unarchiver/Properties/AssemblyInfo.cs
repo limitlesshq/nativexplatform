@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="AssemblyInfo.cs" company="Akeeba Ltd">
-// Copyright (c) 2006-2016  Nicholas K. Dionysopoulos / Akeeba Ltd
+// Copyright (c) 2006-2017  Nicholas K. Dionysopoulos / Akeeba Ltd
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 // documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
@@ -30,7 +30,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Akeeba Ltd")]
 [assembly: AssemblyProduct("Akeeba Backup Portable Tools")]
-[assembly: AssemblyCopyright("Copyright © Nicholas K. Dionysopoulos / Akeeba Ltd 2016-2017")]
+[assembly: AssemblyCopyright("Copyright (c) 2006-2017 Nicholas K. Dionysopoulos / Akeeba Ltd")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -55,7 +55,7 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("4.0.0.0")]
-[assembly: AssemblyFileVersion("4.0.0.0")]
+[assembly: AssemblyVersion("4.0.1.*")]
+[assembly: AssemblyFileVersion("4.0.1.*")]
 [assembly: NeutralResourcesLanguage("en-US")]
 

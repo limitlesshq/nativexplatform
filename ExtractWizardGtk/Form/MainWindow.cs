@@ -384,9 +384,9 @@ public partial class MainWindow : Gtk.Window, IMainFormGateway
 		_controller.OnBrowseOutputFolderButtonClick(sender, e);
 	}
 
-	protected void OnBtnDonateButtonPressEvent(object o, ButtonPressEventArgs args)
+	protected void OnBtnDonateClicked(object sender, EventArgs e)
 	{
-		_controller.OnDonateButtonClick(o, args);
+		_controller.OnDonateButtonClick(sender, e);
 	}
 
 	protected void OnBtnHelpClicked(object sender, EventArgs e)
