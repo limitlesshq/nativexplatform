@@ -59,7 +59,7 @@ namespace ExtractWizard.Controller
         /// <summary>
         /// The link to the documentation page
         /// </summary>
-        private const string HelpLink = "https://www.akeebabackup.com/documentation/extract-wizard.html";
+        private const string HelpLink = "https://github.com/akeeba/nativexplatform/wiki";
 
         /// <summary>
         /// The Gateway to the main form
