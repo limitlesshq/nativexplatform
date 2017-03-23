@@ -202,10 +202,15 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="Gtk.Image" id="btnDonate">
+                      <widget class="Gtk.Button" id="btnDonate">
                         <property name="MemberName" />
-                        <property name="Pixbuf">resource:ExtractWizardGtk.blue-rect-paypal-26px.png</property>
-                        <signal name="ButtonPressEvent" handler="OnBtnDonateButtonPressEvent" after="yes" />
+                        <property name="CanFocus">True</property>
+                        <property name="Type">TextAndIcon</property>
+                        <property name="Icon">resource:ExtractWizardGtk.blue-rect-paypal-26px.png</property>
+                        <property name="Label" translatable="yes" />
+                        <property name="UseUnderline">True</property>
+                        <property name="Relief">None</property>
+                        <signal name="Clicked" handler="OnBtnDonateClicked" />
                       </widget>
                       <packing>
                         <property name="X">8</property>
