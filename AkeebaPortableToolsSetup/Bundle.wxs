@@ -3,7 +3,7 @@
      xmlns:bal="http://schemas.microsoft.com/wix/BalExtension">
 	<Bundle
     Name="Akeeba Portable Tools"
-    Version="4.0.1"
+    Version="4.0.2"
     Manufacturer="Akeeba Ltd"
     IconSourceFile="..\ExtractWizard\Resources\extract-small.ico"
     UpgradeCode="560bc63b-0920-4607-8e23-87a72cbfe4be">
