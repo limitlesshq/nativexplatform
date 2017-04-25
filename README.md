@@ -30,13 +30,3 @@ The projects in this solution are as follows:
 * **extractCLI** The command-line version of Akeeba eXtract
 * **ExtractWizard** The GUI, WindowsForms version of Akeeba eXtract Wizard
 * **Unarchiver** A library you can use to extract JPA, JPS and ZIP archives created with any Akeeba Backup version published since 2011.
-
-## Build notes
-
-On Linux / macOS you must have the Mono SDK and its toolchain already installed. The easiest way to do that is by installing MonoDevelop or Xamarin Studio.
-
-On Windows you must have the .NET Framework SDK and its toolchain already installed. The easiest way to do that is by installing Microsoft Visual Studio Community Edition.
-
-In either case you must have the build toolchain (xbuild for Mono, MSBuild for Windows) in your path.
-
-The script `build.sh` will build the CLI and GUI tools for Linux / macOS and place them in ZIP files inside the `release` directory under the repository's root. The script `build.bat` will build the CLI and GUI tools for Windows. The executable installer will be also built and copied to the release directory.

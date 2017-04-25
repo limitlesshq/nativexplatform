@@ -14,6 +14,9 @@ EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "AkeebaPortableToolsSetup", "AkeebaPortableToolsSetup\AkeebaPortableToolsSetup.wixproj", "{560BC63B-0920-4607-8E23-87A72CBFE4BE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtractWizardGtk", "ExtractWizardGtk\ExtractWizardGtk.csproj", "{C49C8CC5-2572-427D-AFAF-3853C513A8FE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F8C19539-9779-4E56-8979-659485BC45EE} = {F8C19539-9779-4E56-8979-659485BC45EE}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
