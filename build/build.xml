@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <project name="AkeebaLoginGuard" description="Akeeba LoginGuard" default="git" >
-	<import file="${phing.dir}/../buildfiles/phing/common.xml" />
+	<import file="${phing.dir}/../../buildfiles/phing/common.xml" />
 
 	<!--
 	====================================================================================================
@@ -64,6 +64,10 @@
 	</target>
 
 	<target name="docsdeploy">
+		<echo message="The documentation can be found in the repository's Wiki on GitHub. This task is obsolete." />
+	</target>
+
+	<target name="documentation">
 		<echo message="The documentation can be found in the repository's Wiki on GitHub. This task is obsolete." />
 	</target>
 </project>
