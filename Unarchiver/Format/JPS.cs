@@ -546,6 +546,7 @@ namespace Akeeba.Unarchiver.Format
                                         using (MemoryStream sourceStream = new MemoryStream())
                                         {
                                             decompressStream.CopyTo(sourceStream);
+                                            sourceStream.Seek(0, SeekOrigin.Begin);
 
                                             ulong sourceStreamLength = (ulong) sourceStream.Length;
                                             currentRunningDecompressed += sourceStreamLength;
@@ -565,6 +566,7 @@ namespace Akeeba.Unarchiver.Format
                                         using (MemoryStream sourceStream = new MemoryStream())
                                         {
                                             decompressStream.CopyTo(sourceStream);
+                                            sourceStream.Seek(0, SeekOrigin.Begin);
 
                                             ulong sourceStreamLength = (ulong) sourceStream.Length;
                                             currentRunningDecompressed += sourceStreamLength;
